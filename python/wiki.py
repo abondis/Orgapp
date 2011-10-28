@@ -23,23 +23,6 @@ def wiki(page='index'):
     return dict(page=page+"_docutils",content=input_str)
   return dict(page=page,content=input_str)
 
-@get('/login') # or @route('/login')
-def login_form():
-    return '''<form method="POST" action="/login">
-                <input name="name"     type="text" />
-                <input name="password" type="password" />
-		<input type="submit" />
-              </form>'''
-
-@post('/login') # or @route('/login', method='POST')
-def login_submit():
-    name     = request.forms.get('name')
-    password = request.forms.get('password')
-    if name == 'test' and  password == 'test':
-        return "<p>Your login was correct</p>"
-    else:
-        return "<p>Login failed</p>"
-
 @route('/static/:filename#.+#')
 def server_static(filename):
     return static_file(filename, root='./static')
