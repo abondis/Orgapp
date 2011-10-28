@@ -1,5 +1,5 @@
 <div class="topnav">
-  % menu=['wiki','static']
+  % menu=['wiki','home']
   % for m in menu:
     <a href="/{{m}}">{{m}}</a>
 </div>

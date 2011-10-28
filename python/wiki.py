@@ -1,8 +1,12 @@
 #!/usr/bin/env python
 import os
-from bottle import route, run, static_file
+from bottle import route, run, static_file, redirect
 from bottle import view, template
 from bottle import get, post, request, error
+
+@route('/home')
+def home():
+  return redirect('/')
 
 @route('/')
 @view('base')
@@ -26,9 +30,6 @@ def wiki(page=''):
   else: 
     files = os.listdir(os.path.dirname(fullpath))
     dirname = os.path.dirname(fullpath)
-  print('='*10)
-  print(page)
-  print('='*10)
   if not page: page = 'index' 
   input_str = static_file(page, root='./wiki').output.read().decode().replace('\n','<br/>')
   try:

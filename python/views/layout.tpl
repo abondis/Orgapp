@@ -3,7 +3,7 @@
   <title>{{title or 'No title'}}</title>
 </head>
 <body>
-  jblah
+  %include topnav
   %include
 </body>
 </html>
