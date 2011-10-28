@@ -3,10 +3,7 @@
   <title>{{title or 'No title'}}</title>
 </head>
 <body>
-  %include header
-  %include topnav
-  %include rightblock
+  jblah
   %include
-  %include footer
 </body>
 </html>

@@ -1,7 +1,9 @@
 %rebase layout title=title
-<div style="width: 50%; float:left">
+columns
+<div style="width: 120px; float:left">
   %leftblock()
 </div>
-<div style="width: 50%; float:right">
-  %rightblock()
+<div style="width: 600px;">
+  {{!content}}
 </div>
+
