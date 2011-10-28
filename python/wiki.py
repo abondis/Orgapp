@@ -12,7 +12,7 @@ def home(page='home'):
 
 @route('/wiki/')
 @route('/wiki/:page#.+#')
-@view('block_content')
+@view('wiki_2col')
 def wiki(page=''):
   files = os.listdir(os.path.dirname('./wiki/%s' % page))
   if not page: page = 'index' or files[0]
