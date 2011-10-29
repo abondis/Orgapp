@@ -1,1 +1,11 @@
-blah
+body { 
+  column-count: 11;
+  column-gap: 1em;
+  column-rule: thin solid black;
+  -moz-column-count: 11;
+  -moz-column-gap: 1em;
+  -moz-column-rule: thin solid black;
+  -webkit-column-count: 11;
+  -webkit-column-gap: 1em;
+  -webkit-column-rule: thin solid black;
+}

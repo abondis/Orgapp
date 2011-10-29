@@ -1,5 +1,8 @@
-<div class="topnav">
+<div class="row" >
   % menu=['wiki','home']
   % for m in menu:
-    <a href="/{{m}}">{{m}}</a>
+  <div class='twocol'>
+    <a href="/{{m}}">{{m}}</a> 
+  </div>
+  % end
 </div>

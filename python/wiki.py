@@ -11,9 +11,10 @@ def home():
 @route('/')
 @view('base')
 def home(page='home'):
-    return dict(content='Hello, how are you?',
+    return dict(content='<p>Hello, how are you?</p>',
                 page=page)
 
+@route('/wiki')
 @route('/wiki/')
 @route('/wiki/:page#.+#')
 @view('wiki_2col')

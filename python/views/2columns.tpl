@@ -1,9 +1,6 @@
 %rebase layout title=title
-columns
-<div style="width: 120px; float:left">
+<div class='row' style='word-wrap:break-word'>
   %leftblock()
-</div>
-<div style="width: 600px;">
   %rightblock()
 </div>
 
