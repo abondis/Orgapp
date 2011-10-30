@@ -1,5 +1,14 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 import os
+try:
+  import io
+except:
+  import StringIO 
+  io = StringIO
+try:
+  import asciidocapi
+except Exception:
+  pass
 from bottle import route, run, static_file, redirect
 from bottle import view, template
 from bottle import get, post, request, error
@@ -13,6 +22,12 @@ def home():
 def home(page='home'):
     return dict(content='<p>Hello, how are you?</p>',
                 page=page)
+
+def render_asciidoc(raw_txt):
+  outfile = io.StringIO()
+  asciidoc = asciidocapi.AsciiDocAPI()
+  asciidoc.execute(raw_txt, outfile)
+  return outfile.read()
 
 @route('/wiki')
 @route('/wiki/')
@@ -34,11 +49,11 @@ def wiki(page=''):
   if not page: page = 'index' 
   input_str = static_file(page, root='./wiki').output.read().decode().replace('\n','<br/>')
   try:
-    import docutils
-  except Exception as e:
+    import asciidocapi
+  except Exception:
     return dict(page=page,content=input_str, files=files, path=dirname)
   else:
-    return dict(page=page+"_docutils",content=input_str, files=files, path=dirname)
+    return dict(page=page+"_docutils",content=render_asciidoc(input_str), files=files, path=dirname)
 
 @route('/static/:filename#.+#')
 def server_static(filename):
