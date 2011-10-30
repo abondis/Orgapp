@@ -6,7 +6,7 @@ except:
   import StringIO 
   io = StringIO
 try:
-  import asciidocapi
+  import textile
 except Exception:
   pass
 from bottle import route, run, static_file, redirect
@@ -23,12 +23,8 @@ def home(page='home'):
     return dict(content='<p>Hello, how are you?</p>',
                 page=page)
 
-def render_asciidoc(raw):
-  outfile = io.StringIO()
-  infile = io.StringIO('unicode',raw)
-  asciidoc = asciidocapi.AsciiDocAPI()
-  asciidoc.execute(infile, outfile)
-  return outfile.read()
+def render_textile(raw):
+  return textile.textile(raw)
 
 @route('/wiki')
 @route('/wiki/')
@@ -48,15 +44,14 @@ def wiki(page=''):
     files = os.listdir(os.path.dirname(fullpath))
     dirname = os.path.dirname(fullpath)
   if not page: page = 'index' 
-  #input_str = static_file(page, root='./wiki').output.read()
-  input_str = "== blah =="
+  input_str = static_file(page, root='./wiki').output.read()
   try:
-    import asciidocapi
+    import textile
   except Exception:
     input_str = input_str.decode().replace('\n','<br/>')
     return dict(page=page,content=input_str, files=files, path=dirname)
   else:
-    return dict(page=page+"_docutils",content=render_asciidoc(input_str), files=files, path=dirname)
+    return dict(page=page+"_textile",content=render_textile(input_str), files=files, path=dirname)
 
 @route('/static/:filename#.+#')
 def server_static(filename):
