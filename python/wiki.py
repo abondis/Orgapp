@@ -23,10 +23,11 @@ def home(page='home'):
     return dict(content='<p>Hello, how are you?</p>',
                 page=page)
 
-def render_asciidoc(raw_txt):
+def render_asciidoc(raw):
   outfile = io.StringIO()
+  infile = io.StringIO('unicode',raw)
   asciidoc = asciidocapi.AsciiDocAPI()
-  asciidoc.execute(raw_txt, outfile)
+  asciidoc.execute(infile, outfile)
   return outfile.read()
 
 @route('/wiki')
@@ -47,10 +48,12 @@ def wiki(page=''):
     files = os.listdir(os.path.dirname(fullpath))
     dirname = os.path.dirname(fullpath)
   if not page: page = 'index' 
-  input_str = static_file(page, root='./wiki').output.read().decode().replace('\n','<br/>')
+  #input_str = static_file(page, root='./wiki').output.read()
+  input_str = "== blah =="
   try:
     import asciidocapi
   except Exception:
+    input_str = input_str.decode().replace('\n','<br/>')
     return dict(page=page,content=input_str, files=files, path=dirname)
   else:
     return dict(page=page+"_docutils",content=render_asciidoc(input_str), files=files, path=dirname)
