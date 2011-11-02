@@ -96,6 +96,6 @@ global path2title
 (title2path, path2title) = wiki_url()
 print(path2title.keys())
 print(title2path.keys())
-print(path2title['wiki/linux-kernel/imac12.2-arch/linux-imac121.preset'])
+#print(path2title['wiki/linux-kernel/imac12.2-arch/linux-imac121.preset'])
 run(host='localhost', port=8080,reloader=True)
 #run(host='172.16.0.163', port=8080)
