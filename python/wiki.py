@@ -81,6 +81,16 @@ def wiki(page=''):
   else:
     return dict(page=page+"_textile",content=render_textile(input_str), files=files, path=dirname, t2p=title2path, p2t=path2title)
 
+@route('/tasks')
+@route('/tasks/')
+@view('tasks')
+def tasks():
+  tasks = []
+  f = open('todo.txt', 'r')
+  for t in f.read():
+    tasks.append(t) 
+  return dict(tasks=tasks, page="Tasks List")
+
 @route('/static/:filename#.+#')
 def server_static(filename):
     return static_file(filename, root='./static')
@@ -93,6 +103,7 @@ import bottle
 bottle.debug(True)
 global title2path
 global path2title
+global tasks
 (title2path, path2title) = wiki_url()
 print(path2title.keys())
 print(title2path.keys())
