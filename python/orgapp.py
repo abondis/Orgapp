@@ -42,7 +42,8 @@ class taskList(object):
   def setParser(self):
     self.reContext = re.compile('@\w+')
     self.reProject = re.compile('\+\w+')
-    self.taskname = re.compile('((?![\+@]\w+))?[ \n]\w+')
+    #self.taskname = re.compile('((?![+@]\w+))?[ \n]\w+')
+    self.taskname = re.compile("(^|[+@]\w+\s?)(.*)(\s?[+@]\w+|$)")
 
   def parseTaskList(self):
    
