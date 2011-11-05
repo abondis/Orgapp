@@ -25,13 +25,15 @@ class taskList(object):
   def updateTaskList(self):
     f = open(self.filename, 'w')
     for l in self.tasks:
-      f.write(l+"\n")
+      if l.endswith('\n'): end = ''
+      else: end = '\n'
+      f.write(l+end)
     f.close() 
 
   def moveTask(self, source, destination):
     """ moves a task number `source` before task number `destination`
     """
-    self.tasks.insert(destination-1, self.tasks.pop(source))
+    self.tasks.insert(destination-1, self.tasks.pop(source-1))
     self.updateTaskList()
 
   def addTask(self, taskString, destination=None):
