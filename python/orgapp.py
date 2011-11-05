@@ -1,14 +1,17 @@
 import os
+import re
 
 class taskList(object):
   def __init__(self, filename):
     self.filename = filename
     self.tasks = []
+    self.contexts = set()
+    self.projects = set()
     # dictionnaire clef -> regex
     self.setParser()
-    self.listTasks(filename)
+    self.populateTasks(filename)
   
-  def listTasks(self, filename):
+  def populateTasks(self, filename):
     if not os.path.exists(filename):
       f = open(filename, 'w')
       f.close()
@@ -21,13 +24,14 @@ class taskList(object):
 
   def updateTaskList(self):
     f = open(self.filename, 'w')
-    f.writelines(self.tasks)
+    for l in self.tasks:
+      f.write(l+"\n")
     f.close() 
 
   def moveTask(self, source, destination):
     """ moves a task number `source` before task number `destination`
     """
-    self.tasks.insert(destination, self.tasks.pop(source))
+    self.tasks.insert(destination-1, self.tasks.pop(source))
     self.updateTaskList()
 
   def addTask(self, taskString, destination=None):
@@ -36,7 +40,7 @@ class taskList(object):
     if not destination:
       self.tasks.append(taskString)
     else:
-      self.tasks.insert(destination, taskString)
+      self.tasks.insert(destination-1, taskString)
     self.updateTaskList()
   
   def setParser(self):
@@ -46,7 +50,16 @@ class taskList(object):
     self.taskname = re.compile("(^|[+@]\w+\s?)(.*)(\s?[+@]\w+|$)")
 
   def parseTaskList(self):
-   
-      
-    
+    for x in self.tasks:
+      self.context.add(self.reContext(x))
+      self.project.add(self.reProject(x))   
+
+  def __repr__(self):
+    return("\n".join(self.tasks))
+
+  def listTasks(self):
+    cpt = 1
+    for l in self.tasks:
+      print("%d: %s" % (cpt, l)) 
+      cpt += 1
   
