@@ -1,4 +1,5 @@
 #!/usr/bin/env python2
+import orgapp
 import os
 try:
   import io
@@ -86,12 +87,38 @@ def wiki(page=''):
 @view('tasks')
 def tasks():
   global tasks 
-  tasks = []
-  f = open('todo.txt', 'r')
-  for t in f.xreadlines():
-    tasks.append(t) 
-  f.close()
-  return dict(tasks=tasks, page="Tasks List")
+  return dict(tasks=tasks.tasks, page="Tasks List")
+
+@route('/tasks/add')
+def addTask():
+    return '''<form method="POST" action="/tasks/add">
+                <input name="title"     type="text" />
+		<input type="submit" />
+              </form>'''
+  
+@post('/tasks/add')
+def submitAddTask():
+  global tasks 
+  title     = request.forms.get('title')
+  tasks.addTask(title)
+  return redirect('/tasks')
+
+@route('/tasks/move')
+def addTask():
+    return '''<form method="POST" action="/tasks/move">
+                <input name="source"     type="integer" />
+                <input name="destination"     type="integer" />
+		<input type="submit" />
+              </form>'''
+
+@post('/tasks/move')
+def moveTask():
+  global tasks
+  source = int(request.forms.get('source'))
+  destination = int(request.forms.get('destination'))
+  tasks.moveTask(source, destination)
+  return redirect('/tasks')
+  #return str(tasks.tasks)
 
 @route('/static/:filename#.+#')
 def server_static(filename):
@@ -106,7 +133,7 @@ bottle.debug(True)
 global title2path
 global path2title
 #global tasks
-tasks = []
+tasks = orgapp.taskList('todo.txt')
 (title2path, path2title) = wiki_url()
 print(path2title.keys())
 print(title2path.keys())
