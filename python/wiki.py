@@ -85,10 +85,12 @@ def wiki(page=''):
 @route('/tasks/')
 @view('tasks')
 def tasks():
+  global tasks 
   tasks = []
   f = open('todo.txt', 'r')
-  for t in f.read():
+  for t in f.xreadlines():
     tasks.append(t) 
+  f.close()
   return dict(tasks=tasks, page="Tasks List")
 
 @route('/static/:filename#.+#')
@@ -103,7 +105,8 @@ import bottle
 bottle.debug(True)
 global title2path
 global path2title
-global tasks
+#global tasks
+tasks = []
 (title2path, path2title) = wiki_url()
 print(path2title.keys())
 print(title2path.keys())

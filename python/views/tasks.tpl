@@ -6,7 +6,7 @@
 %def rightblock():
 <div class='sixcol'>
   %for t in tasks:
-    {{t}}
+    {{t}}<br/>
   %end
 </div>
 %end
