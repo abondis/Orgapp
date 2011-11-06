@@ -48,10 +48,12 @@ def wiki_url():
     # set key for folders
     if len(i[2]):
 #      print("i[0]: %s/ i[2]: %s" % (i[0],i[2]))
-      path2title[i[0]+'/'] =  path2title[i[0]+'/'+i[2][0]]
-      path2title[i[0]] =  path2title[i[0]+'/'+i[2][0]]
-      title2path[i[0]+'/'] = title2path[path2title[i[0]+'/'+i[2][0]][1]]
-      title2path[i[0]] = title2path[path2title[i[0]+'/'+i[2][0]][1]]
+      foldername = i[0]
+      indexpath = i[2][0]
+      path2title[foldername+'/'] =  path2title[foldername+'/'+indexpath]
+      path2title[foldername] =  path2title[foldername+'/'+indexpath]
+      title2path[foldername+'/'] = title2path[path2title[foldername+'/'+indexpath][1]]
+      title2path[foldername] = title2path[path2title[foldername+'/'+indexpath][1]]
   return title2path, path2title
 
 @route('/wiki')
