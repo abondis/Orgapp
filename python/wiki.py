@@ -122,6 +122,14 @@ def moveTask():
   return redirect('/tasks')
   #return str(tasks.tasks)
 
+@route('/tasks/context/:id')
+def getContext(id):
+  tasks.searchByContext(id)
+
+@route('/tasks/:id')
+def getTask():
+  pass
+
 @route('/static/:filename#.+#')
 def server_static(filename):
     return static_file(filename, root='./static')
