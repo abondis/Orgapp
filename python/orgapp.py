@@ -89,9 +89,24 @@ class taskList(object):
   @searchBy
   def searchByContext(self, context):
      contextTagMark = '@'
-     return self, contextTagMark, project
+     return self, contextTagMark, context
 
   @searchBy
   def searchByTask(self, task):
      taskTagMark = ''
      return self, taskTagMark, task
+
+  def ponderate(self):
+    """ shows the tasks in order of preference, ie:
+    - priority, createdate"""
+    pass
+  
+  def documentTask(self, taskName):
+    """ creates a file/folder for each task
+    """
+    pass
+
+  def markAsDone(self):
+    """ mark a task as done
+    """
+    pass
