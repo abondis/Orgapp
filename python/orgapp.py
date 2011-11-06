@@ -65,3 +65,33 @@ class taskList(object):
       print("%d: %s" % (cpt, l)) 
       cpt += 1
   
+  def searchBy(fn):
+    """ Decorator for other search functions
+        takes:
+        - self
+        - the tag prefix tagMark (ie: '+')
+        - the tag's name tagName (ie: 'aproject')
+    """
+    def _inner(*args, **kwargs):
+      self, tagMark, tagName = fn(*args, **kwargs)
+      searchResults = []
+      for element in self.tasks:
+        if tagMark + tagName in element:
+          searchResults.append(element)
+      return searchResults
+    return _inner
+
+  @searchBy
+  def searchByProject(self, project):
+     projectTagMark = '+'
+     return self, projectTagMark, project
+
+  @searchBy
+  def searchByContext(self, context):
+     contextTagMark = '@'
+     return self, contextTagMark, project
+
+  @searchBy
+  def searchByTask(self, task):
+     taskTagMark = ''
+     return self, taskTagMark, task
