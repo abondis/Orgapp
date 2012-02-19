@@ -1,3 +1,4 @@
+401 when bootstrap
 * slow workaround
 EDITOR="vi" knife client create $1 -f /tmp/$1.pem
 scp /tmp/$1.pem root@$1:/etc/chef/client.pem

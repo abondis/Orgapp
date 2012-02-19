@@ -64,6 +64,7 @@ def wiki(page=''):
   # /wiki/machin/blah blah blah
   # -> fullpath = /wiki/machin/blah.txt
   # -> <a href=path2title['fullpath']['1']>title</a>
+  print(page)
   page, fullpath = title2path['wiki/%s' % page]
   if os.path.isdir(fullpath):
     files = os.listdir(fullpath)

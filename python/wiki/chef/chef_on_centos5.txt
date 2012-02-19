@@ -1,3 +1,4 @@
+Chef on Centos
 http://blog.frameos.org/2011/04/29/installing-chef-server-0-10-in-centos-5-rhel-5/
 
 rpm -Uvh http://rbel.frameos.org/rbel5
