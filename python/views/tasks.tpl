@@ -23,10 +23,15 @@
 
 <div class='sixcol'>
   <ul id="sortable">
+  %i = 0
   %for t in tasks:
   <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>
     {{t}}
+    <form method='POST' action='/tasks/done'>
+      <button type='submit' name='pos' value='{{i}}'>Done</button>
+    </form>
   </li>
+    %i = i +1
   %end
   </ul>
   <form method="POST" action="/tasks/add">

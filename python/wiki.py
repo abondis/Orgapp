@@ -105,6 +105,19 @@ def submitAddTask():
   title     = request.forms.get('title')
   tasks.addTask(title)
   return redirect('/tasks')
+@route('/tasks/done')
+def doneTask():
+    return '''<form method="POST" action="/tasks/done">
+                <input name="pos"     type="integer" />
+		<input type="submit" />
+              </form>'''
+  
+@post('/tasks/done')
+def submitDoneTask():
+  global tasks 
+  pos     = int(request.forms.get('pos'))
+  tasks.markAsDone(pos)
+  return redirect('/tasks')
 
 @route('/tasks/move')
 def addTask():

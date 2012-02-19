@@ -1,6 +1,0 @@
-une tache blah +projet @context
-abc
-une tache blih +projet b4:tomorrow
-test 123
-un truc bolpop on:2011-11-24
-gnagna

@@ -4,6 +4,7 @@ import re
 class taskList(object):
   def __init__(self, filename):
     self.filename = filename
+    self.doneFile = "%s.done" % filename
     self.tasks = []
     self.contexts = set()
     self.projects = set()
@@ -106,7 +107,17 @@ class taskList(object):
     """
     pass
 
-  def markAsDone(self):
+  def markAsDone(self, task):
     """ mark a task as done
     """
-    pass
+    doneTask = self.tasks.pop(task)
+    self.updateTaskList()
+    if not os.path.exists(self.doneFile):
+      f = open(self.doneFile, 'w')
+      f.close()
+    elif not os.path.isfile(self.doneFile):
+      raise("Filename %s is not a file" % self.doneFile)
+      return 1
+    f = open(self.doneFile, 'a')
+    f.write("%s\n" %  doneTask)
+    f.close()
