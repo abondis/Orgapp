@@ -29,6 +29,10 @@
   </li>
   %end
   </ul>
+  <form method="POST" action="/tasks/add">
+    <input name="title"     type="text" />
+    <input type="submit" />
+  </form>
 </div>
 %end
 
