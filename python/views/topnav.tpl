@@ -14,7 +14,17 @@
 	</style>
 	<script>
 	$(function() {
-		$( "#sortable" ).sortable();
+		$( "#sortable" ).sortable({
+			start: function (event, ui) {
+		            var startPos = ui.item.index() +1;
+			    ui.item.data('start_pos', startPos);
+       			 },
+			update: function(event, ui) {
+			    var newPos = ui.item.index() +1;
+			    $.post("tasks/move", { source: ui.item.data('start_pos'), destination:newPos});
+			}
+
+		});
 		$( "#sortable" ).disableSelection();
 	});
 	</script>
