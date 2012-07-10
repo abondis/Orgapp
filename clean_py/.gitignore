@@ -1,0 +1,7 @@
+bottle.py
+macaron.py
+*.pyc
+*.swp
+*.db
+*.txt
+*.txt.done
