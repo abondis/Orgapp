@@ -2,8 +2,7 @@ import macaron
 import sqlite3
 db = sqlite3.connect("tasks.db")
 cur = db.cursor()
-cur.execute("create table tasks( id INTEGER PRIMARY KEY, name text);")
-cur.execute("create table positions( id INTEGER PRIMARY KEY, taskid NUMERIC, position NUMERIC, foreign key(taskid) references tasks(id));")
+cur.execute("create table tasks( id INTEGER PRIMARY KEY, name text, position NUMERIC);")
 #except:
   #pass # handle the error
 
@@ -16,19 +15,17 @@ class Tasks(macaron.Model): pass
 class Positions(macaron.Model): pass
 
 # Add a task
-Tasks.create(name="une tache1")
-# Activate task and give it a position
-# get task id
-Positions.create(position=1, taskid=1)
-Tasks.create(name="une tache2")
-Positions.create(position=2, taskid=2)
-Tasks.create(name="une tache3")
-Positions.create(position=3, taskid=3)
-Tasks.create(name="une tache4")
-Positions.create(position=4, taskid=4)
-Tasks.create(name="une tache5")
-Positions.create(position=5, taskid=5)
+Tasks.create(name="une tache1", position=1)
+Tasks.create(name="une tache2", position=2)
+Tasks.create(name="une tache3", position=3)
+Tasks.create(name="une tache4", position=4)
+Tasks.create(name="une tache5", position=5)
+Tasks.create(name="une tache6", position=6)
+Tasks.create(name="une tache7", position=7)
+Tasks.create(name="une tache8", position=8)
 macaron.bake()
+[(x.id, x.name, x.position) for x in Tasks.all()]
+
 
 # get the list of positions > 1
 pos = Positions.select("position>?", [1])
@@ -36,8 +33,8 @@ pos = Positions.select("position>?", [1])
 #pos = Positions.select("position>?", [1])
 # move taskid2 after task in position 3
 # get tasks after position 4 only if not taskid 2
-macaron.execute('UPDATE positions SET position = position + 1 WHERE taskid != 2 AND position >= 4')
-macaron.execute('UPDATE positions SET position = 4 WHERE taskid = 2')
+macaron.execute('UPDATE tasks SET position = position + 1 WHERE id != 2 AND position >= 4')
+macaron.execute('UPDATE tasks SET position = 4 WHERE id = 2')
 [(x.taskid, x.position) for x in Positions.all().order_by('position')]
 #Out[138]: [(1, 1), (3, 3), (2, 4), (4, 5), (5, 6)]
 

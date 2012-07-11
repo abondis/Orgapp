@@ -34,12 +34,11 @@ class Orgapp(object):
             _command_obj()
 
   def ls(self):
-    print [(x.taskid, x.position) for x in Positions.all().order_by('position')]
+    print [(x.id, x.name, x.position) for x in Tasks.all().order_by('position')]
 
-  def add(self,title, dest):
+  def add(self,name, dest):
     # create the Task
-    _task = Tasks.create(name = title)
-    macaron.bake()
+    _task = Tasks.create(name = name)
     _task.position = dest
     macaron.bake()
     # give it a Position
@@ -47,8 +46,12 @@ class Orgapp(object):
   def rm(self, source):
     pass
   def move(self, source, dest):
-    macaron.execute('UPDATE positions SET position = position + 1 WHERE taskid != {0} AND position >= {1}'.format(source, dest))
-    macaron.execute('UPDATE positions SET position = {1} WHERE taskid = {0}'.format(source, dest))
+    # TODO:
+    # a1 b2 c3 d4 e5
+    # a1  2 c3 d4 b5 e6 <== (move b 4)
+    # a1 c2 d3 b4 e5 <==  between source and dest: position -1
+    macaron.execute('UPDATE tasks SET position = position + 1 WHERE id != {0} AND position >= {1}'.format(source, dest))
+    macaron.execute('UPDATE tasks SET position = {1} WHERE id = {0}'.format(source, dest))
     macaron.bake()
 
 

@@ -1,0 +1,29 @@
+== ON ==
+
+== TODO ==
+* set db schema for tasks status and history
+* task status
+* store tasks/todos in sqlite
+  * remove tasks/todos
+
+== DONE ==
+* define structure [readme.txt#Structure]
+* shell prompt
+* store tasks/todos in sqlite
+  * list todos
+  * move todos
+  * add tasks/todos
+
+== Backlog ==
+* lier une tache a son ordre pour suppression/deplacement etc
+* web UI
+* separate done, cancelled
+* permettre d'avoir plusieurs contextes par tache ?
+* store documentation/wiki
+  * chose storage type, best is wiki in /wiki of the project over
+* store tasks information/documentation
+* interface over subfolders to show all current tasks
+* git/hg access rights
+* connect to a git/hg repo
+* cleaner move algo ( here the last task's position gets systematically incremented. maybe restrict increment between source and dest ?)
+

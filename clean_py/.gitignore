@@ -4,4 +4,6 @@ macaron.py
 *.swp
 *.db
 *.txt
+!readme.txt
+!TODO.txt
 *.txt.done
