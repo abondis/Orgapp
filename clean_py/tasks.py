@@ -39,7 +39,7 @@ class Orgapp(object):
   def add(self,name, dest):
     # create the Task
     _task = Tasks.create(name = name)
-    _task.position = dest
+    self.move(_task.id, dest)
     macaron.bake()
     # give it a Position
 
