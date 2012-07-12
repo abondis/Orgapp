@@ -3,9 +3,10 @@ import sqlite3
 import macaron
 import inspect
 
-class Tasks(macaron.Model): pass
+class Status(macaron.Model): pass
+class Tasks(macaron.Model): 
+  status = macaron.ManyToOne(Status)
 
-class Positions(macaron.Model): pass
 
 class Orgapp(object):
   def __init__(self):
@@ -34,12 +35,15 @@ class Orgapp(object):
             _command_obj()
 
   def ls(self):
-    print [(x.id, x.name, x.position) for x in Tasks.all().order_by('position')]
+    print [(x.id, x.name, x.position, x.status.name) for x in Tasks.all().order_by('position')]
 
-  def add(self,name, dest):
+  def add(self,name, dest=None, status_id=1):
+    if not dest:
+      dest = Tasks.all().count()
+    _task = Tasks.create(name=name, status_id=status_id)
     # create the Task
-    _task = Tasks.create(name = name)
     self.move(_task.id, dest)
+      
     macaron.bake()
     # give it a Position
 
