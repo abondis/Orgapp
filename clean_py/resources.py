@@ -2,7 +2,8 @@ import macaron
 import sqlite3
 db = sqlite3.connect("tasks.db")
 cur = db.cursor()
-cur.execute("create table tasks( id INTEGER PRIMARY KEY, name text, position NUMERIC);")
+cur.execute("create table tasks( id INTEGER PRIMARY KEY, name text, position NUMERIC, status_id INTEGER NOT NULL);")
+cur.execute("create table status( id INTEGER PRIMARY KEY, name text);")
 #except:
   #pass # handle the error
 
@@ -11,20 +12,25 @@ cur.close()
 db.close()
 
 macaron.macaronage("tasks.db")
-class Tasks(macaron.Model): pass
-class Positions(macaron.Model): pass
+class Status(macaron.Model): pass
+class Tasks(macaron.Model):
+  status = macaron.ManyToOne(Status)
 
+Status.create(name="new")
+Status.create(name="running")
+Status.create(name="closed")
 # Add a task
-Tasks.create(name="une tache1", position=1)
-Tasks.create(name="une tache2", position=2)
-Tasks.create(name="une tache3", position=3)
-Tasks.create(name="une tache4", position=4)
-Tasks.create(name="une tache5", position=5)
-Tasks.create(name="une tache6", position=6)
-Tasks.create(name="une tache7", position=7)
-Tasks.create(name="une tache8", position=8)
+Tasks.create(name="une tache1", position=1, status_id=1)
+Tasks.create(name="une tache2", position=2, status_id=1)
+Tasks.create(name="une tache3", position=3, status_id=1)
+Tasks.create(name="une tache4", position=4, status_id=1)
+Tasks.create(name="une tache5", position=5, status_id=1)
+Tasks.create(name="une tache6", position=6, status_id=1)
+Tasks.create(name="une tache7", position=7, status_id=1)
+Tasks.create(name="une tache8", position=8, status_id=1)
 macaron.bake()
 [(x.id, x.name, x.position) for x in Tasks.all()]
+[(x.id, x.name, x.position, x.status.name) for x in Tasks.all()]
 
 
 # get the list of positions > 1

@@ -5,10 +5,8 @@
 * context (date/ordi/magasin/toilettes/nothing to do/work) 
 (* project )
 * taskname
+* position
  
-=== Order ===
-* Task ID SQL
-* Position
 
 * pourquoi?
  * il ne 'devrait' pas y avoir 'trop' de taches ouvertes (backlog tant que running pas fini)
@@ -20,13 +18,5 @@
 === SQL ===
 ==== Create tables ====
 
-  create table tasks( id INTEGER PRIMARY KEY, name text, context text);
-  create table positions( id INTEGER PRIMARY KEY, taskid NUMERIC, position NUMERIC, foreign key(taskid) references tasks(id));
-
- ________________            positions
-|tasks          |           ----------------
- ---------------             id INT PR KEY
-|id INT PR KEY  |<---------- taskid NUMERIC
-|name TEXT      |            position  NUMERIC
-|context TEXT   |
+  create table tasks( id INTEGER PRIMARY KEY, name text, context text, position NUMERIC);
 
