@@ -1,4 +1,0 @@
-#!/bin/bash
-for i in *.c; do
-  cc -g -ansi -pedantic -o ${i%.c} $i;
-done

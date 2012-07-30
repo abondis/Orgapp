@@ -2,6 +2,8 @@
 .*.swp
 macaron.py
 *.db
+*.db-journal
 *.t2t
 *.html
 cache
+doc

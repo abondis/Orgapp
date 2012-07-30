@@ -1,8 +1,0 @@
-index
-
-link:401-auth_failed_when_bootstrap.wiki[401-auth_failed_when_bootstrap]
-
-link:chef_on_centos5.wiki[chef_on_centos5]
-
-link:index.wiki[index]
-

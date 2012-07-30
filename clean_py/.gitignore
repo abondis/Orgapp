@@ -1,9 +1,0 @@
-bottle.py
-macaron.py
-*.pyc
-*.swp
-*.db
-*.txt
-!readme.txt
-!TODO.txt
-*.txt.done
