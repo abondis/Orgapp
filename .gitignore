@@ -1,0 +1,7 @@
+*.pyc
+.*.swp
+macaron.py
+*.db
+*.t2t
+*.html
+cache

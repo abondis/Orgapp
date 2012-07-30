@@ -40,22 +40,39 @@ class Orgapp(object):
   def add(self,name, dest=None, status_id=1):
     if not dest:
       dest = Tasks.all().count()
-    _task = Tasks.create(name=name, status_id=status_id)
+    _task = Tasks.create(name=name,position=dest, status_id=status_id)
     # create the Task
-    self.move(_task.id, dest)
+    #self.move(_task.id, dest)
       
     macaron.bake()
     # give it a Position
 
   def rm(self, source):
-    pass
-  def move(self, source, dest):
-    # TODO:
-    # a1 b2 c3 d4 e5
-    # a1  2 c3 d4 b5 e6 <== (move b 4)
-    # a1 c2 d3 b4 e5 <==  between source and dest: position -1
-    macaron.execute('UPDATE tasks SET position = position + 1 WHERE id != {0} AND position >= {1}'.format(source, dest))
-    macaron.execute('UPDATE tasks SET position = {1} WHERE id = {0}'.format(source, dest))
+    # FIXME: removes everything
+    Tasks.select(source).delete()
+    macaron.bake()
+
+  def status(self, sourceid, status):
+    print(Status.get('name=?', status).id)
+    _source = Tasks.get(sourceid)
+    _source.status_id = Status.get('name=?', status).id
+    _source.save()
+
+  def move(self, sourceid, destid):
+    # TODO: clean
+    src_pos = Tasks.get(sourceid).position
+    if int(destid) == 0:
+      dst_pos = 0
+      macaron.execute('UPDATE tasks SET position = position + 1 WHERE id != {0} AND position >= {2} AND position <= {1}'.format(sourceid, src_pos, dst_pos))
+      macaron.execute('UPDATE tasks SET position = {1} WHERE id = {0}'.format(sourceid, dst_pos ))
+    else:
+      dst_pos = Tasks.get(destid).position
+      if src_pos < dst_pos:
+        macaron.execute('UPDATE tasks SET position = position - 1 WHERE id != {0} AND position > {1} AND position <= {2}'.format(sourceid, src_pos, dst_pos))
+        macaron.execute('UPDATE tasks SET position = {1} WHERE id = {0}'.format(sourceid, dst_pos))
+      else:
+        macaron.execute('UPDATE tasks SET position = position + 1 WHERE id != {0} AND position > {2} AND position < {1}'.format(sourceid, src_pos, dst_pos))
+        macaron.execute('UPDATE tasks SET position = {1} WHERE id = {0}'.format(sourceid, dst_pos + 1))
     macaron.bake()
 
 
