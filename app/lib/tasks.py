@@ -35,7 +35,12 @@ class Orgapp(object):
             _command_obj()
 
   def ls(self):
-    print [(x.id, x.name, x.position, x.status.name) for x in Tasks.all().order_by('position')]
+    if Tasks.all().count():
+      return(
+        str([(x.id, x.name, x.position, x.status.name)
+        for x in Tasks.all().order_by('position')]))
+    else:
+      return("nothing new")
 
   def add(self,name, dest=None, status_id=1):
     if not dest:
