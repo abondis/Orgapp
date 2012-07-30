@@ -7,9 +7,13 @@ t = Orgapp()
 def hello():
   return "Hello World!"
 
+@route('/doc/<filename:re:[^\.]*>')
+def show_wiki_page(filename):
+  return static_file(filename, "../doc/cache") 
+
 @route('/doc/<path:path>')
-def show_wiki_page(path):
-  return static_file(path, "../doc/cache") 
+def show_wiki_resources(path):
+  return static_file(path, "../doc") 
 
 @route('/tasks')
 def lsTasks():

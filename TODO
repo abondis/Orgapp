@@ -1,15 +1,16 @@
 
 = running =
-* render wiki pages with a markup (textile,markdown,t2t...)
 
 = next =
-= backlog =
 * tasks api with bottle
 * tasks UI with bottle
-* cache a wiki folder (1 level, files ie: images)
+
+= backlog =
 * cache a wiki  (multiple levels, files ie: images)
 
 = done =
 * add/move/status for tasks
 * cache a wiki folder (1 level, only *.something -> html)
 * plug bottle to show wiki and tasks
+* render wiki pages with a markup (markdown)
+* cache a wiki folder (1 level, non html files are routed by bottle)
