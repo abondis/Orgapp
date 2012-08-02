@@ -27,18 +27,18 @@ class Orgapp(object):
         if hasattr(self, _command_name):
           _command_obj = getattr(self, _command_name)
           _args = len(inspect.getargspec(_command_obj).args)
-          print('args len: {0}'.format(_args))
           if _args > 1:
             #call command
             _command_obj(*cls[1:])
           else:
-            _command_obj()
+            print(_command_obj())
 
   def ls(self):
+    #print(Tasks.all().count())
     if Tasks.all().count():
       return(
-        str([(x.id, x.name, x.position, x.status.name)
-        for x in Tasks.all().order_by('position')]))
+        [(x.id, x.name, x.position, x.status.name)
+        for x in Tasks.all().order_by('position')])
     else:
       return("nothing new")
 

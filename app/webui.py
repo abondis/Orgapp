@@ -1,7 +1,7 @@
 import sys
 sys.path.extend(['lib'])
 from bottle import route, run, static_file, request
-from bottle import view
+from bottle import view, redirect
 from tasks import Orgapp
 import doc
 
@@ -38,9 +38,22 @@ def show_wiki_resources(path):
   return static_file(path, "../doc") 
 
 @route('/tasks')
+@view('tasks')
 def lsTasks():
-  return(t.ls())
+  return(dict(tasks=t.ls()))
 
+@route('/tasks/add')
+@view('tasks_add')
+def add_task():
+  return(dict())
+
+@route('/tasks/add', method='POST')
+def receive_new_task():
+  name = request.forms.name
+  position = request.forms.position
+  status = request.forms.status
+  t.add(name, position, status)
+  redirect('/tasks')
 
 if __name__ == '__main__':
   run(host='localhost', port=8080, debug=True, reloader=True)
