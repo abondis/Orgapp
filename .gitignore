@@ -6,4 +6,4 @@ macaron.py
 *.t2t
 *.html
 cache
-doc
+#doc
