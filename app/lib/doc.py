@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import os.path
 from glob import glob
+from dulwich import repo
 import markdown as md
 # stupid plain text one level wiki
 # TODO:
@@ -21,8 +22,8 @@ def render_md(content):
   return(md.markdown(content))
 
 def render_txt(content):
-  """Stupid document, replaces \n with <BR/>"""
-  content = content.replace('\n', '<BR/>\n')
+  """Stupid document"""
+  #content = content.replace('\n', '<BR/>\n')
   return(content)
 
 def cache(filename):
@@ -44,12 +45,26 @@ def cache_all(path):
     if _file_type in renderers.keys():
       cache(x)
 
+def save(path, newcontent):
+  """save newcontent in path"""
+  _f = open(path, "w")
+  _f.writelines(newcontent)
+  _f.close()
+
+def commit(path):
+  """commit the path"""
+  r.stage(path)
+  r.do_commit(
+    message='commit wiki page {0}'.format(os.path.basename(path)))
+
 renderers = { 'txt': render_txt, 'md': render_md }
+r = repo.Repo('../')
 
 if __name__ == '__main__':
-  print("render ../doc/blah.md")
-  print(render('../doc/blah.md'))
-  print("cache ../doc/blah.md to ../doc/cache/blah")
-  cache('../doc/blah.md')
+  print("render ../doc/Versioning.md")
+  print(render('../doc/Versioning.md'))
+  print("cache ../doc/Versioning.md to ../doc/cache/blah")
+  cache('../doc/Versioning.md')
   print("cache ../doc/*.*")
   cache_all("../doc/*.*")
+  save("../doc/bleurf.md", """= Hello =\n* blah\n""")
