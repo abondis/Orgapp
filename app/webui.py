@@ -24,6 +24,8 @@ def edit_wiki_page(path):
 def save_wiki_page(path):
   content = request.forms.content
   doc.save("../doc/{0}.md".format(path), content)
+  doc.commit("doc/{0}.md".format(path))
+  doc.cache("../doc/{0}.md".format(path))
   pagename = '/doc/'+path
   return(dict(pagename=pagename, content=content))
 
