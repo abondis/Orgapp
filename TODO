@@ -1,11 +1,10 @@
 
 running
 -------
-* UI: wiki commit
 
 next
 ----
-* wiki: refresh cache
+* wiki: list commits
 * wiki: rollback (or diff and keep/commit prefered version)
 * tasks api with bottle
 * tasks UI with bottle
@@ -14,6 +13,7 @@ backlog
 -------
 * get paths out of the code
 * cache a wiki  (multiple levels, files ie: images)
+* UI: switch branch
 
 done
 ----
@@ -26,3 +26,6 @@ done
 * wiki: commit -> doc.py commit(path)
 * UI: wiki load file in textarea
 * UI: wiki save file
+* UI: wiki commit
+* wiki: refresh cache
+* cache wiki with cp -R + render -> md5 between old and new, cache only if different, if not a rendered type copy the raw content, else remove .ext
