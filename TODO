@@ -29,3 +29,4 @@ done
 * UI: wiki commit
 * wiki: refresh cache
 * cache wiki with cp -R + render -> md5 between old and new, cache only if different, if not a rendered type copy the raw content, else remove .ext
+* BUG: content gets "   " added at the beginning -> was in the template
