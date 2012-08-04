@@ -4,6 +4,7 @@ running
 
 next
 ----
+* styling: [pyScss](https://github.com/Kronuz/pyScss/) and [semantic](http://semantic.gs/)
 * tasks: tasks/<taskid> to view a task details
 * tasks: details comme une page de wiki
 * wiki: list commits
@@ -35,4 +36,5 @@ done
 * cache wiki with cp -R + render -> md5 between old and new, cache only if different, if not a rendered type copy the raw content, else remove .ext
 * BUG: content gets "   " added at the beginning -> was in the template
 
+  
   
