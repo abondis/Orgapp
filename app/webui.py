@@ -1,7 +1,8 @@
 import sys
+import os
 sys.path.extend(['lib'])
 from bottle import route, run, static_file, request
-from bottle import view, redirect
+from bottle import view, redirect, template
 from tasks import Orgapp
 import doc
 
@@ -17,7 +18,7 @@ def hello():
 def edit_wiki_page(path):
   content = doc.render("../doc/{0}.md".format(path))
   pagename = '/doc/'+path
-  return(dict(pagename=pagename, content=content))
+  return(dict(pagename=pagename, content=content, title="Edit {0}".format(path)))
 
 @route('/doc/<path>/edit', method='POST')
 @view('edit_wiki_page')
@@ -27,27 +28,29 @@ def save_wiki_page(path):
   doc.commit("doc/{0}.md".format(path))
   doc.cache("../doc/{0}.md".format(path))
   pagename = '/doc/'+path
-  return(dict(pagename=pagename, content=content))
+  return(dict(pagename=pagename, content=content, title="Edit {0}".format(path)))
 
-#TODO: cache pages another way, ie: cp -R doc cache + render
-@route('/doc/<filename:re:[^\.]*>')
-def show_wiki_page(filename):
-  return static_file(filename, "../doc/cache") 
-  
-
-@route('/doc/<path:path>')
-def show_wiki_resources(path):
-  return static_file(path, "../doc") 
+#TODO: find how to include a static file inside the templates
+@route('/doc/<path>')
+def show_wiki_page(path):
+  # if the file exists in doc and cache, serve it raw
+  if os.path.exists('../doc/{0}'.format(path)):
+    return(static_file(path, root='../doc/'))
+  #else this is a rendered document
+  else: 
+    with open('../doc/cache/{0}'.format(path)) as _f:
+      content = _f.read()
+    return(template('wiki_page', title=path, content=content))
 
 @route('/tasks')
 @view('tasks')
 def lsTasks():
-  return(dict(tasks=t.ls()))
+  return(dict(tasks=t.ls(), title="Task list"))
 
 @route('/tasks/add')
 @view('tasks_add')
 def add_task():
-  return(dict())
+  return(dict(title="Add task"))
 
 @route('/tasks/add', method='POST')
 def receive_new_task():

@@ -1,3 +1,10 @@
+%def leftblock():
+  <ul>
+    <li>Add</li>
+    <li>A task action</li>
+  </ul>
+%end
+%def rightblock():
 <table>
   <thead>
     <tr>
@@ -18,3 +25,5 @@
   %end
   </tbody>
 </table>
+%end
+%rebase columns leftblock=leftblock, rightblock=rightblock, title=title

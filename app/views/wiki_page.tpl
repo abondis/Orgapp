@@ -1,4 +1,3 @@
-
 %def leftblock():
   <ul>
     <li>Wiki menu entry</li>
@@ -7,11 +6,6 @@
   </ul>
 %end
 %def rightblock():
-<form action='{{pagename}}/edit' method='post'>
-  <textarea cols='80' rows='40' name='content'>
-{{content}}
-  </textarea>
-  <input type="submit" value="Submit" />
-</form>
+{{!content}}
 %end
 %rebase columns leftblock=leftblock, rightblock=rightblock, title=title
