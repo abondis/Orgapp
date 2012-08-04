@@ -18,9 +18,8 @@ Basics
 Edit
 ----
 	
-	f = open('a/file', 'wb')
-	f.write("= test =\n\n* test\n")
-	f.close()
+	with open('a/file', 'wb') as f:
+	  f.write("= test =\n\n* test\n")
 
 Stage
 -----
@@ -35,5 +34,6 @@ Commit
 Push
 ----
 TO DO
+  
   
   
