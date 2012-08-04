@@ -10,9 +10,10 @@ YoYo
 MaChin
 ------
 
-* blah
+* blahv blah blah
 
 ![image](img.jpg)
 
+  
   
   
