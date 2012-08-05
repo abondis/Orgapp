@@ -1,7 +1,10 @@
 %rebase layout title=title
-<div id="leftblock">
+<topmenu>
+
+</topmenu>
+<leftblock>
   %leftblock()
-</div>
-<div id="rightblock">
+</leftblock>
+<rightblock>
   %rightblock()
-</div>
+</rightblock>

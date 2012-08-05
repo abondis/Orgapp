@@ -7,3 +7,4 @@ macaron.py
 *.html
 cache
 #doc
+.sass-cache

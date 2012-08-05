@@ -1,0 +1,26 @@
+@import url(http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz:400,200);
+
+body {
+  font-family: 'Yanone Kaffeesatz', sans-serif;
+  font-weight: 200;
+  font-size: 1.45em;
+}
+
+h1 {
+  font-weight: bold;
+}
+
+@import url(http://fonts.googleapis.com/css?family=Ubuntu+Mono);
+code {
+  display: block;
+  width: 70%;
+  border: 1px solid #0D6D80;
+  font-family: 'Ubuntu Mono', sans-serif;
+  font-size: 1.0em;
+  padding: 10px;
+  border:1px dashed #E1E1E1;
+  color:#333344;
+  background:#FAFAFA;
+  overflow:auto;
+}
+

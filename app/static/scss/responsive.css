@@ -1,0 +1,33 @@
+@import url(../style.css);
+body {
+  width: 100%;
+  *zoom: 1; }
+  body:before, body:after {
+    content: "";
+    display: table; }
+  body:after {
+    clear: both; }
+
+header#top {
+  margin-bottom: 1em; }
+
+rightblock {
+  display: inline;
+  float: left;
+  width: 72.917%;
+  margin: 0 1.042%; }
+
+leftblock {
+  display: inline;
+  float: left;
+  width: 22.917%;
+  margin: 0 1.042%; }
+
+@media screen and (max-width: 720px) {
+  rightblock,
+  leftblock {
+    display: inline;
+    float: left;
+    width: 97.917%;
+    margin: 0 1.042%;
+    margin-bottom: 1em; } }
