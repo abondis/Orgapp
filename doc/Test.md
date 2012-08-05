@@ -17,14 +17,16 @@ MaChin
 * blahv blah blah
 
 
-~~~~.html
-blah
-blah
-  truc
+~~~~.python
+blah = 1
+blah = blah + 2
+def truc():
+  pass
 ~~~~
 
 ![image](img.jpg)
 
+  
   
   
   
