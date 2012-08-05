@@ -19,7 +19,7 @@ def render(filename, file_type='copy'):
 
 def render_md(content):
   """outputs html from markdown"""
-  return(md.markdown(content))
+  return(md.markdown(content, ['fenced_code', 'tables', 'codehilite']))
 
 def render_copy(content):
   """Stupid document"""
