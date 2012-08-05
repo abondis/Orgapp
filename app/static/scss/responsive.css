@@ -9,7 +9,32 @@ body {
     clear: both; }
 
 header#top {
-  margin-bottom: 1em; }
+  margin-bottom: 1em;
+  display: inline;
+  float: left;
+  width: 97.917%;
+  margin: 0 1.042%; }
+
+topmenu {
+  display: inline;
+  float: left;
+  width: 97.917%;
+  margin: 0 1.042%;
+  float: right; }
+  topmenu ul {
+    display: inline;
+    float: left;
+    width: 72.917%;
+    margin: 0 1.042%;
+    float: right;
+    padding: 0; }
+    topmenu ul li {
+      display: inline;
+      float: left;
+      width: 6.25%;
+      margin: 0 1.042%;
+      display: inline;
+      float: none; }
 
 rightblock {
   display: inline;

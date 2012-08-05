@@ -23,6 +23,22 @@ $total-width: 100%;
 // header
 header#top {
 	margin-bottom: 1em;
+  @include column(12);
+}
+
+topmenu {
+  @include column(12);
+  float: right;
+  ul{
+    @include column(9);
+    float: right;
+    padding:0;
+    li {
+      @include column(1);
+      display: inline;
+      float: none;
+    }
+  }
 }
 
 // main column & sidebar
