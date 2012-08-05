@@ -17,14 +17,15 @@ MaChin
 * blahv blah blah
 
 
-~~~~~~.python
+~~~~.python
 blah
 blah
   truc
-~~~~~~~
+~~~~
 
 ![image](img.jpg)
 
+  
   
   
   
