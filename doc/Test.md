@@ -16,8 +16,16 @@ MaChin
 
 * blahv blah blah
 
+
+~~~~~~.python
+blah
+blah
+  truc
+~~~~~~~
+
 ![image](img.jpg)
 
+  
   
   
   
