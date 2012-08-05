@@ -4,7 +4,7 @@ running
 
 next
 ----
-* styling: [pyScss](https://github.com/Kronuz/pyScss/) and [semantic](http://semantic.gs/)
+* styling: sass (pyscss does not compile semantic well) and [semantic](http://semantic.gs/)
 * tasks: tasks/<taskid> to view a task details
 * tasks: details comme une page de wiki
 * wiki: list commits
@@ -37,4 +37,6 @@ done
 * BUG: content gets "   " added at the beginning -> was in the template
 
   
+  
+
   
