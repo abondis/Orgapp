@@ -6,10 +6,10 @@ YoYo
 
 ### Truc
 
-||meuh|arrf|
-|truc|machin|
-|bleu|noir|
-
+First Header  | Second Header
+------------- | -------------
+Content Cell  | Content Cell
+Content Cell  | Content Cell
 
 MaChin
 ------
@@ -25,6 +25,7 @@ blah
 
 ![image](img.jpg)
 
+  
   
   
   
