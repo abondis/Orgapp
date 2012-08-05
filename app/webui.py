@@ -12,6 +12,10 @@ t = Orgapp()
 def hello():
   return "Hello World!"
 
+@route('/static/<path:path>', name='static')
+def static(path):
+  return(static_file(path, root="static/"))
+
 
 @route('/doc/<path>/edit')
 @view('edit_wiki_page')
@@ -30,7 +34,6 @@ def save_wiki_page(path):
   pagename = '/doc/'+path
   return(dict(pagename=pagename, content=content, title="Edit {0}".format(path)))
 
-#TODO: find how to include a static file inside the templates
 @route('/doc/<path>')
 def show_wiki_page(path):
   # if the file exists in doc and cache, serve it raw
