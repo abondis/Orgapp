@@ -35,12 +35,13 @@ class Orgapp(object):
 
   def ls(self):
     #print(Tasks.all().count())
-    if Tasks.all().count():
-      return(
-        [(x.id, x.name, x.position, x.status.name)
-        for x in Tasks.all().order_by('position')])
-    else:
-      return("nothing new")
+    tasks_list = {}
+    #get statuses
+    for s in Status.all():
+      tasks_list[s.name] = Tasks.select("status_id=?",s.id)
+    #render dict of lists
+    # 'status': ['task1', 'task2']
+    return(tasks_list)
 
   def add(self,name, dest=None, status_id=1):
     if not dest:

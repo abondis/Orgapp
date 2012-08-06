@@ -96,7 +96,7 @@ def show_wiki_page(path):
 @route('/tasks', name='tasks')
 @view('tasks')
 def lsTasks():
-  return(dict(tasks=t.ls(), title="Task list"))
+  return(dict(tasks_list=t.ls(), title="Task list"))
 
 @route('/tasks/add')
 @view('tasks_add')
