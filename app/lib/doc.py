@@ -58,6 +58,17 @@ def cache_all(path):
   for x in glob(path):
     cache(x)
 
+def list_pages(path):
+  """list wiki pages"""
+  _pages_list = []
+  for x in glob(path):
+    print(os.path.basename(x).rsplit('.', 1))
+    _file_type = os.path.basename(x).rsplit('.', 1)[1]
+    if _file_type in renderers:
+      _pagename = os.path.basename(x).rsplit('.', 1)[0]
+      _pages_list.append(_pagename)
+  return(_pages_list)
+
 def save(path, newcontent):
   """save newcontent in path"""
   _f = open(path, "w")
