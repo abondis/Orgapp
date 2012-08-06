@@ -1,5 +1,7 @@
 running
 -------
+* tasks UI with bottle
+* tasks UI drag'n drop (http://forum.jquery.com/topic/drag-drop-in-android-ios)
 
 next
 ----
@@ -8,7 +10,6 @@ next
 * wiki: list commits
 * wiki: rollback (or diff and keep/commit prefered version)
 * tasks api with bottle
-* tasks UI with bottle
 * style menus
 
 backlog
