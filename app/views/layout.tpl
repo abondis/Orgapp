@@ -11,9 +11,13 @@
     </header>
     <topmenu>
       <ul>
-        <li>Doc/Wiki</li>
-        <li>Tasks</li>
-        <li>Code</li>
+        <li>
+          <a href="{{url('doc_index')}}">Doc/Wiki</a>
+        </li>
+        <li>
+          <a href="{{url('tasks')}}">Task</a>
+        </li>
+        <li><a href="#">Code</a></li>
       </ul>
     </topmenu>
     %include
