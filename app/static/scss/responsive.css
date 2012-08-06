@@ -29,12 +29,9 @@ topmenu {
     float: right;
     padding: 0; }
     topmenu ul li {
-      display: inline;
       float: left;
-      width: 6.25%;
-      margin: 0 1.042%;
-      display: inline;
-      float: none; }
+      list-style: none;
+      margin-left: 20px; }
 
 rightblock {
   display: inline;
@@ -47,6 +44,8 @@ leftblock {
   float: left;
   width: 22.917%;
   margin: 0 1.042%; }
+  leftblock li {
+    list-style: none; }
 
 @media screen and (max-width: 720px) {
   rightblock,

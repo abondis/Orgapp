@@ -34,9 +34,11 @@ topmenu {
     float: right;
     padding:0;
     li {
-      @include column(1);
-      display: inline;
-      float: none;
+//      @include column(1);
+//      display: block;
+      float: left;
+      list-style: none;
+      margin-left:20px;
     }
   }
 }
@@ -48,6 +50,9 @@ rightblock{
 }
 leftblock {
 	@include column(3);
+  li {
+    list-style: none;
+  }
 }
 
 @media screen and (max-width: 720px) {
