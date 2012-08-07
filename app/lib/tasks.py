@@ -46,7 +46,7 @@ class Orgapp(object):
   def add(self,name, dest=None, status='new'):
     if not dest:
       dest = Tasks.all().count()
-    status_id = Status.get('name=?', status).id
+    status_id = Status.get('name=?', [status]).id
     _task = Tasks.create(name=name,position=dest, status_id=status_id)
     # create the Task
     #self.move(_task.id, dest)
@@ -60,9 +60,9 @@ class Orgapp(object):
     macaron.bake()
 
   def status(self, sourceid, status):
-    print(Status.get('name=?', status).id)
+    print(Status.get('name=?', [status]).id)
     _source = Tasks.get(sourceid)
-    _source.status_id = Status.get('name=?', status).id
+    _source.status_id = Status.get('name=?', [status]).id
     _source.save()
 
   def move(self, sourceid, destid):
