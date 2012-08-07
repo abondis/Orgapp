@@ -6,27 +6,17 @@
 %end
 %def rightblock():
   %for s in tasks_list.keys():
-  <div>
+  <tasklist id={{s}}>
     <h1>{{s}}</h1>
-  <table>
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Position</th>
-      </tr>
-    </thead>
-    <tbody>
+    <ul class="connectedSortable tasks ui-sortable">
       %for t in tasks_list[s]:
-      <tr>
-        <td>{{t.id}}</td>
-        <td>{{t.name}}</td>
-        <td>{{t.position}}</td>
-      </tr>
+      <li id={{t.id}} class="ui-state-default">
+        {{t.name}}
+        {{t.position}}
+      </li>
       %end
-    </tbody>
-  </table>
-  </div>
+    </ul>
+  </tasklist>
   %end
 %end
 %rebase columns leftblock=leftblock, rightblock=rightblock, title=title

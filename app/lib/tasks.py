@@ -38,7 +38,7 @@ class Orgapp(object):
     tasks_list = {}
     #get statuses
     for s in Status.all():
-      tasks_list[s.name] = Tasks.select("status_id=?",s.id)
+      tasks_list[s.name] = Tasks.select("status_id=?",s.id).order_by('position')
     #render dict of lists
     # 'status': ['task1', 'task2']
     return(tasks_list)

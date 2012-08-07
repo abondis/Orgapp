@@ -12,6 +12,18 @@ t = Orgapp()
 def hello():
   return "Hello World!"
 
+#maybe not needed
+@route('/tasks/<tid>/update', method='GET')
+def update_task(tid):
+  """Update task position and status"""
+  new_pos = request.query.new_pos
+  if new_pos:
+    t.move(tid, new_pos)
+  new_status = request.query.new_status
+  if new_status:
+    t.status(tid, new_status)
+  
+
 @route('/static/<path:path>', name='static')
 def static(path):
   return(static_file(path, root="static/"))
@@ -112,4 +124,4 @@ def receive_new_task():
   redirect('/tasks')
 
 if __name__ == '__main__':
-  run(host='localhost', port=8080, debug=True, reloader=True)
+  run(host='0.0.0.0', port=8080, debug=True, reloader=True)
