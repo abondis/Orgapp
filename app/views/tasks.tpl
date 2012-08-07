@@ -1,7 +1,8 @@
 %def leftblock():
   <ul>
-    <li>Add</li>
-    <li>A task action</li>
+  %for m in leftmenu:
+    <li><a href='{{m["url"]}}'>{{m['title']}}</a></li>
+  %end
   </ul>
 %end
 %def rightblock():

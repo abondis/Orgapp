@@ -1,12 +1,11 @@
 running
 -------
-* tasks UI with bottle
-* tasks UI drag'n drop (http://forum.jquery.com/topic/drag-drop-in-android-ios)
 
 next
 ----
+* tasks UI: fix problem with position (separate positions from statuses)
 * tasks: tasks/<taskid> to view a task details
-* tasks: details comme une page de wiki
+* tasks: details as a wiki page
 * wiki: list commits
 * wiki: rollback (or diff and keep/commit prefered version)
 * tasks api with bottle
@@ -38,3 +37,5 @@ done
 * styling: sass (pyscss does not compile semantic well) and [semantic](http://semantic.gs/)
 * add to menus
 * add menus for wiki
+* tasks UI with bottle
+* tasks UI drag'n drop (http://forum.jquery.com/topic/drag-drop-in-android-ios) -> jquery + ui + jQuery UI Touch Punch 0.2.2 Dave Furfero

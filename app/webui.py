@@ -17,10 +17,10 @@ def hello():
 def update_task(tid):
   """Update task position and status"""
   new_pos = request.query.new_pos
-  if new_pos:
+  if new_pos != 'null':
     t.move(tid, new_pos)
   new_status = request.query.new_status
-  if new_status:
+  if new_status != 'null':
     t.status(tid, new_status)
   
 
@@ -42,6 +42,13 @@ def make_wiki_menu(pagename=None):
     {'url': url("list_wiki_pages"), 'title': "List wiki pages"})
   menu.append(
     {'url': "#", 'title': "Create a new page"})
+  return(menu)
+
+def make_tasks_menu():
+  """menus for tasks"""
+  menu = []
+  menu.append(
+    {'url': url("add_task"), 'title': "Add tasks"})
   return(menu)
 
 @route('/doc', name="doc_index")
@@ -108,9 +115,10 @@ def show_wiki_page(path):
 @route('/tasks', name='tasks')
 @view('tasks')
 def lsTasks():
-  return(dict(tasks_list=t.ls(), title="Task list"))
+  menu = make_tasks_menu()
+  return(dict(tasks_list=t.ls(), title="Task list", leftmenu=menu))
 
-@route('/tasks/add')
+@route('/tasks/add', name='add_task')
 @view('tasks_add')
 def add_task():
   return(dict(title="Add task"))

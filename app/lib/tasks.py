@@ -43,9 +43,10 @@ class Orgapp(object):
     # 'status': ['task1', 'task2']
     return(tasks_list)
 
-  def add(self,name, dest=None, status_id=1):
+  def add(self,name, dest=None, status='new'):
     if not dest:
       dest = Tasks.all().count()
+    status_id = Status.get('name=?', status).id
     _task = Tasks.create(name=name,position=dest, status_id=status_id)
     # create the Task
     #self.move(_task.id, dest)
