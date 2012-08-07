@@ -65,24 +65,23 @@ class Orgapp(object):
     _source.status_id = Status.get('name=?', [status]).id
     _source.save()
 
-  def move(self, sourceid, destid):
+  def move(self, sourceid, destid, status):
     # TODO: clean
     src_pos = Tasks.get(sourceid).position
+    status_id = Status.get('name=?', [status]).id
     if int(destid) == 0:
       dst_pos = 0
-      macaron.execute('UPDATE tasks SET position = position + 1 WHERE id != {0} AND position >= {2} AND position <= {1}'.format(sourceid, src_pos, dst_pos))
-      macaron.execute('UPDATE tasks SET position = {1} WHERE id = {0}'.format(sourceid, dst_pos ))
+      macaron.execute('UPDATE tasks SET position = position + 1 WHERE id != {0} AND position >= {1} AND status_id = {2}'.format(sourceid, dst_pos, status_id))
+      macaron.execute('UPDATE tasks SET position = {1} WHERE id = {0}'.format(sourceid, dst_pos))
     else:
       dst_pos = Tasks.get(destid).position
       if src_pos < dst_pos:
-        macaron.execute('UPDATE tasks SET position = position - 1 WHERE id != {0} AND position > {1} AND position <= {2}'.format(sourceid, src_pos, dst_pos))
+        macaron.execute('UPDATE tasks SET position = position - 1 WHERE id != {0} AND position > {1} AND position <= {2} AND status_id = {3}'.format(sourceid, src_pos, dst_pos, status_id))
         macaron.execute('UPDATE tasks SET position = {1} WHERE id = {0}'.format(sourceid, dst_pos))
       else:
-        macaron.execute('UPDATE tasks SET position = position + 1 WHERE id != {0} AND position > {2} AND position < {1}'.format(sourceid, src_pos, dst_pos))
+        macaron.execute('UPDATE tasks SET position = position + 1 WHERE id != {0} AND position > {2} AND position < {1} AND status_id = {3}'.format(sourceid, src_pos, dst_pos, status_id))
         macaron.execute('UPDATE tasks SET position = {1} WHERE id = {0}'.format(sourceid, dst_pos + 1))
     macaron.bake()
-
-
 
 if __name__=='__main__': 
   #create table tasks( id INTEGER PRIMARY KEY, name text, context text);

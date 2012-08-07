@@ -5,18 +5,20 @@ $(function() {
         var tid = ui.item.attr('id');
         var new_pos = ui.item.index();
         var new_status = ui.item.parent().parent().attr('id');
-        if(old_pos == new_pos) {
-          new_pos = null;
-        }
+
+        var old_pos = ui.item.attr('data-position')
+        var old_status = ui.item.attr('data-status')
+
         if(old_status == new_status) {
           new_status = null;
         }
         var url = '/tasks/'+tid+'/update?new_pos='+new_pos+'&new_status='+new_status;
+
+        ui.item.attr('data-position', new_pos);
+        ui.item.attr('data-status', new_status);
+
+        ui.item.find('.position').html(new_pos);
         $.ajax(url);
-      },
-      start: function(event, ui) {
-        old_pos = ui.item.index();
-        old_status = ui.item.parent().parent().attr('id');
       }
     }).disableSelection();
   });

@@ -17,12 +17,12 @@ def hello():
 def update_task(tid):
   """Update task position and status"""
   new_pos = request.query.new_pos
-  if new_pos != 'null':
-    t.move(tid, new_pos)
   new_status = request.query.new_status
+
+  t.move(tid, new_pos, new_status)
   if new_status != 'null':
     t.status(tid, new_status)
-  
+ 
 
 @route('/static/<path:path>', name='static')
 def static(path):
