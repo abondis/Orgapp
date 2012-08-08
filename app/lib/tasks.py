@@ -44,7 +44,7 @@ class Orgapp(object):
                                               [s.id]).order_by('position')
             #render dict of lists
             # 'status': ['task1', 'task2']
-            return(tasks_list)
+        return(tasks_list)
 
     def add(self, name, dest=None, status='new'):
         if not dest:
