@@ -58,7 +58,7 @@ class Orgapp(object):
 
     def rm(self, source):
         # FIXME: removes everything
-        Tasks.select(source).delete()
+        Tasks.get(source).delete()
         macaron.bake()
 
     def status(self, sourceid, status):
