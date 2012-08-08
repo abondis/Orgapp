@@ -1,14 +1,19 @@
 running
 -------
+* fix database path
+* pyunit
 
 next
 ----
-* tasks UI: fix problem with position (separate positions from statuses)
+* docstrings
+* configuration (paths, db)
+* setup.py
+* theme add task
+* wiki UI: create new page
 * tasks: tasks/<taskid> to view a task details
 * tasks: details as a wiki page
 * wiki: list commits
 * wiki: rollback (or diff and keep/commit prefered version)
-* tasks api with bottle
 * style menus
 
 backlog
@@ -18,6 +23,7 @@ backlog
 * UI: switch branch
 * authentication
 * multi-users
+* multi-projects
 
 done
 ----
@@ -39,3 +45,6 @@ done
 * add menus for wiki
 * tasks UI with bottle
 * tasks UI drag'n drop (http://forum.jquery.com/topic/drag-drop-in-android-ios) -> jquery + ui + jQuery UI Touch Punch 0.2.2 Dave Furfero
+* tasks UI: fix problem with position (separate positions from statuses)
+* tasks api with bottle
+* pep8
