@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import macaron
 import inspect
-import orgappConfigParser
+from config_parser import orgappConfigParser
 
 
 class Status(macaron.Model):
@@ -127,6 +127,9 @@ class Orgapp(object):
                                     sourceid,
                                     dst_pos + 1))
                 macaron.bake()
+
+    def position(self, sourceid):
+        return Tasks.get(sourceid).position
 
 if __name__ == '__main__':
     t = Orgapp()
