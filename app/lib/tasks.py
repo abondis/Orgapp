@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import macaron
 import inspect
+import orgappConfigParser
 
 
 class Status(macaron.Model):
@@ -13,7 +14,7 @@ class Tasks(macaron.Model):
 
 class Orgapp(object):
     def __init__(self):
-        macaron.macaronage("tasks.db")
+        macaron.macaronage(orgappConfigParser.get('task', 'path'))
 
     def prompt(self):
         """ Simple prompt box """
