@@ -39,6 +39,7 @@ class TestTasks(unittest.TestCase):
     def test_move(self):
         l = self.t.ls()
         self.t.status(1, 'running')
+        self.assertEqual(self.t.position(1), 1)
         self.t.move(1, 3, 'running')
         self.assertEqual(l['running'][1].name, "TESTUNIT1")
 
