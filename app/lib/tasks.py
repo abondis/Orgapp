@@ -2,6 +2,7 @@
 import macaron
 import inspect
 import sys
+import os
 sys.path.extend(['../lib'])
 from config_parser import orgappConfigParser
 
@@ -15,11 +16,15 @@ class Tasks(macaron.Model):
 
 
 class Orgapp(object):
-    def __init__(self):
-        macaron.macaronage(
-            orgappConfigParser.get(
+    def __init__(self, path=None):
+        if not path:
+            path = orgappConfigParser.get(
                 'tasks',
-                'path').encode('utf-8'))
+                'path').encode('utf-8')
+        if not os.path.exists(path):
+            import setup_db
+            setup_db.init_db(path)
+        macaron.macaronage(path)
 
     def prompt(self):
         """ Simple prompt box """
