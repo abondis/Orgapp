@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 import macaron
 import inspect
+import sys
+sys.path.extend(['../lib'])
 from config_parser import orgappConfigParser
 
 
@@ -14,7 +16,10 @@ class Tasks(macaron.Model):
 
 class Orgapp(object):
     def __init__(self):
-        macaron.macaronage(orgappConfigParser.get('tasks', 'path'))
+        macaron.macaronage(
+            orgappConfigParser.get(
+                'tasks',
+                'path').encode('utf-8'))
 
     def prompt(self):
         """ Simple prompt box """

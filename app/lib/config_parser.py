@@ -9,6 +9,6 @@ class orgappConfigParser():
         full_path = path.dirname(__file__)
         parser = SafeConfigParser()
         for candidate in candidates:
-            parser.read(path.join(full_path, candidate))
+            parser.read(path.join(full_path, '..', 'config', candidate))
             if parser.has_section(section) and parser.has_option(section, key):
                 return parser.get(section, key)
