@@ -133,6 +133,9 @@ class Orgapp(object):
                                     dst_pos + 1))
                 macaron.bake()
 
+    def position(self, sourceid):
+        return Tasks.get(sourceid).position
+
 if __name__ == '__main__':
     t = Orgapp()
     t.prompt()
