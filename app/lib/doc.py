@@ -4,22 +4,34 @@ from glob import glob
 from dulwich import repo
 import markdown as md
 import hashlib
+from config_parser import configure
 # TODO:
 #   - cache all wiki levels (for x in os.walk...)
 
 
-class Doc():
+@configure
+class Doc(object):
     def __init__(self):
         # create folders and repo if don't exist
         self.renderers = {'copy': self.render_copy, 'md': self.render_md}
-        self.r = repo.Repo('../')
+        #ensure cache folder is created
+        if not os.path.exists(self.cache):
+            os.makedirs(self.cache)
+        #ensure doc folder is created
+        if not os.path.exists(self.doc):
+            os.makedirs(self.doc)
+        #ensure repo is initiated
+        try:
+            self.r = repo.Repo(self.repo)
+        except repo.NotGitRepository:
+            self.r = repo.Repo.init(self.repo)
 
     def render(self, filename, file_type='copy'):
         if file_type not in self.renderers.keys():
             file_type = 'copy'
-            with open(filename, 'r') as _f:
-                content = _f.read()
-                return(self.renderers[file_type](content))
+        with open(filename, 'r') as _f:
+            content = _f.read()
+            return(self.renderers[file_type](content))
 
     def render_md(self, content):
         """outputs html from markdown"""
