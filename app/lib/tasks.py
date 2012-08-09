@@ -20,7 +20,6 @@ class Tasks(macaron.Model):
 @configure
 class Orgapp(object):
     def __init__(self):
-        print "__init__ orgapp"
         if not os.path.exists(self.path):
             import setup_db
             setup_db.init_db(self.path)
