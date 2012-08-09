@@ -1,10 +1,12 @@
 #!/usr/bin/env python
+#-=- encoding: utf-8 -=-
 import macaron
 import inspect
 import sys
 import os
 sys.path.extend(['../lib'])
-from config_parser import orgappConfigParser
+#from config_parser import orgappConfigParser
+from config_parser import configure
 
 
 class Status(macaron.Model):
@@ -15,16 +17,14 @@ class Tasks(macaron.Model):
     status = macaron.ManyToOne(Status)
 
 
+@configure
 class Orgapp(object):
-    def __init__(self, path=None):
-        if not path:
-            path = orgappConfigParser.get(
-                'tasks',
-                'path').encode('utf-8')
-        if not os.path.exists(path):
+    def __init__(self):
+        print "__init__ orgapp"
+        if not os.path.exists(self.path):
             import setup_db
-            setup_db.init_db(path)
-        macaron.macaronage(path)
+            setup_db.init_db(self.path)
+        macaron.macaronage(self.path)
 
     def prompt(self):
         """ Simple prompt box """
@@ -59,7 +59,12 @@ class Orgapp(object):
 
     def add(self, name, dest=None, status='new'):
         if not dest:
-            dest = Tasks.all().count()
+            dest = Tasks.all()
+            print dest
+            if dest:
+                dest = dest.count()
+            else:
+                dest = 0
         status_id = Status.get('name=?', [status]).id
         Tasks.create(name=name, position=dest, status_id=status_id)
         # create the Task

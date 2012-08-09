@@ -4,12 +4,16 @@ import sys
 sys.path.extend(['../lib'])
 from tasks import Orgapp
 import unittest
+import ConfigParser
 
 
 class TestTasks(unittest.TestCase):
 
     def setUp(self):
-        self.t = Orgapp('task.db')
+        c = ConfigParser.RawConfigParser()
+        c.add_section('tasks')
+        c.set('tasks', 'path', 'tasks.db')
+        self.t = Orgapp(c)
         self.t.add("TESTUNIT1", 0, "new")
         self.t.add("TESTUNIT2", 1)
         self.t.add("TESTUNIT3", status="running")
