@@ -14,7 +14,7 @@ class Tasks(macaron.Model):
 
 class Orgapp(object):
     def __init__(self):
-        macaron.macaronage(orgappConfigParser.get('task', 'path'))
+        macaron.macaronage(orgappConfigParser.get('tasks', 'path'))
 
     def prompt(self):
         """ Simple prompt box """
