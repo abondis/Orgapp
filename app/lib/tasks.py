@@ -62,7 +62,6 @@ class Orgapp(object):
         macaron.bake()
 
     def status(self, sourceid, status):
-        print(Status.get('name=?', [status]).id)
         _source = Tasks.get(sourceid)
         _source.status_id = Status.get('name=?', [status]).id
         _source.save()
