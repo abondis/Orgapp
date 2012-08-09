@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #-=- encoding: utf-8 -=-
-from ConfigParser import SafeConfigParser, NoSectionError
+from ConfigParser import SafeConfigParser
 from os import path
 
 
@@ -17,26 +17,38 @@ class orgappConfigParser():
 
 
 def configure(cls):
-    #donc on passe un configparser
-    #s'il y en a pas il essaie de loader le defaut
     origin_init = cls.__init__
 
     def __init__(self, parser=None, *args, **kws):
         if not parser:
             parser = orgappConfigParser()
             self.path = parser.get('tasks', 'path')
-            if not self.path:
-            #s'il y a pas les settings il les définit par défaut
-                try:
-                    parser.set('tasks', 'path', 'tasks.db')
-                except NoSectionError:
-                    # Create non-existent
-                    # section
-                    parser.add_section('tasks')
-                    parser.set('tasks', 'path', 'tasks.db')
-                self.path = parser.get('tasks', 'path')
-        else:
+            self.repo = parser.get('doc', 'repo')
+            self.cache = parser.get('doc', 'cache')
+        if not parser.has_section('tasks'):
+            parser.add_section('tasks')
+        if not parser.has_section('doc'):
+            parser.add_section('doc')
+        try:
             self.path = parser.get('tasks', 'path')
+        except:
+            parser.set('tasks', 'path', '../tasks.db')
+            self.path = parser.get('tasks', 'path')
+        try:
+            self.repo = parser.get('doc', 'repo')
+        except:
+            parser.set('doc', 'repo', '../../')
+            self.repo = parser.get('doc', 'repo')
+        try:
+            self.cache = parser.get('doc', 'cache')
+        except:
+            parser.set('doc', 'cache', '../../cache')
+            self.cache = parser.get('doc', 'cache')
+        try:
+            self.doc = parser.get('doc', 'doc')
+        except:
+            parser.set('doc', 'doc', '../../doc')
+            self.doc = parser.get('doc', 'cache')
         origin_init(self, *args, **kws)
 
     cls.__init__ = __init__
