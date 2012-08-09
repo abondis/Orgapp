@@ -6,5 +6,10 @@ macaron.py
 *.t2t
 *.html
 cache
-#doc
+/doc
+!/doc/Index.md
+!/doc/Versioning.md
+/config
+!/config/config-demo.ini
 .sass-cache
+venv
