@@ -9,7 +9,7 @@ import unittest
 class TestTasks(unittest.TestCase):
 
     def setUp(self):
-        self.t = Orgapp()
+        self.t = Orgapp('task.db')
         self.t.add("TESTUNIT1", 0, "new")
         self.t.add("TESTUNIT2", 1)
         self.t.add("TESTUNIT3", status="running")
@@ -39,7 +39,7 @@ class TestTasks(unittest.TestCase):
     def test_move(self):
         l = self.t.ls()
         self.t.status(1, 'running')
-        self.assertEqual(self.t.position(1), 1)
+        self.assertEqual(self.t.position(1), 0)
         self.t.move(1, 3, 'running')
         self.assertEqual(l['running'][1].name, "TESTUNIT1")
 
