@@ -98,8 +98,10 @@ class Doc(object):
 
     def commit(self, filename):
         """commit the path"""
-        #_path = self.doc + "/" + filename
-        self.r.stage(filename)
+        _path = self.doc + "/" + filename
+        #dulwich uses relative path
+        _path = _path.lstrip(self.repo)
+        self.r.stage(_path)
         self.r.do_commit(
             message='commit wiki page {0}'.format(filename))
 
