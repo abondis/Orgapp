@@ -148,7 +148,7 @@ def show_wiki_page(path):
 
 
 @get('/tasks', name='tasks')
-@view('tasks')
+@view('list_tasks')
 def lsTasks():
     menu = make_tasks_menu()
     return(dict(tasks_list=t.ls(), title="Task list", leftmenu=menu))
@@ -157,7 +157,9 @@ def lsTasks():
 @get('/tasks/add', name='add_task')
 @view('tasks_add')
 def add_task():
-    return(dict(title="Add task"))
+    menu = make_tasks_menu()
+    statuses = t.get_statuses()
+    return(dict(title="Add task", leftmenu=menu, statuses=statuses))
 
 
 @post('/tasks/add')

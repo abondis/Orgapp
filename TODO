@@ -1,15 +1,11 @@
 running
 -------
-* fix database path
 * pyunit
 
 next
 ----
 * docstrings
-* configuration (paths, db)
 * setup.py
-* theme add task
-* wiki UI: create new page
 * tasks: tasks/<taskid> to view a task details
 * tasks: details as a wiki page
 * wiki: list commits
@@ -18,7 +14,6 @@ next
 
 backlog
 -------
-* get paths out of the code (use os.path.getcwd)
 * cache a wiki  (multiple levels, files ie: images)
 * UI: switch branch
 * authentication
@@ -48,3 +43,8 @@ done
 * tasks UI: fix problem with position (separate positions from statuses)
 * tasks api with bottle
 * pep8
+* fix database path
+* configuration (paths, db) -> .ini + @configure
+* theme add task
+* get paths out of the code (use os.path.getcwd) -> configuration
+* wiki UI: create new page

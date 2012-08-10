@@ -145,6 +145,9 @@ class Orgapp(object):
     def position(self, sourceid):
         return Tasks.get(sourceid).position
 
+    def get_statuses(self):
+        return Status.all()
+
 if __name__ == '__main__':
     t = Orgapp()
     t.prompt()
