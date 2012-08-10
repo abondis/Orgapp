@@ -4,10 +4,11 @@ sys.path.extend(['lib'])
 from bottle import route, run, static_file, request
 from bottle import view, redirect, template, url
 from tasks import Orgapp
-import doc
+from doc import Doc
 
 
 t = Orgapp()
+d = Doc()
 
 
 @route('/')
@@ -30,11 +31,11 @@ def make_wiki_menu(pagename=None):
         menu.append(
             {'url': url("show_wiki_page", path=pagename),
              'title': pagename})
-        menu.append(
-            {'url': url("list_wiki_pages"), 'title': "List wiki pages"})
-        menu.append(
-            {'url': "#", 'title': "Create a new page"})
-        return(menu)
+    menu.append(
+        {'url': url("list_wiki_pages"), 'title': "List wiki pages"})
+    menu.append(
+        {'url': "#", 'title': "Create a new page"})
+    return(menu)
 
 
 def make_tasks_menu():
@@ -47,7 +48,7 @@ def make_tasks_menu():
 
 @route('/doc', name="doc_index")
 def doc_index():
-    if os.path.exists("../doc/cache/Index"):
+    if os.path.exists(d.cache_path + "/Index"):
         return(show_wiki_page('Index'))
     else:
         return(list_wiki_pages())
@@ -56,7 +57,7 @@ def doc_index():
 @route('/doc/List', name="list_wiki_pages")
 @view('list_wiki_pages')
 def list_wiki_pages():
-    pages_list = doc.list_pages("../doc/*.*")
+    pages_list = d.list_pages()
     pages_dict = [
         {'url': url("show_wiki_page", path=x), 'title':x} for x in pages_list]
     menu = make_wiki_menu()
@@ -71,7 +72,7 @@ def list_wiki_pages():
 @view('edit_wiki_page')
 def edit_wiki_page(path):
     menu = make_wiki_menu(path)
-    content = doc.render("../doc/{0}.md".format(path))
+    content = d.render("{0}.md".format(path))
     pagename = '/doc/' + path
     return(
         dict(
@@ -86,9 +87,9 @@ def edit_wiki_page(path):
 def save_wiki_page(path):
     menu = make_wiki_menu(path)
     content = request.forms.content
-    doc.save("../doc/{0}.md".format(path), content)
-    doc.commit("doc/{0}.md".format(path))
-    doc.cache("../doc/{0}.md".format(path))
+    d.save("{0}.md".format(path), content)
+    d.commit("{0}.md".format(path))
+    d.cache("{0}.md".format(path))
     pagename = '/doc/' + path
     return(
         dict(
@@ -101,19 +102,19 @@ def save_wiki_page(path):
 @route('/doc/<path>', name="show_wiki_page")
 def show_wiki_page(path):
     # if the file exists in doc and cache, serve it raw
-    if os.path.exists('../doc/{0}'.format(path)):
-        return(static_file(path, root='../doc/'))
+    if os.path.exists('{0}/{1}'.format(d.doc, path)):
+        return(static_file(path, root=d.doc))
     #else this is a rendered document
     else:
-        with open('../doc/cache/{0}'.format(path)) as _f:
+        with open('{0}/{1}'.format(d.cache_path, path)) as _f:
             content = _f.read()
-            menu = make_wiki_menu(path)
-            return(
-                template(
-                    'wiki_page',
-                    title=path,
-                    content=content,
-                    leftmenu=menu))
+        menu = make_wiki_menu(path)
+        return(
+            template(
+                'wiki_page',
+                title=path,
+                content=content,
+                leftmenu=menu))
 
 
 @route('/tasks', name='tasks')

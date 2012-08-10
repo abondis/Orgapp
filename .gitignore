@@ -9,7 +9,7 @@ cache
 /doc
 !/doc/Index.md
 !/doc/Versioning.md
-/config
-!/config/config-demo.ini
+/app/config
+!/app/config/config-demo.ini
 .sass-cache
 venv

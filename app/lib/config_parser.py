@@ -4,7 +4,7 @@ from ConfigParser import SafeConfigParser
 from os import path
 
 
-class orgappConfigParser():
+class orgappConfigParser(SafeConfigParser):
     @staticmethod
     def get(section, key):
         candidates = ['config-dev.ini', 'config-stage.ini', 'config-prod.ini']
@@ -24,7 +24,7 @@ def configure(cls):
             parser = orgappConfigParser()
             self.path = parser.get('tasks', 'path')
             self.repo = parser.get('doc', 'repo')
-            self.cache = parser.get('doc', 'cache')
+            self.cache_path = parser.get('doc', 'cache')
         if not parser.has_section('tasks'):
             parser.add_section('tasks')
         if not parser.has_section('doc'):
@@ -40,10 +40,10 @@ def configure(cls):
             parser.set('doc', 'repo', '../../')
             self.repo = parser.get('doc', 'repo')
         try:
-            self.cache = parser.get('doc', 'cache')
+            self.cache_path = parser.get('doc', 'cache')
         except:
             parser.set('doc', 'cache', '../../cache')
-            self.cache = parser.get('doc', 'cache')
+            self.cache_path = parser.get('doc', 'cache')
         try:
             self.doc = parser.get('doc', 'doc')
         except:

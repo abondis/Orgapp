@@ -25,18 +25,18 @@ class TestDoc(unittest.TestCase):
         with open(self.d.doc + '/test', 'w') as f:
             f.write("UNITTEST")
         self.assertTrue(os.path.exists(self.d.repo))
-        self.assertTrue(os.path.exists(self.d.cache))
+        self.assertTrue(os.path.exists(self.d.cache_path))
         self.assertTrue(os.path.exists(self.d.doc))
 
     def tearDown(self):
         os.remove(self.d.doc + '/test')
         shutil.rmtree(self.d.doc)
-        shutil.rmtree(self.d.cache)
+        shutil.rmtree(self.d.cache_path)
         shutil.rmtree(self.d.repo)
 
     def test_render(self):
         """test doc rendering"""
-        render = self.d.render(self.d.doc + "/test", 'copy')
+        render = self.d.render("/test", 'copy')
         self.assertTrue(render == "UNITTEST")
 
 
