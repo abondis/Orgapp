@@ -23,21 +23,23 @@ def configure(cls):
         if not parser:
             parser = orgappConfigParser()
             self.path = parser.get('tasks', 'path')
-            self.repo = parser.get('doc', 'repo')
+            self.repo = parser.get('repo', 'repo')
             self.cache_path = parser.get('doc', 'cache')
         if not parser.has_section('tasks'):
             parser.add_section('tasks')
         if not parser.has_section('doc'):
             parser.add_section('doc')
+        if not parser.has_section('repo'):
+            parser.add_section('repo')
         try:
             self.path = parser.get('tasks', 'path')
         except:
             parser.set('tasks', 'path', '../tasks.db')
             self.path = parser.get('tasks', 'path')
         try:
-            self.repo = parser.get('doc', 'repo')
+            self.repo = parser.get('repo', 'repo')
         except:
-            parser.set('doc', 'repo', '../../')
+            parser.set('repo', 'repo', '../../')
             self.repo = parser.get('doc', 'repo')
         try:
             self.cache_path = parser.get('doc', 'cache')

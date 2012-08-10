@@ -1,6 +1,7 @@
 running
 -------
 * pyunit
+* list commits
 
 next
 ----
@@ -48,3 +49,4 @@ done
 * theme add task
 * get paths out of the code (use os.path.getcwd) -> configuration
 * wiki UI: create new page
+* move leftmenu to base template

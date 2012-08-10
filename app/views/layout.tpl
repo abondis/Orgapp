@@ -27,7 +27,7 @@
         <li>
           <a href="{{url('tasks')}}">Task</a>
         </li>
-        <li><a href="{{url('code')}}">Code</a></li>
+        <li><a href="{{url('show_tree')}}">Code</a></li>
       </ul>
     </topmenu>
     %include

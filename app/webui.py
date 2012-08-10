@@ -22,12 +22,35 @@ def static(path):
     return(static_file(path, root="static/"))
 
 
-@get('/code', name='code')
-@view('show_tree')
+def make_code_menu(pagename=None):
+    """gets a list a menus for the wiki pages"""
+    menu = []
+    if pagename:
+        # display details
+        pass
+    menu.append(
+        {'url': url("show_tree"), 'title': "Show tree"})
+    menu.append(
+        {'url': url('show_commits'), 'title': "Show commits"})
+    return(menu)
+
+
+@get('/code', name='show_tree')
+@view('show_list')
 def show_tree():
     """Show repo's tree"""
     tree = d.r.open_index()
-    return(dict(tree=tree))
+    menu = make_code_menu()
+    return(dict(listing=tree, leftmenu=menu, title="Show tree"))
+
+
+@get('/code/commits', name='show_commits')
+@view('show_list')
+def show_commits():
+    """Show repo's commits"""
+    history = d.r.revision_history(d.r.head())
+    menu = make_code_menu()
+    return(dict(listing=history, leftmenu=menu, title="Show commits"))
 
 
 def make_wiki_menu(pagename=None):

@@ -1,3 +1,4 @@
+@import url(http://fonts.googleapis.com/css?family=Ubuntu+Mono);
 @import url(http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz:400,200);
 
 body {
@@ -10,7 +11,6 @@ h1 {
   font-weight: bold;
 }
 
-@import url(http://fonts.googleapis.com/css?family=Ubuntu+Mono);
 code {
   display: block;
   width: 70%;
@@ -46,3 +46,11 @@ ul.tasks li {
 tasklist {
   float: left;
 }
+
+ul#listing li {
+  margin: 0 5px 5px 5px;
+  padding: 5px;
+  width: 500px;
+  list-style-type: none;
+  }
+  
