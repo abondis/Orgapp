@@ -39,6 +39,24 @@ class TestDoc(unittest.TestCase):
         render = self.d.render("/test", 'copy')
         self.assertTrue(render == "UNITTEST")
 
+    def test_cache(self):
+        """test doc caching"""
+        self.d.cache('/test')
+        with open(self.d.cache_path + '/test', 'r') as f:
+            render = f.read()
+        self.assertTrue(render == "UNITTEST")
+
+    def test_save(self):
+        self.d.save('/test', "TESTSAVE")
+        with open(self.d.doc + '/test', 'r') as f:
+            render = f.read()
+        self.assertTrue(render == "TESTSAVE")
+
+    def test_list_pages(self):
+        self.d.save('/page.md', "TESTLIST")
+        l = self.d.list_pages()
+        self.assertTrue(l[0] == "page")
+
 
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(TestDoc)

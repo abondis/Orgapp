@@ -1,8 +1,9 @@
 import sys
 import os
 sys.path.extend(['lib'])
-from bottle import route, run, static_file, request
+from bottle import run, static_file, request
 from bottle import view, redirect, template, url
+from bottle import post, get
 from tasks import Orgapp
 from doc import Doc
 
@@ -11,14 +12,22 @@ t = Orgapp()
 d = Doc()
 
 
-@route('/')
+@get('/')
 def hello():
     return "Hello World!"
 
 
-@route('/static/<path:path>', name='static')
+@get('/static/<path:path>', name='static')
 def static(path):
     return(static_file(path, root="static/"))
+
+
+@get('/code', name='code')
+@view('show_tree')
+def show_tree():
+    """Show repo's tree"""
+    tree = d.r.open_index()
+    return(dict(tree=tree))
 
 
 def make_wiki_menu(pagename=None):
@@ -34,7 +43,7 @@ def make_wiki_menu(pagename=None):
     menu.append(
         {'url': url("list_wiki_pages"), 'title': "List wiki pages"})
     menu.append(
-        {'url': "#", 'title': "Create a new page"})
+        {'url': url('new_wiki_page'), 'title': "Create a new page"})
     return(menu)
 
 
@@ -46,7 +55,7 @@ def make_tasks_menu():
     return(menu)
 
 
-@route('/doc', name="doc_index")
+@get('/doc', name="doc_index")
 def doc_index():
     if os.path.exists(d.cache_path + "/Index"):
         return(show_wiki_page('Index'))
@@ -54,7 +63,7 @@ def doc_index():
         return(list_wiki_pages())
 
 
-@route('/doc/List', name="list_wiki_pages")
+@get('/doc/List', name="list_wiki_pages")
 @view('list_wiki_pages')
 def list_wiki_pages():
     pages_list = d.list_pages()
@@ -68,7 +77,7 @@ def list_wiki_pages():
             leftmenu=menu))
 
 
-@route('/doc/<path>/edit', name="edit_wiki_page")
+@get('/doc/<path>/edit', name="edit_wiki_page")
 @view('edit_wiki_page')
 def edit_wiki_page(path):
     menu = make_wiki_menu(path)
@@ -82,7 +91,28 @@ def edit_wiki_page(path):
             leftmenu=menu))
 
 
-@route('/doc/<path>/edit', method='POST')
+@get('/doc/new', name="new_wiki_page")
+@view('new_wiki_page')
+def new_wiki_page():
+    menu = make_wiki_menu()
+    return(
+        dict(
+            title="New wiki page",
+            leftmenu=menu))
+
+
+@post('/doc/new')
+def save_new_wiki_page():
+    content = request.forms.content
+    pagename = request.forms.pagename
+    d.save("{0}.md".format(pagename), content)
+    d.commit("{0}.md".format(pagename))
+    d.cache("{0}.md".format(pagename))
+    pagename = '/doc/' + pagename
+    redirect(pagename + "/edit")
+
+
+@post('/doc/<path>/edit')
 @view('edit_wiki_page')
 def save_wiki_page(path):
     menu = make_wiki_menu(path)
@@ -99,7 +129,7 @@ def save_wiki_page(path):
             leftmenu=menu))
 
 
-@route('/doc/<path>', name="show_wiki_page")
+@get('/doc/<path>', name="show_wiki_page")
 def show_wiki_page(path):
     # if the file exists in doc and cache, serve it raw
     if os.path.exists('{0}/{1}'.format(d.doc, path)):
@@ -117,20 +147,20 @@ def show_wiki_page(path):
                 leftmenu=menu))
 
 
-@route('/tasks', name='tasks')
+@get('/tasks', name='tasks')
 @view('tasks')
 def lsTasks():
     menu = make_tasks_menu()
     return(dict(tasks_list=t.ls(), title="Task list", leftmenu=menu))
 
 
-@route('/tasks/add', name='add_task')
+@get('/tasks/add', name='add_task')
 @view('tasks_add')
 def add_task():
     return(dict(title="Add task"))
 
 
-@route('/tasks/add', method='POST')
+@post('/tasks/add')
 def receive_new_task():
     name = request.forms.name
     position = request.forms.position
@@ -139,7 +169,7 @@ def receive_new_task():
     redirect('/tasks')
 
 
-@route('/tasks/<tid>/update', method='GET')
+@get('/tasks/<tid>/update')
 def update_task(tid):
     """Update task position and status"""
     new_pos = request.query.new_pos

@@ -46,7 +46,11 @@ class Doc(object):
     def cache(self, filename):
         """caches renders in cache/"""
         _cache_path = self.cache_path
-        _file_type = filename.rsplit('.', 1)[1]
+        _file_type = filename.rsplit('.', 1)
+        if len(_file_type) > 1:
+            _file_type = _file_type[1]
+        else:
+            _file_type = None
         if _file_type in self.renderers:
             _cache_filename = os.path.basename(filename).rsplit('.', 1)[0]
         else:
@@ -94,9 +98,10 @@ class Doc(object):
 
     def commit(self, filename):
         """commit the path"""
-        self.r.stage(self.d + "/" + filename)
+        #_path = self.doc + "/" + filename
+        self.r.stage(filename)
         self.r.do_commit(
-            message='commit wiki page {0}'.format(os.path.basename(filename)))
+            message='commit wiki page {0}'.format(filename))
 
 
 if __name__ == '__main__':
