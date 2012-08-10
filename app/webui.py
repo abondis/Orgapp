@@ -39,15 +39,27 @@ def make_code_menu(pagename=None):
 @view('show_list')
 def show_tree():
     """Show repo's tree"""
-    tree = d.r.open_index()
+    # list branches
+    # [x for x in r.get_refs() if x.startswith('refs/heads')]
+    branch = request.query.branch
+    if not branch:
+        branch = 'HEAD'
+    else:
+        branch = 'refs/heads/' + branch
+    # using walker and a ref (branch)
+    w = d.r.get_walker([d.r.refs[branch]])
+    #w = r.get_walker([r.refs['refs/heads/sqlite']])
+    l = [x.changes() for x in w]
+    print l
     menu = make_code_menu()
-    return(dict(listing=tree, leftmenu=menu, title="Show tree"))
+    return(dict(listing=l, leftmenu=menu, title="Show tree"))
 
 
 @get('/code/commits', name='show_commits')
 @view('show_list')
 def show_commits():
     """Show repo's commits"""
+
     history = d.r.revision_history(d.r.head())
     menu = make_code_menu()
     return(dict(listing=history, leftmenu=menu, title="Show commits"))

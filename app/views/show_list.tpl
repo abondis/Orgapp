@@ -1,7 +1,7 @@
 %def rightblock():
   <ul id="listing">
   %def walk_list_of_list(_list):
-    %for l in listing:
+    %for l in _list:
       %if type(l) == type([]):
       %  walk_list_of_list(l)
       %else:

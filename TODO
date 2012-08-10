@@ -1,7 +1,7 @@
 running
 -------
 * pyunit
-* list commits
+* UI: switch branch
 
 next
 ----
@@ -16,7 +16,6 @@ next
 backlog
 -------
 * cache a wiki  (multiple levels, files ie: images)
-* UI: switch branch
 * authentication
 * multi-users
 * multi-projects
@@ -50,3 +49,4 @@ done
 * get paths out of the code (use os.path.getcwd) -> configuration
 * wiki UI: create new page
 * move leftmenu to base template
+* list commits
