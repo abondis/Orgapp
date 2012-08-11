@@ -17,6 +17,7 @@ backlog
 * multi-projects
 * sync
 * docstrings
+* clean webui.py to use mount and apps
 
 done
 ----

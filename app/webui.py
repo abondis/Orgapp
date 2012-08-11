@@ -42,9 +42,7 @@ def make_code_menu(pagename=None):
 def show_tree():
     """Show repo's tree"""
     s = request.environ.get('beaker.session')
-    s['branch'] = request.query.branch or s['branch']
-    if not s['branch']:
-        s['branch'] = 'HEAD'
+    s['branch'] = request.query.branch or s.get('branch', 'HEAD')
     # get the tree for the branch
     tree_id = d.r[s['branch']].tree
     # get the objects in this tree
@@ -66,9 +64,7 @@ def show_tree():
 def show_commits():
     """Show repo's commits"""
     s = request.environ.get('beaker.session')
-    s['branch'] = request.query.branch or s['branch']
-    if not s['branch']:
-        s['branch'] = 'HEAD'
+    s['branch'] = request.query.branch or s.get('branch', 'HEAD')
     # using walker and a ref (branch)
     w = d.r.get_walker([d.r.refs[s['branch']]])
     #w = r.get_walker([r.refs['refs/heads/sqlite']])
