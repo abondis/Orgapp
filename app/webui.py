@@ -41,28 +41,61 @@ def show_tree():
     """Show repo's tree"""
     # list branches
     # [x for x in r.get_refs() if x.startswith('refs/heads')]
+    branches = []
+    branch_prefix = 'refs/heads/'
+    branch_idx = len(branch_prefix)
     branch = request.query.branch
+    for _branch in d.r.get_refs():
+        if _branch.startswith(branch_prefix):
+            branches.append(_branch[branch_idx:])
     if not branch:
         branch = 'HEAD'
     else:
-        branch = 'refs/heads/' + branch
-    # using walker and a ref (branch)
-    w = d.r.get_walker([d.r.refs[branch]])
-    #w = r.get_walker([r.refs['refs/heads/sqlite']])
-    l = [x.changes() for x in w]
-    print l
+        branch = branch_prefix + branch
+    print branch
+    # get the tree for the branch
+    tree_id = d.r[branch].tree
+    # get the objects in this tree
+    objects = d.r.object_store.iter_tree_contents(tree_id)
+    #get the paths of the objects
+    l = [x.path for x in objects]
     menu = make_code_menu()
-    return(dict(listing=l, leftmenu=menu, title="Show tree"))
+    return(
+        dict(
+            listing=l,
+            leftmenu=menu,
+            branches=branches,
+            current_branch=branch[branch_idx:],
+            title="Show tree"))
 
 
 @get('/code/commits', name='show_commits')
 @view('show_list')
 def show_commits():
     """Show repo's commits"""
-
-    history = d.r.revision_history(d.r.head())
+    branches = []
+    branch_prefix = 'refs/heads/'
+    branch_idx = len(branch_prefix)
+    branch = request.query.branch
+    for _branch in d.r.get_refs():
+        if _branch.startswith(branch_prefix):
+            branches.append(_branch[branch_idx:])
+    if not branch:
+        branch = 'HEAD'
+    else:
+        branch = branch_prefix + branch
+    # using walker and a ref (branch)
+    w = d.r.get_walker([d.r.refs[branch]])
+    #w = r.get_walker([r.refs['refs/heads/sqlite']])
+    l = [x.commit for x in w]
     menu = make_code_menu()
-    return(dict(listing=history, leftmenu=menu, title="Show commits"))
+    return(
+        dict(
+            listing=l,
+            leftmenu=menu,
+            branches=branches,
+            current_branch=branch[branch_idx:],
+            title="Show commits"))
 
 
 def make_wiki_menu(pagename=None):

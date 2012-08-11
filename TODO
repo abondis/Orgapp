@@ -1,15 +1,12 @@
 running
 -------
+* add sessions in order to keep consistant branch selection(beaker)
 * pyunit
-* UI: switch branch
 
 next
 ----
-* docstrings
-* setup.py
 * tasks: tasks/<taskid> to view a task details
 * tasks: details as a wiki page
-* wiki: list commits
 * wiki: rollback (or diff and keep/commit prefered version)
 * style menus
 
@@ -19,6 +16,8 @@ backlog
 * authentication
 * multi-users
 * multi-projects
+* sync
+* docstrings
 
 done
 ----
@@ -50,3 +49,6 @@ done
 * wiki UI: create new page
 * move leftmenu to base template
 * list commits
+* UI: switch branch
+* setup.py -> requirements.txt
+* wiki: list commits -> list all commits in repo

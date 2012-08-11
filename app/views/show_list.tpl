@@ -1,4 +1,15 @@
 %def rightblock():
+  <form>
+    <select onchange="document.location.href = document.URL.split('?')[0] + '?branch=' + this.value ">
+    %for o in branches:
+      %if o == current_branch:
+        <option selected="selected" value='{{o}}'>{{o}}</option>
+      %else:
+        <option value='{{o}}'>{{o}}</option>
+      %end
+    %end
+    </select>
+  </form>
   <ul id="listing">
   %def walk_list_of_list(_list):
     %for l in _list:
