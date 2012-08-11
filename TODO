@@ -1,6 +1,5 @@
 running
 -------
-* add sessions in order to keep consistant branch selection(beaker)
 * pyunit
 
 next
@@ -52,3 +51,4 @@ done
 * UI: switch branch
 * setup.py -> requirements.txt
 * wiki: list commits -> list all commits in repo
+* add sessions in order to keep consistant branch selection(beaker)

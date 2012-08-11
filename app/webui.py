@@ -4,8 +4,10 @@ sys.path.extend(['lib'])
 from bottle import run, static_file, request
 from bottle import view, redirect, template, url
 from bottle import post, get
+from bottle import app
 from tasks import Orgapp
 from doc import Doc
+from beaker.middleware import SessionMiddleware
 
 
 t = Orgapp()
@@ -39,22 +41,12 @@ def make_code_menu(pagename=None):
 @view('show_list')
 def show_tree():
     """Show repo's tree"""
-    # list branches
-    # [x for x in r.get_refs() if x.startswith('refs/heads')]
-    branches = []
-    branch_prefix = 'refs/heads/'
-    branch_idx = len(branch_prefix)
-    branch = request.query.branch
-    for _branch in d.r.get_refs():
-        if _branch.startswith(branch_prefix):
-            branches.append(_branch[branch_idx:])
-    if not branch:
-        branch = 'HEAD'
-    else:
-        branch = branch_prefix + branch
-    print branch
+    s = request.environ.get('beaker.session')
+    s['branch'] = request.query.branch or s['branch']
+    if not s['branch']:
+        s['branch'] = 'HEAD'
     # get the tree for the branch
-    tree_id = d.r[branch].tree
+    tree_id = d.r[s['branch']].tree
     # get the objects in this tree
     objects = d.r.object_store.iter_tree_contents(tree_id)
     #get the paths of the objects
@@ -64,8 +56,8 @@ def show_tree():
         dict(
             listing=l,
             leftmenu=menu,
-            branches=branches,
-            current_branch=branch[branch_idx:],
+            branches=d.r.get_refs(),
+            current_branch=s['branch'],
             title="Show tree"))
 
 
@@ -73,19 +65,12 @@ def show_tree():
 @view('show_list')
 def show_commits():
     """Show repo's commits"""
-    branches = []
-    branch_prefix = 'refs/heads/'
-    branch_idx = len(branch_prefix)
-    branch = request.query.branch
-    for _branch in d.r.get_refs():
-        if _branch.startswith(branch_prefix):
-            branches.append(_branch[branch_idx:])
-    if not branch:
-        branch = 'HEAD'
-    else:
-        branch = branch_prefix + branch
+    s = request.environ.get('beaker.session')
+    s['branch'] = request.query.branch or s['branch']
+    if not s['branch']:
+        s['branch'] = 'HEAD'
     # using walker and a ref (branch)
-    w = d.r.get_walker([d.r.refs[branch]])
+    w = d.r.get_walker([d.r.refs[s['branch']]])
     #w = r.get_walker([r.refs['refs/heads/sqlite']])
     l = [x.commit for x in w]
     menu = make_code_menu()
@@ -93,8 +78,8 @@ def show_commits():
         dict(
             listing=l,
             leftmenu=menu,
-            branches=branches,
-            current_branch=branch[branch_idx:],
+            branches=d.r.get_refs(),
+            current_branch=s['branch'],
             title="Show commits"))
 
 
@@ -250,4 +235,11 @@ def update_task(tid):
 
 
 if __name__ == '__main__':
-    run(host='0.0.0.0', port=8080, debug=True, reloader=True)
+    session_opts = {
+            'session.type': 'file',
+            'session.cookie_expires': 300,
+            'session.data_dir': '/tmp/beaker-session',
+            'session.auto': True
+    }
+    webapp = SessionMiddleware(app(), session_opts)
+    run(app=webapp, host='0.0.0.0', port=8080, debug=True, reloader=True)
