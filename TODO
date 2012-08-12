@@ -53,3 +53,4 @@ done
 * setup.py -> requirements.txt
 * wiki: list commits -> list all commits in repo
 * add sessions in order to keep consistant branch selection(beaker)
+* code: browse folders and display files

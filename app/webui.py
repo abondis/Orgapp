@@ -24,6 +24,25 @@ def static(path):
     return(static_file(path, root="static/"))
 
 
+def l2w(_d, dico, idx=1):
+    """ Converts a list of path, to an entry similar to os.walk"""
+    #'/app/config/config-example.ini'
+    print _d
+    _p = os.path.split(_d)
+    #[ /app/config, config-example.ini ]
+    dico[_p[0]] = dico.get(_p[0], [set(), set()])
+    #{ '/app/config': [ [], [] ] }
+    if _p[1] != '':
+        print "we are in _p[1]" + _p[1]
+        dico[_p[0]][idx].add(_p[1])
+    _path = os.path.split(_p[0])
+    if _path[1] != '':
+        dico[_path[0]] = dico.get(_path[0], [set(), set()])
+        dico[_path[0]][0].add(_path[1])
+        print "we are in _path[0]" + _path[0]
+        l2w(_path[0], dico, idx=0)
+
+
 def make_code_menu(pagename=None):
     """gets a list a menus for the wiki pages"""
     menu = []
@@ -35,28 +54,6 @@ def make_code_menu(pagename=None):
     menu.append(
         {'url': url('show_commits'), 'title': "Show commits"})
     return(menu)
-
-
-@get('/code', name='show_tree')
-@view('show_list')
-def show_tree():
-    """Show repo's tree"""
-    s = request.environ.get('beaker.session')
-    s['branch'] = request.query.branch or s.get('branch', 'HEAD')
-    # get the tree for the branch
-    tree_id = d.r[s['branch']].tree
-    # get the objects in this tree
-    objects = d.r.object_store.iter_tree_contents(tree_id)
-    #get the paths of the objects
-    l = [x.path for x in objects]
-    menu = make_code_menu()
-    return(
-        dict(
-            listing=l,
-            leftmenu=menu,
-            branches=d.r.get_refs(),
-            current_branch=s['branch'],
-            title="Show tree"))
 
 
 @get('/code/commits', name='show_commits')
@@ -77,6 +74,63 @@ def show_commits():
             branches=d.r.get_refs(),
             current_branch=s['branch'],
             title="Show commits"))
+
+
+@get('/code/browse/<path:path>/show', name='display_file')
+@view('display_file')
+def display_file(path):
+    s = request.environ.get('beaker.session')
+    s['branch'] = request.query.branch or s.get('branch', 'HEAD')
+    # get the tree for the branch
+    tree_id = d.r[s['branch']].tree
+    # get the objects in this tree
+    objects = d.r.object_store.iter_tree_contents(tree_id)
+    path_sha = [x.sha for x in objects if x.path == path]
+    menu = make_code_menu()
+    if len(path_sha) == 1:
+        content = d.r.get_object(path_sha[0]).as_raw_string().split('\n')
+    else:
+        content = ["sorry, could not find this file!"]
+    return(
+        dict(
+            content=content,
+            leftmenu=menu,
+            branches=d.r.get_refs(),
+            current_branch=s['branch'],
+            title="Display " + path))
+
+
+@get('/code/browse', name='show_tree')
+@get('/code/browse/', name='show_tree')
+@get('/code/browse/<path:path>', name='show_tree')
+@view('show_files')
+def show_tree(path=''):
+    """Show repo's tree"""
+    s = request.environ.get('beaker.session')
+    s['branch'] = request.query.branch or s.get('branch', 'HEAD')
+    # get the tree for the branch
+    tree_id = d.r[s['branch']].tree
+    # get the objects in this tree
+    objects = d.r.object_store.iter_tree_contents(tree_id)
+    #get the paths of the objects
+    l = [x.path for x in objects]
+    dico = {}
+    for x in l:
+        l2w(x, dico)
+    hierarchy = dico[path]
+    menu = make_code_menu()
+    if path == "":
+        current_path = '/code/browse'
+    else:
+        current_path = '/code/browse/' + path
+    return(
+        dict(
+            current_path=current_path,
+            listing=hierarchy,
+            leftmenu=menu,
+            branches=d.r.get_refs(),
+            current_branch=s['branch'],
+            title="Show tree"))
 
 
 def make_wiki_menu(pagename=None):
