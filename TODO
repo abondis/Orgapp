@@ -1,5 +1,6 @@
 running
 -------
+* tasks: when moving between statuses, ensure source status is updated
 * pyunit
 
 next
@@ -18,6 +19,8 @@ backlog
 * sync
 * docstrings
 * clean webui.py to use mount and apps
+* archive tasks
+* keep tasks as part of the project?
 
 done
 ----
