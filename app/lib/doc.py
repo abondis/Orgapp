@@ -15,7 +15,6 @@ class Doc(object):
         # create folders and repo if don't exist
         self.renderers = {'copy': self.render_copy, 'md': self.render_md}
         #ensure cache folder is created
-        print self.cache_path
         if not os.path.exists(self.cache_path):
             os.makedirs(self.cache_path)
         #ensure doc folder is created
@@ -76,9 +75,7 @@ class Doc(object):
 
     def cache_all(self):
         """caches all files"""
-        print(glob(self.doc + "/*.*"))
         for x in glob(self.doc + "/*.*"):
-            print x
             self.cache(os.path.basename(x))
 
     def list_pages(self):

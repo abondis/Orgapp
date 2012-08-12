@@ -12,6 +12,7 @@ from beaker.middleware import SessionMiddleware
 
 t = Orgapp()
 d = Doc()
+d.cache_all()
 
 
 @get('/')
