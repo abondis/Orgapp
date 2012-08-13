@@ -8,7 +8,8 @@
       <option value="{{o.name}}">{{o.name}}</option>
       %end    
     </select>
-    <input value='Create' type='submit'/>
+    <br />
+    <input value='Create' type='submit' class="btn" />
   </form>
 %end
 %rebase tasks leftmenu=leftmenu, rightblock=rightblock, title=title

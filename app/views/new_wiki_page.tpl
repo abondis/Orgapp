@@ -1,8 +1,8 @@
 %def rightblock():
-<form action='/doc/new' method='post'>
-  <input type='text' name='pagename'/><br>
-  <textarea cols='60' rows='30' name='content'></textarea>
-  <input type="submit" value="Submit" />
+<form action='/doc/new' method='post' class="well">
+  <input type='text' name='pagename' placeholder="Page name..."/><br />
+  <textarea name='content' class="input-xlarge"></textarea><br />
+  <input type="submit" value="Submit" class="btn btn-primary"/>
 </form>
 %end
 %rebase wiki_base leftmenu=leftmenu, rightblock=rightblock, title=title

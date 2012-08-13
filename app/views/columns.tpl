@@ -1,9 +1,9 @@
 %rebase layout title=title
 <leftblock>
   %def leftblock():
-    <ul>
+    <ul class="nav nav-pills">
     %for m in leftmenu:
-      <li><a href='{{m["url"]}}'>{{m['title']}}</a></li>
+      <li><a class="" href='{{m["url"]}}'>{{m['title']}}</a></li>
     %end
     </ul>
   %end
