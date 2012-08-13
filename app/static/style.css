@@ -42,6 +42,10 @@ ul.tasks li .btn-group {
     display:inline-block;
 }
 
+ul.tasks li.well {
+    margin-bottom:1px;
+}
+
 ul.tasks li:hover {
     cursor:pointer;
 }
