@@ -168,7 +168,7 @@ def doc_index():
 
 
 @get('/doc/List', name="list_wiki_pages")
-@view('list_wiki_pages')
+@view('wiki/list_wiki_pages')
 def list_wiki_pages():
     pages_list = d.list_pages()
     pages_dict = [
@@ -182,7 +182,7 @@ def list_wiki_pages():
 
 
 @get('/doc/<path>/edit', name="edit_wiki_page")
-@view('edit_wiki_page')
+@view('wiki/edit_wiki_page')
 def edit_wiki_page(path):
     menu = make_wiki_menu(path)
     content = d.render("{0}.md".format(path))
@@ -196,7 +196,7 @@ def edit_wiki_page(path):
 
 
 @get('/doc/new', name="new_wiki_page")
-@view('new_wiki_page')
+@view('wiki/new_wiki_page')
 def new_wiki_page():
     menu = make_wiki_menu()
     return(
@@ -217,7 +217,7 @@ def save_new_wiki_page():
 
 
 @post('/doc/<path>/edit')
-@view('edit_wiki_page')
+@view('wiki/edit_wiki_page')
 def save_wiki_page(path):
     menu = make_wiki_menu(path)
     content = request.forms.content
@@ -245,21 +245,21 @@ def show_wiki_page(path):
         menu = make_wiki_menu(path)
         return(
             template(
-                'wiki_page',
+                'wiki/wiki_page',
                 title=path,
                 content=content,
                 leftmenu=menu))
 
 
 @get('/tasks', name='tasks')
-@view('list_tasks')
+@view('tasks/list_tasks')
 def lsTasks():
     menu = make_tasks_menu()
     return(dict(tasks_list=t.ls(), title="Task list", leftmenu=menu))
 
 
 @get('/tasks/add', name='add_task')
-@view('tasks_add')
+@view('tasks/tasks_add')
 def add_task():
     menu = make_tasks_menu()
     statuses = t.get_statuses()

@@ -26,7 +26,7 @@ class Orgapp(object):
         macaron.macaronage(self.path)
 
     def prompt(self):
-        """ Simple prompt box """
+        """                                                  'Simple prompt box """
         while True:
             try:
                 command = raw_input('enter something:\n')
