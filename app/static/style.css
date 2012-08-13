@@ -38,6 +38,9 @@ ul.tasks {
 ul.tasks li {
   padding: 5px;
   }
+ul.tasks li .btn-group {
+    display:inline-block;
+}
 
 ul.tasks li:hover {
     cursor:pointer;
