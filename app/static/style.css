@@ -1,10 +1,10 @@
 @import url(http://fonts.googleapis.com/css?family=Ubuntu+Mono);
-@import url(http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz:400,200);
+/*@import url(http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz:400,200);*/
 
 body {
-  font-family: 'Yanone Kaffeesatz', sans-serif;
-  font-weight: 200;
-  font-size: 1.45em;
+/*  font-family: 'Yanone Kaffeesatz', sans-serif; */
+/*  font-weight: 200; */
+  font-size: 1em;
 }
 
 h1 {
