@@ -25,7 +25,6 @@ code {
 }
 
 ul.tasks {
-    border:1px solid red;
   list-style-type: none;
   margin: 0;
   padding: 0 0 2.5em;
@@ -37,11 +36,12 @@ ul.tasks {
   }
 
 ul.tasks li {
-  margin: 0 5px 5px 5px;
   padding: 5px;
-  font-size: 1.2em;
-  width: 120px;
   }
+
+ul.tasks li:hover {
+    cursor:pointer;
+}
 
 tasklist {
   float: left;

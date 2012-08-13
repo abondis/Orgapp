@@ -40,10 +40,7 @@ rightblock {
   margin: 0 1.042%; }
 
 leftblock {
-  display: inline;
-  float: left;
-  width: 22.917%;
-  margin: 0 1.042%; }
+   }
   leftblock li {
     list-style: none; }
 
