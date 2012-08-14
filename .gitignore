@@ -9,6 +9,7 @@ cache
 /doc
 !/doc/Index.md
 !/doc/Versioning.md
+!/doc/Android.md
 /app/config
 !/app/config/config-demo.ini
 .sass-cache
