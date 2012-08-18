@@ -13,25 +13,24 @@ r = Repo.init(dest)
 # create client object
 client = SSHGitClient('redmine.kerunix.com', username='git')
 # fetch repo from source repo
-remote_refs = client.fetch('orgapp', r)
+remote_refs = client.fetch('test', r)
 # refs from the remote
 remote_refs.keys()
 # set local repo's HEAD to be the same as remote's HEAD
 r["HEAD"] = remote_refs["HEAD"]
 # set local repo's bootstrap branch
 # to be the same as remote's bootstrap branch
-r["refs/heads/bootstrap"] = remote_refs["refs/heads/bootstrap"]
+r["refs/heads/master"] = remote_refs["refs/heads/master"]
 
-# git push (local to local)
-src = "/tmp/src-repo"
+# git push (local to ssh)
+src = "git+ssh://git@redmine.kerunix.com/test"
 dest = "/tmp/dest-repo"
-os.mkdir(src)
 os.mkdir(dest)
-src_repo = Repo.init(src)
 dest_repo = Repo.init(dest)
-client, host = get_transport_and_path("/tmp/blah/")
+client, host = get_transport_and_path(src)
 
+print host
 client.send_pack(
-    '/tmp/blah',
-    r.object_store.determine_wants_all(),
-    r.object_store.generate_pack_contents())
+    host,
+    r.object_store.determine_wants_all,
+    r.object_store.generate_pack_contents)
