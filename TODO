@@ -1,5 +1,8 @@
 running
 -------
+* sync
+ * tasks: sqlite + api (/sync/...) + ask when conflict
+ * git/mercurial: hg push/pull easy, git push does not work ...
 * tasks: when moving between statuses, ensure source status is updated
 * pyunit
 
@@ -16,7 +19,6 @@ backlog
 * authentication
 * multi-users
 * multi-projects
-* sync
 * docstrings
 * clean webui.py to use mount and apps
 * archive tasks
