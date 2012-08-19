@@ -5,15 +5,19 @@ from bottle import run, static_file, request
 from bottle import view, redirect, template, url
 from bottle import post, get
 from bottle import app
+from bottle import mount
 from tasks import Orgapp
 from doc import Doc
 from beaker.middleware import SessionMiddleware
+from mercurial.hgweb import hgweb
 
 
 t = Orgapp()
 d = Doc()
 d.cache_all()
 
+subproject = hgweb('/tmp/trucmuche')
+mount('/hg/', subproject)
 
 @get('/')
 def hello():
@@ -280,7 +284,6 @@ def update_task(tid):
     t.move(tid, new_pos, new_status)
     if new_status != 'null':
         t.status(tid, new_status)
-
 
 if __name__ == '__main__':
     session_opts = {
