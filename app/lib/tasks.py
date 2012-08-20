@@ -148,6 +148,34 @@ class Orgapp(object):
     def get_statuses(self):
         return Status.all()
 
+    """Sync:
+    1- add guid to task when created
+    2- get all guid on client with mtime since last sync
+    3- get all guid on server with mtime since last sync
+    4- keep 2 dict, to_send, to_receive
+    5- call server/update with to_send
+    6- call localhost/update with to_receive
+    """
+
+    def add_to_history(self):
+        """add any db action to the history"""
+        pass
+
+    def get_last_synced(self):
+        """gets datetime of last sync"""
+        pass
+
+    def get_unsynced(self):
+        """Gets unsynced entries
+        brute force: get all"""
+        # get entries where history.date > get_last_synced
+        return Tasks.all()
+
+    def save_unsynced(self):
+        """Saves unsynced data
+        brute force: take everything replace everything"""
+        pass
+
 if __name__ == '__main__':
     t = Orgapp()
     t.prompt()

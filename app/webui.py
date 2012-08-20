@@ -327,12 +327,16 @@ def update_task(tid):
         t.status(tid, new_status)
 
 
+#NOTE: for sync cf
+#http://blog.deeje.tv/musings/2009/06/notes-on-writing-a-history-driven-client-server-synchronization-engine.html
+
+
 @get('/sync/tasks')
 def get_tasks_to_sync():
     """The server renders a json of tasks he has to give
     ie: {'status': [{'id': 0, ...},] }
     """
-    pass
+    return t.get_unsynced()
 
 
 @get('/sync/conflicts')
