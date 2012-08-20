@@ -22,6 +22,7 @@ hgui = ui.ui()
 subproject = hgweb('/tmp/trucmuche')
 mount('/hg/', subproject)
 
+
 @get('/')
 def hello():
     return "Hello World!"
@@ -73,7 +74,7 @@ def show_commits():
         w = d.r.get_walker([d.r.refs[s['branch']]])
         #w = r.get_walker([r.refs['refs/heads/sqlite']])
         l = [x.commit for x in w]
-        branches=d.r.get_refs()
+        branches = d.r.get_refs()
     elif d.repo_type == 'hg':
         s['branch'] = request.query.branch or \
             s.get('branch', 'default')
@@ -102,7 +103,7 @@ def display_file(path):
         s['branch'] = request.query.branch or \
             s.get('branch', 'HEAD')
         # get the tree for the branch
-        branches=d.r.get_refs()
+        branches = d.r.get_refs()
         tree_id = d.r[s['branch']].tree
         # get the objects in this tree
         objects = d.r.object_store.iter_tree_contents(tree_id)
@@ -147,7 +148,7 @@ def show_tree(path=''):
         s['branch'] = request.query.branch or \
             s.get('branch', 'HEAD')
         # get the tree for the branch
-        branches=d.r.get_refs()
+        branches = d.r.get_refs()
         tree_id = d.r[s['branch']].tree
         # get the objects in this tree
         objects = d.r.object_store.iter_tree_contents(tree_id)
@@ -324,6 +325,30 @@ def update_task(tid):
     t.move(tid, new_pos, new_status)
     if new_status != 'null':
         t.status(tid, new_status)
+
+
+@get('/sync/tasks')
+def get_tasks_to_sync():
+    """The server renders a json of tasks he has to give
+    ie: {'status': [{'id': 0, ...},] }
+    """
+    pass
+
+
+@get('/sync/conflicts')
+def sync_conflicts():
+    """The client presents a page to handle tasks conflicts
+    after comparing results from http://remote/sync/tasks and
+    http://localhost/sync/tasks"""
+    pass
+
+
+@post('/sync/tasks')
+def post_tasks_to_sync():
+    """The client forces the server to get new list of tasks
+    ie: {'status': [{'id': 0, ...},] }
+    """
+    pass
 
 if __name__ == '__main__':
     session_opts = {
