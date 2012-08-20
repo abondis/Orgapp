@@ -2,6 +2,8 @@
 import sqlite3
 import macaron
 from config_parser import orgappConfigParser
+from md5 import md5
+from datetime import datetime
 
 
 def init_db(path=None):
@@ -16,6 +18,8 @@ def init_db(path=None):
       id INTEGER PRIMARY KEY,
       name TEXT,
       position NUMERIC,
+      guid TEXT,
+      last_modified DATE,
       status_id INTEGER NOT NULL);""",
     """
     create table status(
@@ -32,11 +36,17 @@ def init_db(path=None):
 
     macaron.macaronage(path)
 
+    class SetGuid(macaron.AtCreate):
+        def set(self, obj, value):
+            return md5(str(datetime.now())).hexdigest()
+
     class Status(macaron.Model):
         pass
 
     class Tasks(macaron.Model):
         status = macaron.ManyToOne(Status)
+        guid = SetGuid()
+        last_modified = macaron.TimestampAtSave()
 
     Status.create(name="new")
     Status.create(name="running")

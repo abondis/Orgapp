@@ -5,11 +5,11 @@ from bottle import run, static_file, request
 from bottle import view, redirect, template, url
 from bottle import post, get
 from bottle import app
-from bottle import mount
+#from bottle import mount
 from tasks import Orgapp
 from doc import Doc
 from beaker.middleware import SessionMiddleware
-from mercurial.hgweb import hgweb
+#from mercurial.hgweb import hgweb
 import mercurial.commands as hg
 from mercurial import ui
 
@@ -19,8 +19,8 @@ d = Doc()
 d.cache_all()
 hgui = ui.ui()
 
-subproject = hgweb('/tmp/trucmuche')
-mount('/hg/', subproject)
+#subproject = hgweb('/tmp/trucmuche')
+#mount('/hg/', subproject)
 
 
 @get('/')
@@ -84,7 +84,6 @@ def show_commits():
         hgui.pushbuffer()
         hg.log(hgui, d.r, branch=[s['branch']])
         l = hgui.popbuffer().split('\n\n')
-    print l
     menu = make_code_menu()
     return(
         dict(

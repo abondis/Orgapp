@@ -7,7 +7,13 @@ import os
 sys.path.extend(['../lib'])
 #from config_parser import orgappConfigParser
 from config_parser import configure
+from md5 import md5
+from datetime import datetime
 
+
+class SetGuid(macaron.AtCreate):
+    def set(self, obj, value):
+        return md5(str(datetime.now())).hexdigest()
 
 class Status(macaron.Model):
     pass
@@ -15,6 +21,8 @@ class Status(macaron.Model):
 
 class Tasks(macaron.Model):
     status = macaron.ManyToOne(Status)
+    guid = SetGuid()
+    last_modified = macaron.TimestampAtSave()
 
 
 @configure
@@ -59,7 +67,7 @@ class Orgapp(object):
     def add(self, name, dest=None, status='new'):
         if not dest:
             dest = Tasks.all()
-            print dest
+            #print dest
             if dest:
                 dest = dest.count()
             else:
