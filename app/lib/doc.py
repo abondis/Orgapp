@@ -2,6 +2,8 @@
 import os.path
 from glob import glob
 from dulwich import repo
+import mercurial.commands as hg
+from mercurial import ui, localrepo
 import markdown as md
 import hashlib
 from config_parser import configure
@@ -18,13 +20,20 @@ class Doc(object):
         if not os.path.exists(self.cache_path):
             os.makedirs(self.cache_path)
         #ensure doc folder is created
+        print self.doc
         if not os.path.exists(self.doc):
             os.makedirs(self.doc)
         #ensure repo is initiated
-        try:
-            self.r = repo.Repo(self.repo)
-        except repo.NotGitRepository:
-            self.r = repo.Repo.init(self.repo)
+        if self.repo_type == 'git':
+            try:
+                self.r = repo.Repo(self.repo)
+            except repo.NotGitRepository:
+                self.r = repo.Repo.init(self.repo)
+        elif self.repo_type == 'hg':
+            try:
+                self.r = localrepo.localrepository(ui.ui(), self.repo)
+            except repo.NotGitRepository:
+                self.r = repo.Repo.init(self.repo)
 
     def render(self, filename, file_type='copy'):
         if file_type not in self.renderers.keys():
@@ -95,12 +104,21 @@ class Doc(object):
 
     def commit(self, filename):
         """commit the path"""
-        _path = self.doc + "/" + filename
+        _path = self.doc + filename
+        print(_path)
         #dulwich uses relative path
-        _path = _path.lstrip(self.repo)
-        self.r.stage(_path)
-        self.r.do_commit(
-            message='commit wiki page {0}'.format(filename))
+        if self.repo_type == 'git':
+            _path = _path.lstrip(self.repo)
+            self.r.stage(_path)
+            self.r.do_commit(
+                message='commit wiki page {0}'.format(filename))
+        elif self.repo_type == 'hg':
+            hg.add(ui.ui(), self.r, _path)
+            hg.commit(
+                ui.ui(),
+                self.r,
+                _path,
+                message='commit wiki page {0}'.format(filename))
 
 
 if __name__ == '__main__':

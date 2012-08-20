@@ -51,6 +51,11 @@ def configure(cls):
         except:
             parser.set('doc', 'doc', '../../doc')
             self.doc = parser.get('doc', 'cache')
+        try:
+            self.repo_type = parser.get('repo', 'repo_type')
+        except:
+            parser.set('repo', 'repo_type', 'None')
+            self.repo_type = parser.get('repo', 'repo_type')
         origin_init(self, *args, **kws)
 
     cls.__init__ = __init__

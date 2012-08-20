@@ -10,11 +10,14 @@ from tasks import Orgapp
 from doc import Doc
 from beaker.middleware import SessionMiddleware
 from mercurial.hgweb import hgweb
+import mercurial.commands as hg
+from mercurial import ui
 
 
 t = Orgapp()
 d = Doc()
 d.cache_all()
+hgui = ui.ui()
 
 subproject = hgweb('/tmp/trucmuche')
 mount('/hg/', subproject)
@@ -63,17 +66,30 @@ def make_code_menu(pagename=None):
 def show_commits():
     """Show repo's commits"""
     s = request.environ.get('beaker.session')
-    s['branch'] = request.query.branch or s.get('branch', 'HEAD')
-    # using walker and a ref (branch)
-    w = d.r.get_walker([d.r.refs[s['branch']]])
-    #w = r.get_walker([r.refs['refs/heads/sqlite']])
-    l = [x.commit for x in w]
+    if d.repo_type == 'git':
+        s['branch'] = request.query.branch or \
+            s.get('branch', 'HEAD')
+        # using walker and a ref (branch)
+        w = d.r.get_walker([d.r.refs[s['branch']]])
+        #w = r.get_walker([r.refs['refs/heads/sqlite']])
+        l = [x.commit for x in w]
+        branches=d.r.get_refs()
+    elif d.repo_type == 'hg':
+        s['branch'] = request.query.branch or \
+            s.get('branch', 'default')
+        branches = d.r.branchmap().keys()
+        if s['branch'] not in branches:
+            s['branch'] = d.r.branchmap().keys()[0]
+        hgui.pushbuffer()
+        hg.log(hgui, d.r, branch=[s['branch']])
+        l = hgui.popbuffer().split('\n\n')
+    print l
     menu = make_code_menu()
     return(
         dict(
             listing=l,
+            branches=branches,
             leftmenu=menu,
-            branches=d.r.get_refs(),
             current_branch=s['branch'],
             title="Show commits"))
 
@@ -82,22 +98,36 @@ def show_commits():
 @view('display_file')
 def display_file(path):
     s = request.environ.get('beaker.session')
-    s['branch'] = request.query.branch or s.get('branch', 'HEAD')
-    # get the tree for the branch
-    tree_id = d.r[s['branch']].tree
-    # get the objects in this tree
-    objects = d.r.object_store.iter_tree_contents(tree_id)
-    path_sha = [x.sha for x in objects if x.path == path]
+    if d.repo_type == 'git':
+        s['branch'] = request.query.branch or \
+            s.get('branch', 'HEAD')
+        # get the tree for the branch
+        branches=d.r.get_refs()
+        tree_id = d.r[s['branch']].tree
+        # get the objects in this tree
+        objects = d.r.object_store.iter_tree_contents(tree_id)
+        path_sha = [x.sha for x in objects if x.path == path]
+        if len(path_sha) == 1:
+            content = d.r.get_object(path_sha[0]).as_raw_string().split('\n')
+        else:
+            content = ["sorry, could not find this file!"]
+    elif d.repo_type == 'hg':
+        s['branch'] = request.query.branch or \
+            s.get('branch', 'default')
+        branches = d.r.branchmap().keys()
+        if s['branch'] not in branches:
+            s['branch'] = d.r.branchmap().keys()[0]
+        _br = d.r[s['branch']]
+        if path in _br.files():
+            content = _br.filectx(path).data().split('\n')
+        else:
+            content = ["sorry, could not find this file!"]
     menu = make_code_menu()
-    if len(path_sha) == 1:
-        content = d.r.get_object(path_sha[0]).as_raw_string().split('\n')
-    else:
-        content = ["sorry, could not find this file!"]
     return(
         dict(
             content=content,
             leftmenu=menu,
-            branches=d.r.get_refs(),
+            branches=branches,
             current_branch=s['branch'],
             title="Display " + path))
 
@@ -108,29 +138,39 @@ def display_file(path):
 @view('show_files')
 def show_tree(path=''):
     """Show repo's tree"""
+    if path == "":
+        current_path = '/code/browse'
+    else:
+        current_path = '/code/browse/' + path
     s = request.environ.get('beaker.session')
-    s['branch'] = request.query.branch or s.get('branch', 'HEAD')
-    # get the tree for the branch
-    tree_id = d.r[s['branch']].tree
-    # get the objects in this tree
-    objects = d.r.object_store.iter_tree_contents(tree_id)
-    #get the paths of the objects
-    l = [x.path for x in objects]
+    if d.repo_type == 'git':
+        s['branch'] = request.query.branch or \
+            s.get('branch', 'HEAD')
+        # get the tree for the branch
+        branches=d.r.get_refs()
+        tree_id = d.r[s['branch']].tree
+        # get the objects in this tree
+        objects = d.r.object_store.iter_tree_contents(tree_id)
+        #get the paths of the objects
+        l = [x.path for x in objects]
+    elif d.repo_type == 'hg':
+        s['branch'] = request.query.branch or \
+            s.get('branch', 'default')
+        branches = d.r.branchmap().keys()
+        if s['branch'] not in branches:
+            s['branch'] = d.r.branchmap().keys()[0]
+        l = d.r[s['branch']].files()
     dico = {}
     for x in l:
         l2w(x, dico)
     hierarchy = dico[path]
     menu = make_code_menu()
-    if path == "":
-        current_path = '/code/browse'
-    else:
-        current_path = '/code/browse/' + path
     return(
         dict(
             current_path=current_path,
             listing=hierarchy,
             leftmenu=menu,
-            branches=d.r.get_refs(),
+            branches=branches,
             current_branch=s['branch'],
             title="Show tree"))
 
