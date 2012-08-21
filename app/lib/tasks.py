@@ -8,7 +8,7 @@ sys.path.extend(['../lib'])
 #from config_parser import orgappConfigParser
 from config_parser import configure
 from md5 import md5
-from datetime import datetime
+from datetime import timedelta, datetime
 import urllib2
 import json
 
@@ -180,10 +180,10 @@ class Orgapp(object):
         """gets datetime of last sync"""
         return Sync.get(1).last_synced
 
-    def set_last_synced(self):
+    def set_last_synced(self, days=0):
         """sets datetime of last Sync"""
         _s = Sync.get(1)
-        _s.last_synced = datetime.now()
+        _s.last_synced = datetime.now() - timedelta(days=days)
         _s.save()
         macaron.bake()
 
@@ -191,22 +191,26 @@ class Orgapp(object):
         """Gets unsynced entries
         brute force: get all"""
         # get entries where history.date > get_last_synced
-        _last_synced = self.get_last_synced()
-        if _last_synced == "None":
-            self.set_last_synced()
-        _last_synced = self.get_last_synced()
+        try:
+            _last_synced = datetime.strptime(self.get_last_synced(),
+                    "%Y-%m-%d %H:%M:%S.%f")
+        except:
+            self.set_last_synced(30)
+            _last_synced = datetime.strptime(self.get_last_synced(),
+                    "%Y-%m-%d %H:%M:%S.%f")
+        print("type last_synced " + str(type(_last_synced)))
+        print("last synced " + str(_last_synced))
         _t = Tasks.select('last_modified > ?', [_last_synced])
         _d = {}
-        if _t:
-            if _t.count() > 0:
-                for x in _t:
-                    _d[x.guid] = str(x.last_modified)
+        if _t.count() > 0:
+            for x in _t:
+                _d[x.guid] = str(x.last_modified)
         return _d
 
-    def get_remote_tasks(self, action):
+    def get_remote_tasks(self, action=None):
         """Gets the json from the remote orgapp server"""
         if not action:
-            url = "http://127.0.0.1:8081/sync/faketasks"
+            url = "http://127.0.0.1:8081/sync/tasks"
         else:
             url = "http://127.0.0.1:8081/sync/" + action
         _content = urllib2.urlopen(url).read()
@@ -240,14 +244,21 @@ class Orgapp(object):
                     _local.pop(k)
                 else:
                     _remote.pop(k)
+        print("\n\n we will sync\n" + str(_remote))
         for k in _remote.keys():
             _update = self.get_remote_tasks("tasks/" + k)
-            _t = Tasks.select('guid == ?', [k])
-            _t.position = _update['position']
-            _t.last_modified = _update['last_modified']
-            _t.name = _update['name']
-            _t.status_id = _update['status_id']
+            _t = Tasks.get('guid == ?', [k])
+            if _t.count() == 0:
+                print("\n\n we are in a for k\n\n")
+                _t = Tasks.create(guid=k, **_update)
+            else:
+                _t.position = _update['position']
+                _t.last_modified = _update['last_modified']
+                _t.name = _update['name']
+                _t.status_id = _update['status_id']
+            _t.guid = k
             _t.save()
+            macaron.bake()
 
 
         return [_local, _remote]
