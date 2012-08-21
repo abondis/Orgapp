@@ -247,8 +247,11 @@ class Orgapp(object):
         print("\n\n we will sync\n" + str(_remote))
         for k in _remote.keys():
             _update = self.get_remote_tasks("tasks/" + k)
-            _t = Tasks.get('guid == ?', [k])
-            if _t.count() == 0:
+            try:
+                _t = Tasks.get('guid == ?', [k])
+            except:
+                _t = None
+            if not _t:
                 print("\n\n we are in a for k\n\n")
                 _t = Tasks.create(guid=k, **_update)
             else:
