@@ -30,7 +30,8 @@ dest_repo = Repo.init(dest)
 client, host = get_transport_and_path(src)
 
 print host
+determine_wants = lambda x: [y for y in x if not y in r.object_store]
 client.send_pack(
     host,
-    r.object_store.determine_wants_all,
+    determine_wants,
     r.object_store.generate_pack_contents)

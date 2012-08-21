@@ -22,6 +22,11 @@ def init_db(path=None):
       last_modified DATE,
       status_id INTEGER NOT NULL);""",
     """
+    create table sync(
+      id INTEGER PRIMARY KEY,
+      last_synced DATE);
+    """,
+    """
     create table status(
       id INTEGER PRIMARY KEY,
       name TEXT);
@@ -40,6 +45,9 @@ def init_db(path=None):
         def set(self, obj, value):
             return md5(str(datetime.now())).hexdigest()
 
+    class Sync(macaron.Model):
+        pass
+
     class Status(macaron.Model):
         pass
 
@@ -51,6 +59,7 @@ def init_db(path=None):
     Status.create(name="new")
     Status.create(name="running")
     Status.create(name="closed")
+    Sync.create(last_synced="None")
     macaron.bake()
 
 if __name__ == "__main__":

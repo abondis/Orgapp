@@ -338,6 +338,16 @@ def get_tasks_to_sync():
     return t.get_unsynced()
 
 
+@get('/sync/faketasks')
+def get_faketasks_to_sync():
+    return {"b675228bf0aceac1fc64efe0d7bb207f": "2012-08-21 10:36:48"}
+
+
+@get('/sync/to_sync')
+def show_to_sync():
+    return t.sync_tasks()
+
+
 @get('/sync/conflicts')
 def sync_conflicts():
     """The client presents a page to handle tasks conflicts

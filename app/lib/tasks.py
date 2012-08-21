@@ -9,13 +9,20 @@ sys.path.extend(['../lib'])
 from config_parser import configure
 from md5 import md5
 from datetime import datetime
+import urllib2
+import json
 
 
 class SetGuid(macaron.AtCreate):
     def set(self, obj, value):
         return md5(str(datetime.now())).hexdigest()
 
+
 class Status(macaron.Model):
+    pass
+
+
+class Sync(macaron.Model):
     pass
 
 
@@ -34,7 +41,7 @@ class Orgapp(object):
         macaron.macaronage(self.path)
 
     def prompt(self):
-        """                                                  'Simple prompt box """
+        """Simple prompt box """
         while True:
             try:
                 command = raw_input('enter something:\n')
@@ -171,13 +178,54 @@ class Orgapp(object):
 
     def get_last_synced(self):
         """gets datetime of last sync"""
-        pass
+        return Sync.get(1).last_synced
+
+    def set_last_synced(self):
+        """sets datetime of last Sync"""
+        _s = Sync.get(1)
+        _s.last_synced = datetime.now()
+        _s.save()
+        macaron.bake()
 
     def get_unsynced(self):
         """Gets unsynced entries
         brute force: get all"""
         # get entries where history.date > get_last_synced
-        return Tasks.all()
+        _last_synced = self.get_last_synced()
+        if _last_synced == "None":
+            self.set_last_synced()
+        _last_synced = self.get_last_synced()
+        _t = Tasks.select('last_modified > ?', [_last_synced])
+        _d = {}
+        if _t:
+            if _t.count() > 0:
+                for x in _t:
+                    _d[x.guid] = str(x.last_modified)
+        return _d
+
+    def get_remote_tasks(self):
+        """Gets the json from the remote orgapp server"""
+        url = "http://127.0.0.1:8081/sync/faketasks"
+        _content = urllib2.urlopen(url).read()
+        _json = json.loads(_content)
+        return _json
+
+    def sync_tasks(self):
+        """defines what is to keep from remote and local and sync"""
+        _local = self.get_unsynced()
+        _remote = self.get_remote_tasks()
+        for k, v in _local.iteritems():
+            #if same md5 has same date, we don't sync
+            if _remote[k] == v:
+                _remote.pop(k)
+                _local.pop(k)
+            #else if the remote date is earlier than localhost
+            #we sync from remote
+            elif _remote[k] > _local[k]:
+                _local.pop(k)
+            else:
+                _remote.pop(k)
+        return [_local, _remote]
 
     def save_unsynced(self):
         """Saves unsynced data
