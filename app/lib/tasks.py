@@ -203,28 +203,53 @@ class Orgapp(object):
                     _d[x.guid] = str(x.last_modified)
         return _d
 
-    def get_remote_tasks(self):
+    def get_remote_tasks(self, action):
         """Gets the json from the remote orgapp server"""
-        url = "http://127.0.0.1:8081/sync/faketasks"
+        if not action:
+            url = "http://127.0.0.1:8081/sync/faketasks"
+        else:
+            url = "http://127.0.0.1:8081/sync/" + action
         _content = urllib2.urlopen(url).read()
         _json = json.loads(_content)
         return _json
+
+    def get_from_guid(self, guid):
+        _t = Tasks.get('guid == ?', [guid])
+        return {
+                'name': _t.name,
+                'status_id': _t.status_id,
+                'position': _t.position,
+                'last_modified': str(_t.last_modified)
+                }
 
     def sync_tasks(self):
         """defines what is to keep from remote and local and sync"""
         _local = self.get_unsynced()
         _remote = self.get_remote_tasks()
-        for k, v in _local.iteritems():
+        print "_local " + str(_local)
+        for k, v in _local.items():
             #if same md5 has same date, we don't sync
-            if _remote[k] == v:
-                _remote.pop(k)
-                _local.pop(k)
-            #else if the remote date is earlier than localhost
-            #we sync from remote
-            elif _remote[k] > _local[k]:
-                _local.pop(k)
-            else:
-                _remote.pop(k)
+            _remote_value = _remote.get(k, None)
+            if _remote_value:
+                if _remote_value == v:
+                    _remote.pop(k)
+                    _local.pop(k)
+                #else if the remote date is earlier than localhost
+                #we sync from remote
+                elif _remote_value > _local[k]:
+                    _local.pop(k)
+                else:
+                    _remote.pop(k)
+        for k in _remote.keys():
+            _update = self.get_remote_tasks("tasks/" + k)
+            _t = Tasks.select('guid == ?', [k])
+            _t.position = _update['position']
+            _t.last_modified = _update['last_modified']
+            _t.name = _update['name']
+            _t.status_id = _update['status_id']
+            _t.save()
+
+
         return [_local, _remote]
 
     def save_unsynced(self):

@@ -338,6 +338,12 @@ def get_tasks_to_sync():
     return t.get_unsynced()
 
 
+@get('/sync/tasks/<guid>')
+def get_task_from_guid(guid):
+    """API to get one task's datas"""
+    return t.get_from_guid(guid)
+
+
 @get('/sync/faketasks')
 def get_faketasks_to_sync():
     return {"b675228bf0aceac1fc64efe0d7bb207f": "2012-08-21 10:36:48"}
@@ -345,7 +351,8 @@ def get_faketasks_to_sync():
 
 @get('/sync/to_sync')
 def show_to_sync():
-    return t.sync_tasks()
+    return {'local': t.sync_tasks()[0], 'remote': t.sync_tasks()[1]}
+    
 
 
 @get('/sync/conflicts')
