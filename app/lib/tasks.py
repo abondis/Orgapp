@@ -249,16 +249,12 @@ class Orgapp(object):
             _update = self.get_remote_tasks("tasks/" + k)
             try:
                 _t = Tasks.get('guid == ?', [k])
-            except:
-                _t = None
-            if not _t:
-                print("\n\n we are in a for k\n\n")
-                _t = Tasks.create(guid=k, **_update)
-            else:
                 _t.position = _update['position']
                 _t.last_modified = _update['last_modified']
                 _t.name = _update['name']
                 _t.status_id = _update['status_id']
+            except:
+                _t = Tasks.create(guid=k, **_update)
             _t.guid = k
             _t.save()
             macaron.bake()
