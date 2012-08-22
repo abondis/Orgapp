@@ -1,4 +1,9 @@
+%try:
+%rebase layout title=title, project=project
+%except:
 %rebase layout title=title
+%end
+
 <leftblock>
   %def leftblock():
     <ul class="nav nav-pills">

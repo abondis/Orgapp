@@ -5,4 +5,4 @@
   <input type="submit" value="Submit" class="btn btn-primary" />
 </form>
 %end
-%rebase wiki/wiki_base leftmenu=leftmenu, rightblock=rightblock, title=title
+%rebase wiki/wiki_base leftmenu=leftmenu, rightblock=rightblock, title=title, project=project

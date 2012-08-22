@@ -25,7 +25,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Bootstrap, from Twitter</title>
+    <title>{{title}}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -67,13 +67,19 @@
           <a class="brand" href="#">Project name</a>
           <div class="nav-collapse">
               <ul class="nav">
-                <li>
-                  <a href="{{url('doc_index')}}">Doc/Wiki</a>
-                </li>
+                %if 'project' in locals():
+                  <li>
+                  <a href="{{url('doc_index', project=project)}}">Doc/Wiki</a>
+                  </li>
+                  <li><a href="{{url('show_tree', project=project)}}">Code</a></li>
+                %else:
+                  <li>
+                  <a href="">List projects</a>
+                  </li>
+                %end
                 <li>
                   <a href="{{url('tasks')}}">Task</a>
                 </li>
-                <li><a href="{{url('show_tree')}}">Code</a></li>
               </ul>
           </div><!--/.nav-collapse -->
         </div>

@@ -11,7 +11,8 @@ from doc import Doc
 from beaker.middleware import SessionMiddleware
 #from mercurial.hgweb import hgweb
 import mercurial.commands as hg
-from mercurial import ui
+from mercurial import ui, localrepo
+from dulwich import repo
 
 
 t = Orgapp()
@@ -25,7 +26,7 @@ hgui = ui.ui()
 
 @get('/')
 def hello():
-    return "Hello World!"
+    return d.r[project].keys()
 
 
 @get('/static/<path:path>', name='static')
@@ -49,80 +50,84 @@ def l2w(_d, dico, idx=1):
         l2w(_path[0], dico, idx=0)
 
 
-def make_code_menu(pagename=None):
+def make_code_menu(project, pagename=None):
     """gets a list a menus for the wiki pages"""
     menu = []
     if pagename:
         # display details
         pass
     menu.append(
-        {'url': url("show_tree"), 'title': "Show tree"})
+        {'url': url("show_tree", project=project), 'title': "Show tree"})
     menu.append(
-        {'url': url('show_commits'), 'title': "Show commits"})
+        {'url': url('show_commits', project=project), 'title': "Show commits"})
     return(menu)
 
 
-@get('/code/commits', name='show_commits')
+@get('/<project>/code/commits', name='show_commits')
 @view('show_list')
-def show_commits():
+def show_commits(project):
     """Show repo's commits"""
     s = request.environ.get('beaker.session')
-    if d.repo_type == 'git':
+    if type(d.r[project]) == repo.Repo:
         s['branch'] = request.query.branch or \
             s.get('branch', 'HEAD')
         # using walker and a ref (branch)
-        w = d.r.get_walker([d.r.refs[s['branch']]])
-        #w = r.get_walker([r.refs['refs/heads/sqlite']])
-        l = [x.commit for x in w]
-        branches = d.r.get_refs()
-    elif d.repo_type == 'hg':
+        branches = d.r[project].get_refs()
+        if s['branch'] in branches:
+            w = d.r[project].get_walker([d.r[project].refs[s['branch']]])
+            #w = r.get_walker([r.refs['refs/heads/sqlite']])
+            l = [x.commit for x in w]
+        else:
+            l = ["Nothing has yet been done on your repo..."]
+    elif type(d.r[project]) == localrepo.localrepository:
         s['branch'] = request.query.branch or \
             s.get('branch', 'default')
-        branches = d.r.branchmap().keys()
+        branches = d.r[project].branchmap().keys()
         if s['branch'] not in branches:
-            s['branch'] = d.r.branchmap().keys()[0]
+            s['branch'] = d.r[project].branchmap().keys()[0]
         hgui.pushbuffer()
         hg.log(hgui, d.r, branch=[s['branch']])
         l = hgui.popbuffer().split('\n\n')
-    menu = make_code_menu()
+    menu = make_code_menu(project)
     return(
         dict(
             listing=l,
             branches=branches,
             leftmenu=menu,
+            project=project,
             current_branch=s['branch'],
             title="Show commits"))
 
 
-@get('/code/browse/<path:path>/show', name='display_file')
+@get('/<project>/code/browse/<path:path>/show', name='display_file')
 @view('display_file')
-def display_file(path):
+def display_file(path, project):
     s = request.environ.get('beaker.session')
-    if d.repo_type == 'git':
+    if type(d.r[project]) == repo.Repo:
         s['branch'] = request.query.branch or \
             s.get('branch', 'HEAD')
         # get the tree for the branch
-        branches = d.r.get_refs()
+        branches = d.r[project].get_refs()
         tree_id = d.r[s['branch']].tree
         # get the objects in this tree
-        objects = d.r.object_store.iter_tree_contents(tree_id)
+        objects = d.r[project].object_store.iter_tree_contents(tree_id)
         path_sha = [x.sha for x in objects if x.path == path]
         if len(path_sha) == 1:
-            content = d.r.get_object(path_sha[0]).as_raw_string().split('\n')
+            content = d.r[project].get_object(path_sha[0]).as_raw_string().split('\n')
         else:
             content = ["sorry, could not find this file!"]
-    elif d.repo_type == 'hg':
+    elif type(d.r[project]) == localrepo.localrepository:
         s['branch'] = request.query.branch or \
             s.get('branch', 'default')
-        branches = d.r.branchmap().keys()
+        branches = d.r[project].branchmap().keys()
         if s['branch'] not in branches:
-            s['branch'] = d.r.branchmap().keys()[0]
+            s['branch'] = d.r[project].branchmap().keys()[0]
         _br = d.r[s['branch']]
         if path in _br.files():
             content = _br.filectx(path).data().split('\n')
         else:
             content = ["sorry, could not find this file!"]
-    menu = make_code_menu()
+    menu = make_code_menu(project)
     return(
         dict(
             content=content,
@@ -132,63 +137,67 @@ def display_file(path):
             title="Display " + path))
 
 
-@get('/code/browse', name='show_tree')
-@get('/code/browse/', name='show_tree')
-@get('/code/browse/<path:path>', name='show_tree')
+@get('/<project>/code/browse', name='show_tree')
+@get('/<project>/code/browse/', name='show_tree')
+@get('/<project>/code/browse/<path:path>', name='show_tree')
 @view('show_files')
-def show_tree(path=''):
+def show_tree(project, path=''):
     """Show repo's tree"""
     if path == "":
         current_path = '/code/browse'
     else:
         current_path = '/code/browse/' + path
     s = request.environ.get('beaker.session')
-    if d.repo_type == 'git':
+    if type(d.r[project]) == repo.Repo:
         s['branch'] = request.query.branch or \
             s.get('branch', 'HEAD')
         # get the tree for the branch
-        branches = d.r.get_refs()
-        tree_id = d.r[s['branch']].tree
-        # get the objects in this tree
-        objects = d.r.object_store.iter_tree_contents(tree_id)
-        #get the paths of the objects
-        l = [x.path for x in objects]
-    elif d.repo_type == 'hg':
+        branches = d.r[project].get_refs()
+        if s['branch'] in branches:
+            tree_id = d.r[project][s['branch']].tree
+            # get the objects in this tree
+            objects = d.r[project].object_store.iter_tree_contents(tree_id)
+            #get the paths of the objects
+            l = [x.path for x in objects]
+        else:
+            l = ["Nothing has yet been done on your repo..."]
+    elif type(d.r[project]) == localrepo.localrepository:
         s['branch'] = request.query.branch or \
             s.get('branch', 'default')
-        branches = d.r.branchmap().keys()
+        branches = d.r[project].branchmap().keys()
         if s['branch'] not in branches:
-            s['branch'] = d.r.branchmap().keys()[0]
-        l = d.r[s['branch']].files()
+            s['branch'] = d.r[project].branchmap().keys()[0]
+        l = d.r[project][s['branch']].files()
     dico = {}
     for x in l:
         l2w(x, dico)
     hierarchy = dico[path]
-    menu = make_code_menu()
+    menu = make_code_menu(project)
     return(
         dict(
             current_path=current_path,
             listing=hierarchy,
             leftmenu=menu,
             branches=branches,
+            project=project,
             current_branch=s['branch'],
             title="Show tree"))
 
 
-def make_wiki_menu(pagename=None):
+def make_wiki_menu(project, pagename=None):
     """gets a list a menus for the wiki pages"""
     menu = []
     if pagename:
         menu.append(
-            {'url': url("edit_wiki_page", path=pagename),
+            {'url': url("edit_wiki_page", path=pagename, project=project),
              'title': "Edit " + pagename})
         menu.append(
-            {'url': url("show_wiki_page", path=pagename),
+            {'url': url("show_wiki_page", path=pagename, project=project),
              'title': pagename})
     menu.append(
-        {'url': url("list_wiki_pages"), 'title': "List wiki pages"})
+        {'url': url("list_wiki_pages", project=project), 'title': "List wiki pages"})
     menu.append(
-        {'url': url('new_wiki_page'), 'title': "Create a new page"})
+        {'url': url('new_wiki_page', project=project), 'title': "Create a new page"})
     return(menu)
 
 
@@ -200,93 +209,98 @@ def make_tasks_menu():
     return(menu)
 
 
-@get('/doc', name="doc_index")
-def doc_index():
-    if os.path.exists(d.cache_path + "/Index"):
-        return(show_wiki_page('Index'))
+@get('/<project>/doc', name="doc_index")
+def doc_index(project):
+    if os.path.exists(d.cache_path + "/" + project +"/Index"):
+        return(show_wiki_page('Index', project))
     else:
-        return(list_wiki_pages())
+        return(list_wiki_pages(project))
 
 
-@get('/doc/List', name="list_wiki_pages")
+@get('/<project>/doc/List', name="list_wiki_pages")
 @view('wiki/list_wiki_pages')
-def list_wiki_pages():
-    pages_list = d.list_pages()
+def list_wiki_pages(project):
+    pages_list = d.list_pages(project)
     pages_dict = [
-        {'url': url("show_wiki_page", path=x), 'title':x} for x in pages_list]
-    menu = make_wiki_menu()
+        {'url': url("show_wiki_page", project=project, path=x), 'title':x} for x in pages_list]
+    menu = make_wiki_menu(project)
     return(
         dict(
             title="Wiki pages",
+            project=project,
             pages_list=pages_dict,
             leftmenu=menu))
 
 
-@get('/doc/<path>/edit', name="edit_wiki_page")
+@get('/<project>/doc/<path>/edit', name="edit_wiki_page")
 @view('wiki/edit_wiki_page')
-def edit_wiki_page(path):
-    menu = make_wiki_menu(path)
-    content = d.render("{0}.md".format(path))
-    pagename = '/doc/' + path
+def edit_wiki_page(project, path):
+    pagename = '/' + project + '/doc/' + path
+    menu = make_wiki_menu(project, path)
+    content = d.render("{0}.md".format(path), project)
     return(
         dict(
             pagename=pagename,
             content=content,
+            project=project,
             title="Edit {0}".format(path),
             leftmenu=menu))
 
 
-@get('/doc/new', name="new_wiki_page")
+@get('/<project>/doc/new', name="new_wiki_page")
 @view('wiki/new_wiki_page')
-def new_wiki_page():
-    menu = make_wiki_menu()
+def new_wiki_page(project):
+    menu = make_wiki_menu(project)
     return(
         dict(
+            project=project,
             title="New wiki page",
             leftmenu=menu))
 
 
-@post('/doc/new')
-def save_new_wiki_page():
+@post('/<project>/doc/new')
+def save_new_wiki_page(project):
     content = request.forms.content
     pagename = request.forms.pagename
-    d.save("{0}.md".format(pagename), content)
-    d.commit("{0}.md".format(pagename))
-    d.cache("{0}.md".format(pagename))
-    pagename = '/doc/' + pagename
+    d.save("{0}.md".format(pagename), content, project)
+    d.commit("{0}.md".format(pagename), project)
+    d.cache("{0}.md".format(pagename), project)
+    pagename = '/' + project + '/doc/' + pagename
     redirect(pagename + "/edit")
 
 
-@post('/doc/<path>/edit')
+@post('/<project>/doc/<path>/edit')
 @view('wiki/edit_wiki_page')
-def save_wiki_page(path):
-    menu = make_wiki_menu(path)
+def save_wiki_page(project, path):
+    menu = make_wiki_menu(project, path)
     content = request.forms.content
-    d.save("{0}.md".format(path), content)
-    d.commit("{0}.md".format(path))
-    d.cache("{0}.md".format(path))
-    pagename = '/doc/' + path
+    d.save("{0}.md".format(path), content, project)
+    d.commit("{0}.md".format(path), project)
+    d.cache("{0}.md".format(path), project)
+    pagename = '/' + project + '/doc/' + path
     return(
         dict(
+            project=project,
             pagename=pagename,
             content=content,
             title="Edit {0}".format(path),
             leftmenu=menu))
 
 
-@get('/doc/<path>', name="show_wiki_page")
-def show_wiki_page(path):
+@get('/<project>/doc/<path>', name="show_wiki_page")
+def show_wiki_page(path, project):
     # if the file exists in doc and cache, serve it raw
     if os.path.exists('{0}/{1}'.format(d.doc, path)):
         return(static_file(path, root=d.doc))
     #else this is a rendered document
     else:
-        with open('{0}/{1}'.format(d.cache_path, path)) as _f:
+        with open(d.cache_path + project + '/' + path) as _f:
             content = _f.read()
-        menu = make_wiki_menu(path)
+        menu = make_wiki_menu(project, path)
         return(
             template(
                 'wiki/wiki_page',
+                project=project,
                 title=path,
                 content=content,
                 leftmenu=menu))

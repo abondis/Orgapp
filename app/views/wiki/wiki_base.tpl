@@ -1,2 +1,2 @@
 %rightblock
-%rebase columns leftmenu=leftmenu, rightblock=rightblock, title=title
+%rebase columns project=project, leftmenu=leftmenu, rightblock=rightblock, title=title
