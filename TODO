@@ -5,7 +5,6 @@ running
 
 next
 ----
-* tasks: tasks/<taskid> to view a task details
 * tasks: details as a wiki page
 * wiki: rollback (or diff and keep/commit prefered version)
 * style menus
@@ -58,3 +57,4 @@ done
 * add sessions in order to keep consistant branch selection(beaker)
 * code: browse folders and display files
 * tasks sync: 2-way sync using API
+* tasks: tasks/<taskid> to view a task details -> sync/tasks/guid
