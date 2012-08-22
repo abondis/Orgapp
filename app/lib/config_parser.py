@@ -37,25 +37,28 @@ def configure(cls):
             parser.set('tasks', 'path', '../tasks.db')
             self.path = parser.get('tasks', 'path')
         try:
-            self.repo = parser.get('repo', 'repo')
-        except:
-            parser.set('repo', 'repo', '../../')
-            self.repo = parser.get('doc', 'repo')
-        try:
             self.cache_path = parser.get('doc', 'cache')
         except:
-            parser.set('doc', 'cache', '../../cache')
+            parser.set('doc', 'cache', '/tmp/cache')
             self.cache_path = parser.get('doc', 'cache')
         try:
             self.doc = parser.get('doc', 'doc')
         except:
-            parser.set('doc', 'doc', '../../doc')
-            self.doc = parser.get('doc', 'cache')
+            parser.set('doc', 'doc', 'doc')
+            self.doc = parser.get('doc', 'doc')
         try:
-            self.repo_type = parser.get('repo', 'repo_type')
+            self.repo_root = parser.get('repo', 'repo_root')
         except:
-            parser.set('repo', 'repo_type', 'None')
-            self.repo_type = parser.get('repo', 'repo_type')
+            parser.set('repo', 'repo_root', 'None')
+            self.repo_type = parser.get('repo', 'repo_root')
+        try:
+            self.git_repos = parser.get('repo', 'git_repos').split(',')
+        except:
+            self.git_repos = None
+        try:
+            self.hg_repos = parser.get('repo', 'hg_repos').split(',')
+        except:
+            self.hg_repos = None
         origin_init(self, *args, **kws)
 
     cls.__init__ = __init__

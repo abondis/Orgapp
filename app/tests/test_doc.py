@@ -18,43 +18,54 @@ class TestDoc(unittest.TestCase):
             * writes a test file"""
         c = ConfigParser.RawConfigParser()
         c.add_section('doc')
-        c.set('doc', 'doc', '/tmp/test/doc')
-        c.set('doc', 'cache', '/tmp/test/cache')
-        c.set('doc', 'repo', '/tmp/test')
+        c.add_section('repo')
+        c.set('doc', 'doc', '/doc/')
+        c.set('doc', 'cache', '/tmp/test/cache/')
+        c.set('repo', 'repo_root', '/tmp/test/')
+        c.set('repo', 'git_repos', 'repogit')
         self.d = Doc(c)
-        with open(self.d.doc + '/test', 'w') as f:
-            f.write("UNITTEST")
-        self.assertTrue(os.path.exists(self.d.repo))
+        self.assertTrue(os.path.exists(self.d.repo_root))
         self.assertTrue(os.path.exists(self.d.cache_path))
-        self.assertTrue(os.path.exists(self.d.doc))
+        self.assertTrue(os.path.exists(self.d.repo_root +
+            'repogit' +
+            self.d.doc))
+        with open(self.d.repo_root +
+                'repogit' +
+                self.d.doc +
+                '/test', 'w') as f:
+            f.write("UNITTEST")
 
     def tearDown(self):
-        os.remove(self.d.doc + '/test')
-        shutil.rmtree(self.d.doc)
+        os.remove(self.d.repo_root + 'repogit' + self.d.doc + '/test')
+        _path = self.d.repo_root + 'repogit'
+        shutil.rmtree(_path + self.d.doc)
         shutil.rmtree(self.d.cache_path)
-        shutil.rmtree(self.d.repo)
+        shutil.rmtree(self.d.repo_root)
 
     def test_render(self):
         """test doc rendering"""
-        render = self.d.render("/test", 'copy')
+        render = self.d.render("/test", 'repogit', 'copy')
         self.assertTrue(render == "UNITTEST")
 
     def test_cache(self):
         """test doc caching"""
-        self.d.cache('/test')
-        with open(self.d.cache_path + '/test', 'r') as f:
+        self.d.cache('/test', 'repogit')
+        with open(self.d.cache_path + 'repogit' + '/test', 'r') as f:
             render = f.read()
         self.assertTrue(render == "UNITTEST")
 
     def test_save(self):
-        self.d.save('/test', "TESTSAVE")
-        with open(self.d.doc + '/test', 'r') as f:
+        self.d.save('/test', "TESTSAVE", 'repogit')
+        with open(self.d.repo_root +
+                'repogit' +
+                self.d.doc +
+                '/test', 'r') as f:
             render = f.read()
         self.assertTrue(render == "TESTSAVE")
 
     def test_list_pages(self):
-        self.d.save('/page.md', "TESTLIST")
-        l = self.d.list_pages()
+        self.d.save('/page.md', "TESTLIST", 'repogit')
+        l = self.d.list_pages('repogit')
         self.assertTrue(l[0] == "page")
 
 
