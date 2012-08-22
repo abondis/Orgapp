@@ -4,9 +4,9 @@ Features
 * Installable almost anywhere (based on pure python libs)
 * works offline
 * Project management
-  * Tasks: short tasks linked to a Project
-  * Code: browse code and commits
-  * Doc: edit it as part of the project
+    * Tasks: short tasks linked to a Project
+    * Code: browse code and commits
+    * Doc: edit it as part of the project
 
 Future
 ------
