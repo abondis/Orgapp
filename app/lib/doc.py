@@ -20,7 +20,6 @@ class Doc(object):
         if not os.path.exists(self.cache_path):
             os.makedirs(self.cache_path)
         #ensure doc folder is created
-        print self.doc
         if not os.path.exists(self.doc):
             os.makedirs(self.doc)
         #ensure repo is initiated
@@ -105,7 +104,6 @@ class Doc(object):
     def commit(self, filename):
         """commit the path"""
         _path = self.doc + filename
-        print(_path)
         #dulwich uses relative path
         if self.repo_type == 'git':
             _path = _path.lstrip(self.repo)

@@ -198,8 +198,8 @@ class Orgapp(object):
             self.set_last_synced(30)
             _last_synced = datetime.strptime(self.get_last_synced(),
                     "%Y-%m-%d %H:%M:%S.%f")
-        print("type last_synced " + str(type(_last_synced)))
-        print("last synced " + str(_last_synced))
+        #print("type last_synced " + str(type(_last_synced)))
+        #print("last synced " + str(_last_synced))
         _t = Tasks.select('last_modified > ?', [_last_synced])
         _d = {}
         if _t.count() > 0:
@@ -244,7 +244,7 @@ class Orgapp(object):
         """defines what is to keep from remote and local and sync"""
         _local = self.get_unsynced()
         _remote = self.get_remote_tasks()
-        print "_local " + str(_local)
+        #print "_local " + str(_local)
         for k, v in _local.items():
             #if same md5 has same date, we don't sync
             _remote_value = _remote.get(k, None)
@@ -258,7 +258,7 @@ class Orgapp(object):
                     _local.pop(k)
                 else:
                     _remote.pop(k)
-        print("\n\n we will sync\n" + str(_remote))
+        #print("\n\n we will sync\n" + str(_remote))
         for k in _remote.keys():
             _update = self.get_remote_tasks("tasks/" + k)
             try:
