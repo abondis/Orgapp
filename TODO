@@ -1,8 +1,5 @@
 running
 -------
-* sync
- * tasks: sqlite + api (/sync/...) + ask when conflict
- * git/mercurial: hg push/pull easy, git push does not work ...
 * tasks: when moving between statuses, ensure source status is updated
 * pyunit
 
@@ -15,6 +12,7 @@ next
 
 backlog
 -------
+* git/mercurial: hg push/pull easy, git push does not work ...
 * cache a wiki  (multiple levels, files ie: images)
 * authentication
 * multi-users
@@ -59,3 +57,4 @@ done
 * wiki: list commits -> list all commits in repo
 * add sessions in order to keep consistant branch selection(beaker)
 * code: browse folders and display files
+* tasks sync: 2-way sync using API
