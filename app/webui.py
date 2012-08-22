@@ -363,12 +363,15 @@ def sync_conflicts():
     pass
 
 
-@post('/sync/tasks')
-def post_tasks_to_sync():
+@post('/sync/tasks/<guid>')
+def post_tasks_to_sync(guid):
     """The client forces the server to get new list of tasks
     ie: {'status': [{'id': 0, ...},] }
     """
-    pass
+    #datas = request.post.data
+    #print datas
+    print dir(request.json.keys())
+    t.save_from_json(request.json)
 
 if __name__ == '__main__':
     session_opts = {

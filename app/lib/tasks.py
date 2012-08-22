@@ -226,6 +226,20 @@ class Orgapp(object):
                 'last_modified': str(_t.last_modified)
                 }
 
+    def save_from_json(self, content):
+        """Saves a task using json content"""
+        try:
+            _t = Tasks.get('guid == ?', [content['guid']])
+            _t.position = content['position']
+            _t.last_modified = content['last_modified']
+            _t.name = content['name']
+            _t.status_id = content['status_id']
+        except:
+            _t = Tasks.create(**content)
+        _t.guid = content['guid']
+        _t.save()
+        macaron.bake()
+
     def sync_tasks(self):
         """defines what is to keep from remote and local and sync"""
         _local = self.get_unsynced()
@@ -258,6 +272,29 @@ class Orgapp(object):
             _t.guid = k
             _t.save()
             macaron.bake()
+        # send to remote
+        for k in _local.keys():
+            _d = {}
+            _t = Tasks.get('guid == ?', [k])
+            _d['name'] = _t.name
+            _d['position'] = _t.position
+            _d['status_id'] = _t.status_id
+            _d['last_modified'] = str(_t.last_modified)
+            _d['guid'] = k
+            url = "http://127.0.0.1:8081/sync/tasks/" + k
+            # convert json_dict to JSON
+            json_data = json.dumps(_d)
+            # convert str to bytes (ensure encoding is OK)
+            post_data = json_data.encode('utf-8')
+            # we should also say the JSON content type header
+            headers = {}
+            headers['Content-Type'] = 'application/json'
+            # now do the request for a url
+            req = urllib2.Request(url, post_data, headers)
+            # send the request
+            res = urllib2.urlopen(req)
+            # get task details
+            #send it to the remote
 
 
         return [_local, _remote]
