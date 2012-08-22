@@ -74,7 +74,7 @@
                   <li><a href="{{url('show_tree', project=project)}}">Code</a></li>
                 %else:
                   <li>
-                  <a href="">List projects</a>
+                  <a href="{{url('projects_list')}}">List projects</a>
                   </li>
                 %end
                 <li>

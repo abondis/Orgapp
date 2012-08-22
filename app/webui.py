@@ -24,9 +24,6 @@ hgui = ui.ui()
 #mount('/hg/', subproject)
 
 
-@get('/')
-def hello():
-    return d.r[project].keys()
 
 
 @get('/static/<path:path>', name='static')
@@ -306,7 +303,14 @@ def show_wiki_page(path, project):
                 leftmenu=menu))
 
 
+@get('/projects list', name='projects_list')
+@view('list_projects')
+def projects_list():
+    return dict(title='Projects list', listing=d.r.keys())
+
+
 @get('/tasks', name='tasks')
+@get('/')
 @view('tasks/list_tasks')
 def lsTasks():
     menu = make_tasks_menu()
