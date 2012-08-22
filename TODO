@@ -5,6 +5,8 @@ running
 
 next
 ----
+* authentication
+* multi-projects
 * tasks: details as a wiki page
 * wiki: rollback (or diff and keep/commit prefered version)
 * style menus
@@ -13,9 +15,7 @@ backlog
 -------
 * git/mercurial: hg push/pull easy, git push does not work ...
 * cache a wiki  (multiple levels, files ie: images)
-* authentication
 * multi-users
-* multi-projects
 * docstrings
 * clean webui.py to use mount and apps
 * archive tasks
