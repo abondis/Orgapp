@@ -341,7 +341,10 @@ def lsTasks():
 def add_task():
     menu = make_tasks_menu()
     statuses = t.get_statuses()
-    return(dict(title="Add task", leftmenu=menu, statuses=statuses))
+    return(dict(title="Add task",
+        leftmenu=menu,
+        project=None,
+        statuses=statuses))
 
 
 @post('/tasks/add')

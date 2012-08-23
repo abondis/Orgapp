@@ -22,4 +22,4 @@
     <input value='Create' type='submit' class="btn" />
   </form>
 %end
-%rebase tasks/tasks leftmenu=leftmenu, rightblock=rightblock, title=title
+%rebase tasks/tasks leftmenu=leftmenu, rightblock=rightblock, title=title, project=project
