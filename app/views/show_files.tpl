@@ -1,7 +1,7 @@
 %import os.path
 %def rightblock():
   <form>
-    <select onchange="document.location.href = document.location.protocol + '//' + document.location.host + '/code/browse' + '?branch=' + this.value ">
+    <select onchange="document.location.href = document.location.protocol + '//' + document.location.host + '/{{project}}/code/browse' + '?branch=' + this.value ">
     %for o in branches:
       %if o == current_branch:
         <option selected="selected" value='{{o}}'>{{o}}</option>

@@ -80,11 +80,14 @@ def show_commits(project):
         s['branch'] = request.query.branch or \
             s.get('branch', 'default')
         branches = d.r[project].branchmap().keys()
-        if s['branch'] not in branches:
-            s['branch'] = d.r[project].branchmap().keys()[0]
-        hgui.pushbuffer()
-        hg.log(hgui, d.r, branch=[s['branch']])
-        l = hgui.popbuffer().split('\n\n')
+        #if s['branch'] not in branches:
+        try:
+            hgui.pushbuffer()
+            hg.log(hgui, d.r[project], branch=[s['branch']])
+            l = hgui.popbuffer().split('\n\n')
+        except:
+            s['branch'] = 'default'
+            l = ["Nothing has yet been done on your repo..."]
     menu = make_code_menu(project)
     return(
         dict(
@@ -105,7 +108,7 @@ def display_file(path, project):
             s.get('branch', 'HEAD')
         # get the tree for the branch
         branches = d.r[project].get_refs()
-        tree_id = d.r[s['branch']].tree
+        tree_id = d.r[project][s['branch']].tree
         # get the objects in this tree
         objects = d.r[project].object_store.iter_tree_contents(tree_id)
         path_sha = [x.sha for x in objects if x.path == path]
@@ -119,8 +122,11 @@ def display_file(path, project):
         branches = d.r[project].branchmap().keys()
         if s['branch'] not in branches:
             s['branch'] = d.r[project].branchmap().keys()[0]
-        _br = d.r[s['branch']]
-        if path in _br.files():
+        _br = d.r[project][s['branch']]
+        hgui.pushbuffer()
+        hg.locate(hgui, d.r[project], branch=s['branch'] )
+        _file = hgui.popbuffer().split('\n')
+        if path in _file:
             content = _br.filectx(path).data().split('\n')
         else:
             content = ["sorry, could not find this file!"]
@@ -128,6 +134,7 @@ def display_file(path, project):
     return(
         dict(
             content=content,
+            project=project,
             leftmenu=menu,
             branches=branches,
             current_branch=s['branch'],
@@ -141,15 +148,16 @@ def display_file(path, project):
 def show_tree(project, path=''):
     """Show repo's tree"""
     if path == "":
-        current_path = '/code/browse'
+        current_path = '/' + project + '/code/browse'
     else:
-        current_path = '/code/browse/' + path
+        current_path = '/' + project + '/code/browse/' + path
     s = request.environ.get('beaker.session')
+    l = []
     if type(d.r[project]) == repo.Repo:
         s['branch'] = request.query.branch or \
             s.get('branch', 'HEAD')
         # get the tree for the branch
-        branches = d.r[project].get_refs()
+        branches = d.r[project].get_refs().keys()
         if s['branch'] in branches:
             tree_id = d.r[project][s['branch']].tree
             # get the objects in this tree
@@ -162,9 +170,17 @@ def show_tree(project, path=''):
         s['branch'] = request.query.branch or \
             s.get('branch', 'default')
         branches = d.r[project].branchmap().keys()
+        print branches
+        #try:
         if s['branch'] not in branches:
             s['branch'] = d.r[project].branchmap().keys()[0]
-        l = d.r[project][s['branch']].files()
+        hgui.pushbuffer()
+        l = hg.locate(hgui, d.r[project], branch=s['branch'] )
+        l = hgui.popbuffer().split('\n')
+        print l
+        #except:
+            #s['branch'] = 'default'
+            #l = ["Nothing has yet been done on your repo..."]
     dico = {}
     for x in l:
         l2w(x, dico)
@@ -314,7 +330,10 @@ def projects_list():
 @view('tasks/list_tasks')
 def lsTasks():
     menu = make_tasks_menu()
-    return(dict(tasks_list=t.ls(), title="Task list", leftmenu=menu))
+    return(dict(tasks_list=t.ls(),
+        title="Task list",
+        leftmenu=menu,
+        project=None))
 
 
 @get('/tasks/add', name='add_task')
@@ -399,4 +418,4 @@ if __name__ == '__main__':
             'session.auto': True
     }
     webapp = SessionMiddleware(app(), session_opts)
-    run(app=webapp, host='0.0.0.0', port=8080, debug=True, reloader=True)
+    run(app=webapp, host='0.0.0.0', port=8080, debug=False, reloader=True)

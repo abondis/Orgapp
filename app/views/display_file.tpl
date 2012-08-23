@@ -7,4 +7,4 @@
   %end
 </ol>
 %end
-%rebase columns leftmenu=leftmenu, rightblock=rightblock, title=title
+%rebase columns leftmenu=leftmenu, rightblock=rightblock, title=title, project=project

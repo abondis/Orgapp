@@ -64,10 +64,10 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </a>
-          <a class="brand" href="#">Project name</a>
+          <a class="brand" href="/">{{project if project else 'orgapp'}}</a>
           <div class="nav-collapse">
               <ul class="nav">
-                %if 'project' in locals():
+                %if 'project' in locals() and project:
                   <li>
                   <a href="{{url('doc_index', project=project)}}">Doc/Wiki</a>
                   </li>

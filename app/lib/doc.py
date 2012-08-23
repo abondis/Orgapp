@@ -121,18 +121,18 @@ class Doc(object):
 
     def commit(self, filename, project):
         """commit the path"""
-        _path = self.repo_root + self.doc + filename
+        _path = self.repo_root + project + self.doc + filename
         #dulwich uses relative path
         if type(self.r[project]) == repo.Repo:
-            _path = _path.lstrip(self.repo_root)
+            _path = _path.lstrip(self.repo_root + project)
             self.r[project].stage(_path)
             self.r[project].do_commit(
                 message='commit wiki page {0}'.format(filename))
         elif type(self.r[project]) == localrepo.localrepository:
-            hg.add(ui.ui(), self.r, _path)
+            hg.add(ui.ui(), self.r[project], _path)
             hg.commit(
                 ui.ui(),
-                self.r,
+                self.r[project],
                 _path,
                 message='commit wiki page {0}'.format(filename))
 
