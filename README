@@ -1,0 +1,7 @@
+virtualenv env
+. env/bin/activate
+pip install -r app/requirements.txt
+cp config/config-example.ini config/config-dev.ini
+python app/lib/setup_db.py 
+git submodule update --init
+python app/webui.py

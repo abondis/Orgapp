@@ -2,3 +2,4 @@ Beaker==1.6.3
 Markdown==2.2.0
 dulwich==0.8.5
 macaron==0.3.1
+mercurial
