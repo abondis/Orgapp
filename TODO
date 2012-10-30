@@ -1,10 +1,13 @@
 running
 -------
+* posting a new document fails, maybe when trying to commit to empty repo
+* init HEAD for git or default for hg
 * tasks: when moving between statuses, ensure source status is updated
 * pyunit
 
 next
 ----
+* pull when creating repos folders, use config
 * authentication
 * multi-projects
 * tasks: details as a wiki page

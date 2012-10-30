@@ -6,7 +6,7 @@ macaron.py
 *.t2t
 *.html
 cache
-/app/config
-!/app/config/config-demo.ini
+/app/config/config-dev.ini
+env
 .sass-cache
 venv
