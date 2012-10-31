@@ -4,7 +4,9 @@
 body {
 /*  font-family: 'Yanone Kaffeesatz', sans-serif; */
 /*  font-weight: 200; */
+  color:whiteSmoke;
   font-size: 1em;
+  background-image:url('images/navy_blue.png');
 }
 
 h1 {
@@ -25,14 +27,17 @@ code {
 }
 
 ul.tasks {
+  background-image:url('images/grid.png');
+  box-shadow:inset 2px 3px 5px #000000;
+  border:none;
   list-style-type: none;
   margin: 0;
-  padding: 0 0 2.5em;
+  padding: 0.5em;
   float: left;
   margin-right: 10px;
   display:block;
   min-height:20px;
-  min-width:150px;
+  min-width:200px;
   }
 
 ul.tasks li {
@@ -48,6 +53,12 @@ ul.tasks li.well {
 
 ul.tasks li:hover {
     cursor:pointer;
+}
+
+ul.tasks li span.name {
+    display:inline-block;
+    max-width:115px;
+    overflow:hidden;
 }
 
 tasklist {
