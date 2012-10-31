@@ -14,6 +14,7 @@ from beaker.middleware import SessionMiddleware
 import mercurial.commands as hg
 from mercurial import ui, localrepo
 from dulwich import repo
+from cork import Cork
 
 
 t = Orgapp()
@@ -21,10 +22,16 @@ d = Doc()
 d.cache_all()
 hgui = ui.ui()
 
+# Use users.json and roles.json in the local example_conf directory
+aaa = Cork('config')
 #subproject = hgweb('/tmp/trucmuche')
 #mount('/hg/', subproject)
 
-
+@get('/login')
+def login():
+    username = request.GET.get('user', '')
+    password = request.GET.get('pwd', '')
+    aaa.login(username, password, success_redirect='/', fail_redirect='/login')
 
 
 @get('/static/<path:path>', name='static')
@@ -249,6 +256,7 @@ def list_wiki_pages(project):
 @get('/<project>/doc/<path>/edit', name="edit_wiki_page")
 @view('wiki/edit_wiki_page')
 def edit_wiki_page(project, path):
+    aaa.require(role='edit', fail_redirect='/login')
     pagename = '/' + project + '/doc/' + path
     menu = make_wiki_menu(project, path)
     content = d.render("{0}.md".format(path), project)
@@ -264,6 +272,7 @@ def edit_wiki_page(project, path):
 @get('/<project>/doc/new', name="new_wiki_page")
 @view('wiki/new_wiki_page')
 def new_wiki_page(project):
+    aaa.require(role='edit', fail_redirect='/login')
     menu = make_wiki_menu(project)
     return(
         dict(
@@ -274,6 +283,7 @@ def new_wiki_page(project):
 
 @post('/<project>/doc/new')
 def save_new_wiki_page(project):
+    aaa.require(role='edit', fail_redirect='/login')
     content = request.forms.content
     pagename = request.forms.pagename
     d.save("{0}.md".format(pagename), content, project)
@@ -286,6 +296,7 @@ def save_new_wiki_page(project):
 @post('/<project>/doc/<path>/edit')
 @view('wiki/edit_wiki_page')
 def save_wiki_page(project, path):
+    aaa.require(role='edit', fail_redirect='/login')
     menu = make_wiki_menu(project, path)
     content = request.forms.content
     d.save("{0}.md".format(path), content, project)
@@ -340,6 +351,7 @@ def lsTasks():
 @get('/tasks/add', name='add_task')
 @view('tasks/tasks_add')
 def add_task():
+    aaa.require(role='edit', fail_redirect='/login')
     menu = make_tasks_menu()
     statuses = t.get_statuses()
     return(dict(title="Add task",
@@ -350,6 +362,7 @@ def add_task():
 
 @post('/tasks/add')
 def receive_new_task():
+    aaa.require(role='edit', fail_redirect='/login')
     name = request.forms.name
     position = request.forms.position
     status = request.forms.status
@@ -360,6 +373,7 @@ def receive_new_task():
 @get('/tasks/<tid>/update')
 def update_task(tid):
     """Update task position and status"""
+    aaa.require(role='edit', fail_redirect='/login')
     new_pos = request.query.new_pos
     new_status = request.query.new_status
     t.move(tid, new_pos, new_status)
@@ -392,6 +406,7 @@ def get_faketasks_to_sync():
 
 @get('/sync/to_sync')
 def show_to_sync():
+    aaa.require(role='edit', fail_redirect='/login')
     return {'local': t.sync_tasks()[0], 'remote': t.sync_tasks()[1]}
     
 
@@ -412,6 +427,7 @@ def post_tasks_to_sync(guid):
     #datas = request.post.data
     #print datas
     print dir(request.json.keys())
+    aaa.require(role='edit', fail_redirect='/login')
     t.save_from_json(request.json)
 
 if __name__ == '__main__':
@@ -419,7 +435,11 @@ if __name__ == '__main__':
             'session.type': 'file',
             'session.cookie_expires': 300,
             'session.data_dir': '/tmp/beaker-session',
-            'session.auto': True
+            'session.auto': True,
+            #'session.type': 'cookie',
+            'session.validate_key': True
     }
     webapp = SessionMiddleware(app(), session_opts)
+
+    # Start the Bottle webapp
     run(app=webapp, host='0.0.0.0', port=8080, debug=False, reloader=True)
