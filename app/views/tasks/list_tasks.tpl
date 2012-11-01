@@ -11,20 +11,25 @@
             <a href="#view-{{t.id}}"  class="btn btn-mini" role="button" data-toggle="modal"><span class="icon icon-pencil">&nbsp;</span></a>
             <a href="#" class="btn btn-mini"><span class="icon icon-trash">&nbsp;</span></a>
         </div>
+      </li>
+      %end
+    </ul>
+  </tasklist>
+      %for t in tasks_list[s]:
         <div id="view-{{t.id}}" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="Task details" aria-hidden="true">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-            <h3 id="myModalLabel">Task</h3>
+            <h3>Task</h3>
           </div>
           <div class="modal-body">
             <div class="control-group">
                 <div class="controls">
-                  <input type="text" placeholder="Title" value="{{t.name}}" class="btn-block"/>
+                  <p class="btn-block aloha">{{t.name}}</p>
                 </div>
             </div>
             <div class="control-group">
                 <div class="controls">
-                  <textarea class="btn-block">blou</textarea>
+                  <p class="btn-block aloha">blou</p>
                 </div>
             </div>
           </div>
@@ -33,10 +38,7 @@
             <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Save</button>
           </div>
         </div>
-      </li>
       %end
-    </ul>
-  </tasklist>
   %end
 %end
 %rebase tasks/tasks leftmenu=leftmenu, rightblock=rightblock, title=title, project=project
