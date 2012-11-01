@@ -95,3 +95,10 @@ ol.code {
   font-size: 15px;
   line-height: 0;
   }
+
+label {
+    color:#999;
+}
+textarea.btn-block {
+    padding-left:4px;
+}

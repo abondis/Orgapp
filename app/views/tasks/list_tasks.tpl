@@ -14,13 +14,23 @@
         <div id="view-{{t.id}}" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="Task details" aria-hidden="true">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-            <h3 id="myModalLabel">{{t.name}}</h3>
+            <h3 id="myModalLabel">Task</h3>
           </div>
           <div class="modal-body">
-            <p>One fine body…</p>
+            <div class="control-group">
+                <div class="controls">
+                  <input type="text" placeholder="Title" value="{{t.name}}" class="btn-block"/>
+                </div>
+            </div>
+            <div class="control-group">
+                <div class="controls">
+                  <textarea class="btn-block">blou</textarea>
+                </div>
+            </div>
           </div>
           <div class="modal-footer">
-            <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+            <button class="btn btn-link" data-dismiss="modal" aria-hidden="true">Close without saving</button>
+            <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Save</button>
           </div>
         </div>
       </li>
