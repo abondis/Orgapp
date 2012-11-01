@@ -1,3 +1,4 @@
+git submodule update --init
 cd app
 virtualenv env
 . env/bin/activate
@@ -5,7 +6,6 @@ virtualenv env
 #pip install -r app/requirements.txt
 pip install Beaker==1.6.3 Markdown==2.2.0 argparse==1.2.1 bottle==0.11.3  dulwich==0.8.5 macaron==0.3.1 mercurial==2.4-rc wsgiref==0.1.2
 pip install bottle-cork
-cp config/config-example.ini config/config-dev.ini
+cp config/config-multiprojects-example.ini config/config-dev.ini
 python lib/setup_db.py 
-git submodule update --init
 python webui.py

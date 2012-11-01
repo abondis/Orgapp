@@ -1,5 +1,7 @@
 running
 -------
+* posting a new document fails, maybe when trying to commit to empty repo - ko in git
+* viewing repo when it's new and has not commit fails with hg
 * tasks: when moving between statuses, ensure source status is updated
 * pyunit
 
@@ -57,7 +59,6 @@ done
 * code: browse folders and display files
 * tasks sync: 2-way sync using API
 * tasks: tasks/<taskid> to view a task details -> sync/tasks/guid
-* posting a new document fails, maybe when trying to commit to empty repo - looks ok now
 * init HEAD for git or default for hg - looks ok now
 * authentication - done
 * multi-projects - done, cf config-multiprojects.ini
