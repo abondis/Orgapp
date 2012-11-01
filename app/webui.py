@@ -15,6 +15,7 @@ import mercurial.commands as hg
 from mercurial import ui, localrepo
 from dulwich import repo
 from cork import Cork
+from bottle import SimpleTemplate
 
 
 t = Orgapp()
@@ -27,11 +28,20 @@ aaa = Cork('config')
 #subproject = hgweb('/tmp/trucmuche')
 #mount('/hg/', subproject)
 
-@get('/login')
+@post('/login')
 def login():
-    username = request.GET.get('user', '')
-    password = request.GET.get('pwd', '')
-    aaa.login(username, password, success_redirect='/', fail_redirect='/login')
+    username = request.POST.get('user', '')
+    password = request.POST.get('password', '')
+    aaa.login(username, password, success_redirect='/', fail_redirect='/truc')
+
+@get('/login', name='login')
+def login_get():
+    return template('login',
+            title='Login')
+
+@get('/logout', name='logout')
+def logout():
+        aaa.logout(success_redirect='/login')
 
 
 @get('/static/<path:path>', name='static')
@@ -430,7 +440,15 @@ def post_tasks_to_sync(guid):
     aaa.require(role='edit', fail_redirect='/login')
     t.save_from_json(request.json)
 
+def is_loggued():
+    try:
+        u = aaa.current_user
+        return True
+    except:
+        return False
+
 if __name__ == '__main__':
+    SimpleTemplate.defaults["is_loggued"] = is_loggued
     session_opts = {
             'session.type': 'file',
             'session.cookie_expires': 300,
