@@ -84,6 +84,13 @@
                 <li>
                   <a href="{{url('tasks')}}">Task</a>
                 </li>
+                <li>
+                %if is_loggued():
+                  <a href="{{url('logout')}}">Logout</a>
+                %else:
+                  <a href="{{url('login')}}">Login</a>
+                %end
+                </li>
               </ul>
           </div><!--/.nav-collapse -->
         </div>
