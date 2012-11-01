@@ -1,18 +1,16 @@
 running
 -------
-* posting a new document fails, maybe when trying to commit to empty repo
-* init HEAD for git or default for hg
 * tasks: when moving between statuses, ensure source status is updated
 * pyunit
 
 next
 ----
 * pull when creating repos folders, use config
-* authentication
-* multi-projects
 * tasks: details as a wiki page
 * wiki: rollback (or diff and keep/commit prefered version)
-* style menus
+* keep tasks as part of the project
+* archive tasks
+* rights and role to edit/see projects
 
 backlog
 -------
@@ -21,8 +19,6 @@ backlog
 * multi-users
 * docstrings
 * clean webui.py to use mount and apps
-* archive tasks
-* keep tasks as part of the project?
 
 done
 ----
@@ -61,3 +57,8 @@ done
 * code: browse folders and display files
 * tasks sync: 2-way sync using API
 * tasks: tasks/<taskid> to view a task details -> sync/tasks/guid
+* posting a new document fails, maybe when trying to commit to empty repo - looks ok now
+* init HEAD for git or default for hg - looks ok now
+* authentication - done
+* multi-projects - done, cf config-multiprojects.ini
+* style menus
