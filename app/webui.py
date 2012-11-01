@@ -219,24 +219,27 @@ def make_wiki_menu(project, pagename=None):
     """gets a list a menus for the wiki pages"""
     menu = []
     if pagename:
-        menu.append(
-            {'url': url("edit_wiki_page", path=pagename, project=project),
-             'title': "Edit " + pagename})
+        if is_loggued():
+            menu.append(
+                {'url': url("edit_wiki_page", path=pagename, project=project),
+                'title': "Edit " + pagename})
         menu.append(
             {'url': url("show_wiki_page", path=pagename, project=project),
              'title': pagename})
     menu.append(
         {'url': url("list_wiki_pages", project=project), 'title': "List wiki pages"})
-    menu.append(
-        {'url': url('new_wiki_page', project=project), 'title': "Create a new page"})
+    if is_loggued():
+        menu.append(
+            {'url': url('new_wiki_page', project=project), 'title': "Create a new page"})
     return(menu)
 
 
 def make_tasks_menu():
     """menus for tasks"""
     menu = []
-    menu.append(
-        {'url': url("add_task"), 'title': "Add tasks"})
+    if is_loggued():
+        menu.append(
+            {'url': url("add_task"), 'title': "Add tasks"})
     return(menu)
 
 

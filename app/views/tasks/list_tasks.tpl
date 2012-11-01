@@ -2,15 +2,21 @@
   %for s in tasks_list.keys():
   <tasklist id={{s}}>
     <h1>{{s}}</h1>
-    <ul class="connectedSortable tasks ui-sortable well">
+    %if is_loggued():
+        <ul class="connectedSortable tasks ui-sortable well">
+    %else:
+        <ul class="tasks well">
+    %end
       %for t in tasks_list[s]:
       <li id={{t.id}} class="ui-state-default well" data-position="{{t.position}}" data-status="{{t.status_id}}">
         <span class="name">{{t.name}}</span>
         <span class="position">{{t.position}}</span>
+        %if is_loggued():
         <div class="btn-group pull-right">
             <a href="#view-{{t.id}}"  class="btn btn-mini" role="button" data-toggle="modal"><span class="icon icon-pencil">&nbsp;</span></a>
             <a href="#" class="btn btn-mini"><span class="icon icon-trash">&nbsp;</span></a>
         </div>
+        %end 
       </li>
       %end
     </ul>
