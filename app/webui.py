@@ -219,7 +219,7 @@ def make_wiki_menu(project, pagename=None):
     """gets a list a menus for the wiki pages"""
     menu = []
     if pagename:
-        if is_loggued():
+        if is_logged():
             menu.append(
                 {'url': url("edit_wiki_page", path=pagename, project=project),
                 'title': "Edit " + pagename})
@@ -228,7 +228,7 @@ def make_wiki_menu(project, pagename=None):
              'title': pagename})
     menu.append(
         {'url': url("list_wiki_pages", project=project), 'title': "List wiki pages"})
-    if is_loggued():
+    if is_logged():
         menu.append(
             {'url': url('new_wiki_page', project=project), 'title': "Create a new page"})
     return(menu)
@@ -237,7 +237,7 @@ def make_wiki_menu(project, pagename=None):
 def make_tasks_menu():
     """menus for tasks"""
     menu = []
-    if is_loggued():
+    if is_logged():
         menu.append(
             {'url': url("add_task"), 'title': "Add tasks"})
     return(menu)
@@ -443,7 +443,7 @@ def post_tasks_to_sync(guid):
     aaa.require(role='edit', fail_redirect='/login')
     t.save_from_json(request.json)
 
-def is_loggued():
+def is_logged():
     try:
         u = aaa.current_user
         return True
@@ -451,7 +451,7 @@ def is_loggued():
         return False
 
 if __name__ == '__main__':
-    SimpleTemplate.defaults["is_loggued"] = is_loggued
+    SimpleTemplate.defaults["is_logged"] = is_logged
     session_opts = {
             'session.type': 'file',
             'session.cookie_expires': 300,
@@ -463,4 +463,4 @@ if __name__ == '__main__':
     webapp = SessionMiddleware(app(), session_opts)
 
     # Start the Bottle webapp
-    run(app=webapp, host='0.0.0.0', port=8080, debug=False, reloader=True)
+    run(app=webapp, host='0.0.0.0', port=8080, debug=True, reloader=True)

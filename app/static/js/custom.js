@@ -1,5 +1,5 @@
 $(function() {
-    $( ".tasks" ).sortable({
+    $( "body.logged-in .tasks" ).sortable({
       connectWith: ".connectedSortable",
       stop: function(event, ui) {
         var tid = ui.item.attr('id');

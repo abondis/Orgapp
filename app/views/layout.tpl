@@ -58,7 +58,11 @@
     <link rel="apple-touch-icon-precomposed" href="{{assets}}ico/apple-touch-icon-57-precomposed.png">
   </head>
 
-  <body>
+  <body
+  % if is_logged():
+      class="logged-in"
+  % end
+  >
 
     <div class="navbar navbar-inverse navbar-fixed-top">
       <div class="navbar-inner">
@@ -85,7 +89,7 @@
                   <a href="{{url('tasks')}}">Task</a>
                 </li>
                 <li>
-                %if is_loggued():
+                %if is_logged():
                   <a href="{{url('logout')}}">Logout</a>
                 %else:
                   <a href="{{url('login')}}">Login</a>
