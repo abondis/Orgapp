@@ -28,16 +28,19 @@ aaa = Cork('config')
 #subproject = hgweb('/tmp/trucmuche')
 #mount('/hg/', subproject)
 
+
 @post('/login')
 def login():
     username = request.POST.get('user', '')
     password = request.POST.get('password', '')
     aaa.login(username, password, success_redirect='/', fail_redirect='/truc')
 
+
 @get('/login', name='login')
 def login_get():
     return template('login',
             title='Login')
+
 
 @get('/logout', name='logout')
 def logout():
@@ -131,7 +134,8 @@ def display_file(path, project):
         objects = d.r[project].object_store.iter_tree_contents(tree_id)
         path_sha = [x.sha for x in objects if x.path == path]
         if len(path_sha) == 1:
-            content = d.r[project].get_object(path_sha[0]).as_raw_string().split('\n')
+            content = d.r[project].get_object(path_sha[0])
+            content = content.as_raw_string().split('\n')
         else:
             content = ["sorry, could not find this file!"]
     elif type(d.r[project]) == localrepo.localrepository:
@@ -142,7 +146,7 @@ def display_file(path, project):
             s['branch'] = d.r[project].branchmap().keys()[0]
         _br = d.r[project][s['branch']]
         hgui.pushbuffer()
-        hg.locate(hgui, d.r[project], branch=s['branch'] )
+        hg.locate(hgui, d.r[project], branch=s['branch'])
         _file = hgui.popbuffer().split('\n')
         if path in _file:
             content = _br.filectx(path).data().split('\n')
@@ -193,7 +197,7 @@ def show_tree(project, path=''):
         if s['branch'] not in branches:
             s['branch'] = d.r[project].branchmap().keys()[0]
         hgui.pushbuffer()
-        l = hg.locate(hgui, d.r[project], branch=s['branch'] )
+        l = hg.locate(hgui, d.r[project], branch=s['branch'])
         l = hgui.popbuffer().split('\n')
         print l
         #except:
@@ -227,10 +231,12 @@ def make_wiki_menu(project, pagename=None):
             {'url': url("show_wiki_page", path=pagename, project=project),
              'title': pagename})
     menu.append(
-        {'url': url("list_wiki_pages", project=project), 'title': "List wiki pages"})
+        {'url': url("list_wiki_pages", project=project),
+          'title': "List wiki pages"})
     if is_logged():
         menu.append(
-            {'url': url('new_wiki_page', project=project), 'title': "Create a new page"})
+            {'url': url('new_wiki_page', project=project),
+              'title': "Create a new page"})
     return(menu)
 
 
@@ -245,7 +251,7 @@ def make_tasks_menu():
 
 @get('/<project>/doc', name="doc_index")
 def doc_index(project):
-    if os.path.exists(d.cache_path + "/" + project +"/Index"):
+    if os.path.exists(d.cache_path + "/" + project + "/Index"):
         return(show_wiki_page('Index', project))
     else:
         return(list_wiki_pages(project))
@@ -256,7 +262,8 @@ def doc_index(project):
 def list_wiki_pages(project):
     pages_list = d.list_pages(project)
     pages_dict = [
-        {'url': url("show_wiki_page", project=project, path=x), 'title':x} for x in pages_list]
+        {'url': url("show_wiki_page", project=project, path=x),
+          'title':x} for x in pages_list]
     menu = make_wiki_menu(project)
     return(
         dict(
@@ -269,7 +276,10 @@ def list_wiki_pages(project):
 @get('/<project>/doc/<path>/edit', name="edit_wiki_page")
 @view('wiki/edit_wiki_page')
 def edit_wiki_page(project, path):
-    aaa.require(role='edit', fail_redirect='/login')
+    aaa.require(
+        role='edit',
+        success_redirect='/' + project + '/doc/' + path + '/edit',
+        fail_redirect='/login')
     pagename = '/' + project + '/doc/' + path
     menu = make_wiki_menu(project, path)
     content = d.render("{0}.md".format(path), project)
@@ -285,7 +295,10 @@ def edit_wiki_page(project, path):
 @get('/<project>/doc/new', name="new_wiki_page")
 @view('wiki/new_wiki_page')
 def new_wiki_page(project):
-    aaa.require(role='edit', fail_redirect='/login')
+    aaa.require(
+        role='edit',
+        success_redirect='/' + project + '/doc/new',
+        fail_redirect='/login')
     menu = make_wiki_menu(project)
     return(
         dict(
@@ -309,7 +322,10 @@ def save_new_wiki_page(project):
 @post('/<project>/doc/<path>/edit')
 @view('wiki/edit_wiki_page')
 def save_wiki_page(project, path):
-    aaa.require(role='edit', fail_redirect='/login')
+    aaa.require(
+        role='edit',
+        success_redirect='/' + project + '/doc/' + path + '/edit',
+        fail_redirect='/login')
     menu = make_wiki_menu(project, path)
     content = request.forms.content
     d.save("{0}.md".format(path), content, project)
@@ -364,7 +380,10 @@ def lsTasks():
 @get('/tasks/add', name='add_task')
 @view('tasks/tasks_add')
 def add_task():
-    aaa.require(role='edit', fail_redirect='/login')
+    aaa.require(
+        role='edit',
+        success_redirect='/tasks/add',
+        fail_redirect='/login')
     menu = make_tasks_menu()
     statuses = t.get_statuses()
     return(dict(title="Add task",
@@ -421,7 +440,6 @@ def get_faketasks_to_sync():
 def show_to_sync():
     aaa.require(role='edit', fail_redirect='/login')
     return {'local': t.sync_tasks()[0], 'remote': t.sync_tasks()[1]}
-    
 
 
 @get('/sync/conflicts')
@@ -443,9 +461,10 @@ def post_tasks_to_sync(guid):
     aaa.require(role='edit', fail_redirect='/login')
     t.save_from_json(request.json)
 
+
 def is_logged():
     try:
-        u = aaa.current_user
+        aaa.current_user
         return True
     except:
         return False
