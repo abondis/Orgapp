@@ -33,13 +33,21 @@ aaa = Cork('config')
 def login():
     username = request.POST.get('user', '')
     password = request.POST.get('password', '')
-    aaa.login(username, password, success_redirect='/', fail_redirect='/truc')
+    _redirect = request.POST.get('redirect', '/')
+    print _redirect
+    aaa.login(
+            username,
+            password,
+            success_redirect=_redirect,
+            fail_redirect='/truc')
 
 
 @get('/login', name='login')
 def login_get():
+    _redirect = request.GET.get('redirect', '/')
     return template('login',
-            title='Login')
+            title='Login',
+            _redirect=_redirect)
 
 
 @get('/logout', name='logout')
@@ -276,10 +284,10 @@ def list_wiki_pages(project):
 @get('/<project>/doc/<path>/edit', name="edit_wiki_page")
 @view('wiki/edit_wiki_page')
 def edit_wiki_page(project, path):
+    _redirect = '/' + project + '/doc/' + path + '/edit',
     aaa.require(
         role='edit',
-        success_redirect='/' + project + '/doc/' + path + '/edit',
-        fail_redirect='/login')
+        fail_redirect='/login?redirect=' + _redirect[0])
     pagename = '/' + project + '/doc/' + path
     menu = make_wiki_menu(project, path)
     content = d.render("{0}.md".format(path), project)
@@ -295,10 +303,10 @@ def edit_wiki_page(project, path):
 @get('/<project>/doc/new', name="new_wiki_page")
 @view('wiki/new_wiki_page')
 def new_wiki_page(project):
+    _redirect='/' + project + '/doc/new',
     aaa.require(
         role='edit',
-        success_redirect='/' + project + '/doc/new',
-        fail_redirect='/login')
+        fail_redirect='/login?redirect=' + _redirect[0])
     menu = make_wiki_menu(project)
     return(
         dict(
@@ -322,10 +330,10 @@ def save_new_wiki_page(project):
 @post('/<project>/doc/<path>/edit')
 @view('wiki/edit_wiki_page')
 def save_wiki_page(project, path):
+    _redirect='/' + project + '/doc/' + path + '/edit',
     aaa.require(
         role='edit',
-        success_redirect='/' + project + '/doc/' + path + '/edit',
-        fail_redirect='/login')
+        fail_redirect='/login?redirect=' + _redirect[0])
     menu = make_wiki_menu(project, path)
     content = request.forms.content
     d.save("{0}.md".format(path), content, project)
@@ -380,10 +388,10 @@ def lsTasks():
 @get('/tasks/add', name='add_task')
 @view('tasks/tasks_add')
 def add_task():
+    _redirect='/tasks/add',
     aaa.require(
         role='edit',
-        success_redirect='/tasks/add',
-        fail_redirect='/login')
+        fail_redirect='/login?redirect=' + _redirect[0])
     menu = make_tasks_menu()
     statuses = t.get_statuses()
     return(dict(title="Add task",
