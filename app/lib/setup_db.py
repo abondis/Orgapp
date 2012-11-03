@@ -14,7 +14,7 @@ def init_db(path=None):
             'path').encode('utf-8')
 
     queries = ["""
-    create table tasks(
+    create table tasksmodel(
       id INTEGER PRIMARY KEY,
       name TEXT,
       position NUMERIC,

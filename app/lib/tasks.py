@@ -26,14 +26,14 @@ class Sync(macaron.Model):
     pass
 
 
-class Tasks(macaron.Model):
+class TasksModel(macaron.Model):
     status = macaron.ManyToOne(Status)
     guid = SetGuid()
     last_modified = macaron.TimestampAtSave()
 
 
 @configure
-class Orgapp(object):
+class Tasks(object):
     def __init__(self):
         if not os.path.exists(self.path):
             import setup_db
@@ -61,11 +61,11 @@ class Orgapp(object):
                     print(_command_obj())
 
     def ls(self):
-        #print(Tasks.all().count())
+        #print(TasksModel.all().count())
         tasks_list = {}
         #get statuses
         for s in Status.all():
-            tasks_list[s.name] = Tasks.select("status_id=?",
+            tasks_list[s.name] = TasksModel.select("status_id=?",
                                               [s.id]).order_by('position')
             #render dict of lists
             # 'status': ['task1', 'task2']
@@ -73,14 +73,14 @@ class Orgapp(object):
 
     def add(self, name, dest=None, status='new'):
         if not dest:
-            dest = Tasks.all()
+            dest = TasksModel.all()
             #print dest
             if dest:
                 dest = dest.count()
             else:
                 dest = 0
         status_id = Status.get('name=?', [status]).id
-        Tasks.create(name=name, position=dest, status_id=status_id)
+        TasksModel.create(name=name, position=dest, status_id=status_id)
         # create the Task
         #self.move(_task.id, dest)
         macaron.bake()
@@ -88,17 +88,17 @@ class Orgapp(object):
 
     def rm(self, source):
         # FIXME: removes everything
-        Tasks.get(source).delete()
+        TasksModel.get(source).delete()
         macaron.bake()
 
     def status(self, sourceid, status):
-        _source = Tasks.get(sourceid)
+        _source = TasksModel.get(sourceid)
         _source.status_id = Status.get('name=?', [status]).id
         _source.save()
 
     def move(self, sourceid, destid, status):
         # TODO: clean
-        src_pos = Tasks.get(sourceid).position
+        src_pos = TasksModel.get(sourceid).position
         status_id = Status.get('name=?', [status]).id
         if int(destid) == 0:
             dst_pos = 0
@@ -118,7 +118,7 @@ class Orgapp(object):
                                 sourceid,
                                 dst_pos))
         else:
-            dst_pos = Tasks.get(destid).position
+            dst_pos = TasksModel.get(destid).position
             if src_pos < dst_pos:
                 macaron.execute("""
                                 UPDATE tasks
@@ -158,7 +158,7 @@ class Orgapp(object):
                 macaron.bake()
 
     def position(self, sourceid):
-        return Tasks.get(sourceid).position
+        return TasksModel.get(sourceid).position
 
     def get_statuses(self):
         return Status.all()
@@ -200,7 +200,7 @@ class Orgapp(object):
                     "%Y-%m-%d %H:%M:%S.%f")
         #print("type last_synced " + str(type(_last_synced)))
         #print("last synced " + str(_last_synced))
-        _t = Tasks.select('last_modified > ?', [_last_synced])
+        _t = TasksModel.select('last_modified > ?', [_last_synced])
         _d = {}
         if _t.count() > 0:
             for x in _t:
@@ -218,7 +218,7 @@ class Orgapp(object):
         return _json
 
     def get_from_guid(self, guid):
-        _t = Tasks.get('guid == ?', [guid])
+        _t = TasksModel.get('guid == ?', [guid])
         return {
                 'name': _t.name,
                 'status_id': _t.status_id,
@@ -229,13 +229,13 @@ class Orgapp(object):
     def save_from_json(self, content):
         """Saves a task using json content"""
         try:
-            _t = Tasks.get('guid == ?', [content['guid']])
+            _t = TasksModel.get('guid == ?', [content['guid']])
             _t.position = content['position']
             _t.last_modified = content['last_modified']
             _t.name = content['name']
             _t.status_id = content['status_id']
         except:
-            _t = Tasks.create(**content)
+            _t = TasksModel.create(**content)
         _t.guid = content['guid']
         _t.save()
         macaron.bake()
@@ -262,20 +262,20 @@ class Orgapp(object):
         for k in _remote.keys():
             _update = self.get_remote_tasks("tasks/" + k)
             try:
-                _t = Tasks.get('guid == ?', [k])
+                _t = TasksModel.get('guid == ?', [k])
                 _t.position = _update['position']
                 _t.last_modified = _update['last_modified']
                 _t.name = _update['name']
                 _t.status_id = _update['status_id']
             except:
-                _t = Tasks.create(guid=k, **_update)
+                _t = TasksModel.create(guid=k, **_update)
             _t.guid = k
             _t.save()
             macaron.bake()
         # send to remote
         for k in _local.keys():
             _d = {}
-            _t = Tasks.get('guid == ?', [k])
+            _t = TasksModel.get('guid == ?', [k])
             _d['name'] = _t.name
             _d['position'] = _t.position
             _d['status_id'] = _t.status_id
@@ -305,5 +305,5 @@ class Orgapp(object):
         pass
 
 if __name__ == '__main__':
-    t = Orgapp()
+    t = Tasks()
     t.prompt()

@@ -7,7 +7,7 @@ from bottle import view, redirect, template, url
 from bottle import post, get
 from bottle import app
 #from bottle import mount
-from tasks import Orgapp
+from tasks import Tasks
 from doc import Doc
 from beaker.middleware import SessionMiddleware
 #from mercurial.hgweb import hgweb
@@ -18,7 +18,7 @@ from cork import Cork
 from bottle import SimpleTemplate
 
 
-t = Orgapp()
+t = Tasks()
 d = Doc()
 d.cache_all()
 hgui = ui.ui()
