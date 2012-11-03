@@ -4,6 +4,7 @@ running
 * viewing repo when it's new and has not commit fails with hg
 * tasks: when moving between statuses, ensure source status is updated
 * pyunit
+* add option to rename/edit a task
 
 next
 ----
@@ -13,6 +14,7 @@ next
 * keep tasks as part of the project
 * archive tasks
 * rights and role to edit/see projects
+* rights to create tasks/move tasks
 
 backlog
 -------
