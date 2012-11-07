@@ -2,6 +2,7 @@
 import sys
 import os
 sys.path.extend(['lib'])
+import tasksui
 from bottle import run, static_file, request
 from bottle import view, redirect, template, url
 from bottle import post, get
@@ -248,15 +249,6 @@ def make_wiki_menu(project, pagename=None):
     return(menu)
 
 
-def make_tasks_menu():
-    """menus for tasks"""
-    menu = []
-    if is_logged():
-        menu.append(
-            {'url': url("add_task"), 'title': "Add tasks"})
-    return(menu)
-
-
 @get('/<project>/doc', name="doc_index")
 def doc_index(project):
     if os.path.exists(d.cache_path + "/" + project + "/Index"):
@@ -372,102 +364,6 @@ def show_wiki_page(path, project):
 @view('list_projects')
 def projects_list():
     return dict(title='Projects list', listing=d.r.keys())
-
-
-@get('/tasks', name='tasks')
-@get('/')
-@view('tasks/list_tasks')
-def lsTasks():
-    menu = make_tasks_menu()
-    return(dict(tasks_list=t.ls(),
-        title="Task list",
-        leftmenu=menu,
-        project=None))
-
-
-@get('/tasks/add', name='add_task')
-@view('tasks/tasks_add')
-def add_task():
-    _redirect='/tasks/add',
-    aaa.require(
-        role='edit',
-        fail_redirect='/login?redirect=' + _redirect[0])
-    menu = make_tasks_menu()
-    statuses = t.get_statuses()
-    return(dict(title="Add task",
-        leftmenu=menu,
-        project=None,
-        statuses=statuses))
-
-
-@post('/tasks/add')
-def receive_new_task():
-    aaa.require(role='edit', fail_redirect='/login')
-    name = request.forms.name
-    position = request.forms.position
-    status = request.forms.status
-    t.add(name, position, status)
-    redirect('/tasks')
-
-
-@get('/tasks/<tid>/update')
-def update_task(tid):
-    """Update task position and status"""
-    aaa.require(role='edit', fail_redirect='/login')
-    new_pos = request.query.new_pos
-    new_status = request.query.new_status
-    t.move(tid, new_pos, new_status)
-    if new_status != 'null':
-        t.status(tid, new_status)
-
-
-#NOTE: for sync cf
-#http://blog.deeje.tv/musings/2009/06/notes-on-writing-a-history-driven-client-server-synchronization-engine.html
-
-
-@get('/sync/tasks')
-def get_tasks_to_sync():
-    """The server renders a json of tasks he has to give
-    ie: {'status': [{'id': 0, ...},] }
-    """
-    return t.get_unsynced()
-
-
-@get('/sync/tasks/<guid>')
-def get_task_from_guid(guid):
-    """API to get one task's datas"""
-    return t.get_from_guid(guid)
-
-
-@get('/sync/faketasks')
-def get_faketasks_to_sync():
-    return {"b675228bf0aceac1fc64efe0d7bb207f": "2012-08-21 10:36:48"}
-
-
-@get('/sync/to_sync')
-def show_to_sync():
-    aaa.require(role='edit', fail_redirect='/login')
-    return {'local': t.sync_tasks()[0], 'remote': t.sync_tasks()[1]}
-
-
-@get('/sync/conflicts')
-def sync_conflicts():
-    """The client presents a page to handle tasks conflicts
-    after comparing results from http://remote/sync/tasks and
-    http://localhost/sync/tasks"""
-    pass
-
-
-@post('/sync/tasks/<guid>')
-def post_tasks_to_sync(guid):
-    """The client forces the server to get new list of tasks
-    ie: {'status': [{'id': 0, ...},] }
-    """
-    #datas = request.post.data
-    #print datas
-    print dir(request.json.keys())
-    aaa.require(role='edit', fail_redirect='/login')
-    t.save_from_json(request.json)
 
 
 def is_logged():
