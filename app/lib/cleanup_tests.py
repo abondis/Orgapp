@@ -77,10 +77,30 @@ class RepoTest(unittest.TestCase):
 class ProjectTest(unittest.TestCase):
     """ Test project with a wiki and task db and task files"""
 
-    def testCreate(self):
+    def testInit(self):
+        _p = Project('projectname', '/tmp/pathtomy/projects', 'hg')
+        self.failUnless(_p.name == 'projectname')
+        self.failUnless(_p.path == '/tmp/pathtomy/projects')
+        self.failUnless(_p.vcs_type == 'hg')
+        self.failUnless(os.path.exists('/tmp/pathtomy/projects'))
+        self.failUnless(os.path.exists('/tmp/pathtomy/projects/projectname/.hg'))
+        self.failUnless(os.path.exists('/tmp/pathtomy/projects/projectname/doc'))
+        self.failUnless(os.path.exists('/tmp/pathtomy/projects/projectname/tasks'))
+
+    def testCreateTask(self):
+        _p = Project('projectname', '/tmp/pathtomy/projects', 'hg')
+        _p.create_task('unittest')
+        _t1 = Tasks.get(name='unittest')
+        self.failUnless(_t1.name == 'unittest' )
+        self.failUnless(_t1.project.name == 'unknown' )
+
+    def testCreateDoc(self):
         pass
 
-    def testRename(self):
+    def testRenameProject(self):
+        pass
+
+    def testRenameTask(self):
         pass
 
     def testListTasks(self):
@@ -90,4 +110,4 @@ class ProjectTest(unittest.TestCase):
         pass
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main(verbosity=2)

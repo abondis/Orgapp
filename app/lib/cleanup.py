@@ -157,7 +157,6 @@ class Repo:
         if self.vcs_type == 'git':
             # git wants a relative path
             path = path[len(self.path)+1:]
-            print dir(self.r)
             self.r.stage(path)
         # FIXME: does not work if there was an
             # issue with other uncommitted things
@@ -171,3 +170,25 @@ class Repo:
                 path,
                 message='commit {0}'.format(path))
 
+class Project:
+    def __init__(self, name, path, vcs_type, doc_path='doc', tasks_path='tasks'):
+        self.name = name
+        self.path = path
+        self.fullpath = path + '/' + self.name
+        self.doc_path = doc_path
+        self.tasks_path = tasks_path
+        self.vcs_type = vcs_type
+        self.r = Repo(self.fullpath, self.vcs_type)
+        if not os.path.exists(self.fullpath+'/'+doc_path):
+        # create doc dir
+            os.makedirs(self.fullpath+'/'+doc_path)
+        if not os.path.exists(self.fullpath+'/'+tasks_path):
+        # create doc dir
+            os.makedirs(self.fullpath+'/'+tasks_path)
+
+    def create_task(self, name):
+        _t = Tasks()
+        _d = str(datetime.datetime.now())
+        _t.name = name
+        _t.md5hash = md5(_d+name)
+        _t.save()
