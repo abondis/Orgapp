@@ -91,6 +91,7 @@ class ProjectTest(unittest.TestCase):
         _p = Project('projectname', '/tmp/pathtomy/projects', 'hg')
         _p.create_task('unittest')
         _t1 = Tasks.get(name='unittest')
+        # FIXME: check that file is created too
         self.failUnless(_t1.name == 'unittest' )
         self.failUnless(_t1.project.name == 'unknown' )
 
@@ -108,6 +109,34 @@ class ProjectTest(unittest.TestCase):
 
     def testAddDocuments(self):
         pass
+
+class DocTest(unittest.TestCase):
+    def testCreateDoc(self):
+        _doc = Doc('/tmp/mydoc', '/tmp/mydocscache')
+        _doc.create_doc('mydoc.something', 'this is my content')
+        self.failUnless(os.path.exists('/tmp/mydoc/mydoc.something'))
+        self.failUnless(os.path.exists('/tmp/mydocscache'))
+        with open('/tmp/mydoc/mydoc.something') as _f:
+            _c = _f.read()
+        self.failUnless( _c == 'this is my content')
+
+    def testCacheDoc(self):
+        _doc = Doc('/tmp/mydoc', '/tmp/mydocscache')
+        _doc.create_doc('mydoc.md', 'this is my content')
+        _doc.cache('mydoc.md')
+        with open('/tmp/mydocscache/mydoc.md') as _f:
+            _c = _f.read()
+        self.failUnless(os.path.exists('/tmp/mydocscache/mydoc.md'))
+        self.failUnless( _c == '<p>this is my content</p>')
+
+    def testRenderDoc(self):
+        _doc = Doc('/tmp/mydoc', '/tmp/mydocscache')
+        _doc.create_doc('mydoc.truc', 'this is my content')
+        _r = _doc.render('mydoc.truc')
+        self.failUnless( _r == 'this is my content')
+        _doc.create_doc('mydoc.md', 'this is my content')
+        _r = _doc.render('mydoc.md')
+        self.failUnless( _r == '<p>this is my content</p>')
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)

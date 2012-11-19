@@ -171,20 +171,41 @@ class Repo:
                 message='commit {0}'.format(path))
 
 class Project:
-    def __init__(self, name, path, vcs_type, doc_path='doc', tasks_path='tasks'):
+    def __init__(
+            self,
+            name,
+            path,
+            vcs_type,
+            cache_path = '/tmp',
+            doc_path='doc',
+            tasks_path='tasks'):
         self.name = name
+        # root path
         self.path = path
+        # repo's path
         self.fullpath = path + '/' + self.name
+        # root cache path
+        self.cache_path = cache_path + '/' + self.name
+        # doc's path relative to repo's path
         self.doc_path = doc_path
+        # tasks's path relative to repo's path
         self.tasks_path = tasks_path
+        # vcs type: git or hg
         self.vcs_type = vcs_type
+        # path to cache tasks
+        self.tasks_cache = self.cache_path + '/' + self.tasks_path
+        # path to cache doc
+        self.doc_cache = self.cache_path + '/' + self.doc_path
+        # open project's repo
         self.r = Repo(self.fullpath, self.vcs_type)
-        if not os.path.exists(self.fullpath+'/'+doc_path):
-        # create doc dir
-            os.makedirs(self.fullpath+'/'+doc_path)
-        if not os.path.exists(self.fullpath+'/'+tasks_path):
-        # create doc dir
-            os.makedirs(self.fullpath+'/'+tasks_path)
+        # project's documents full path
+        self.doc_fullpath = self.fullpath+'/'+self.doc_path
+        # tasks's documents full path
+        self.tasks_fullpath = self.fullpath+'/'+self.tasks_path
+        # project's documents handler
+        self.doc_files = Doc(self.doc_fullpath, self.doc_cache)
+        # tasks's documents handler
+        self.tasks_files = Doc(self.tasks_fullpath, self.tasks_cache)
 
     def create_task(self, name):
         _t = Tasks()
@@ -192,3 +213,55 @@ class Project:
         _t.name = name
         _t.md5hash = md5(_d+name)
         _t.save()
+
+
+import markdown as md
+class Doc:
+    """Handle documents"""
+    def __init__(self, root_path, cache_path):
+        self.renderers = {'copy': self.render_copy, 'md': self.render_md}
+        self.root_path = root_path
+        self.cache_path = cache_path
+        ## create doc dir
+        if not os.path.exists(self.root_path):
+            os.makedirs(self.root_path)
+        # create doc cache dir
+        if not os.path.exists(self.cache_path):
+            os.makedirs(self.cache_path)
+
+    def get_file_ext(self, path):
+        return path.rsplit('.')[-1]
+
+    def create_doc(self, filename, content, mode='doc'):
+        """ creates a document using some content
+        mode: is doc by default, can be cache to use the cache_path instead
+        of root_path
+        """
+        if mode == 'doc':
+            path = self.root_path
+        elif mode == 'cache':
+            path = self.cache_path
+        with open(path+'/'+filename, 'w') as _f:
+            _f.write(content)
+
+    def cache(self, filename):
+        content = self.render(filename)
+        self.create_doc(filename, content, mode='cache')
+
+    def render(self, filename):
+        """renders a doc into cache_path.
+        Let project handle path construction"""
+        _ext = self.get_file_ext(filename)
+        if _ext not in self.renderers.keys():
+            _ext = 'copy'
+        with open(self.root_path+'/'+filename, 'r') as _f:
+            content = _f.read()
+            return(self.renderers[_ext](content))
+
+    def render_copy(self, content):
+        return content
+
+    def render_md(self, content):
+        return(md.markdown(content, ['fenced_code', 'tables', 'codehilite']))
+
+
