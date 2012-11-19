@@ -15,6 +15,7 @@ Model
     - project
     - status
     - position
+    - time
 - Projects:
     - id
     - name
@@ -51,6 +52,11 @@ except:
 
 
 class Tasks(CustomModel):
+    """Newly created task gets the highest
+    position of all tasks (least important)
+    Moving tasks will be relative to project, using positions available in 
+    the project
+    """
 # not null is forced by default
     name = CharField()
     # FIXME: how to generate the md5 automatically ?
@@ -66,7 +72,8 @@ class Tasks(CustomModel):
             related_name='tasks',
             default = Statuses.get_or_create(name=DEFAULTSTATUS))
     # FIXME: how to use Tasks.count for this field ?
-    position = IntegerField(default=-1)
+    position = IntegerField(default=0)
+    time = FloatField(default=0)
 
     class Meta:
         """ Default order_by """
@@ -207,7 +214,7 @@ class Project:
         # tasks's documents handler
         self.tasks_files = Doc(self.tasks_fullpath, self.tasks_cache)
 
-    def create_task(self, name, MU_type='md'):
+    def create_task(self, name, content='', MU_type='md'):
         """MarkUp type defaults to 'markdown'
         """
         _t = Tasks()
@@ -215,7 +222,13 @@ class Project:
         _t.name = name
         _t.md5hash = md5(_d+name)
         _t.save()
-        self.tasks_files.create_doc(name+'.'+MU_type, '')
+        self.tasks_files.create_doc(name+'.'+MU_type, content)
+        self.r.add_file(self.tasks_fullpath+'/'+name+'.'+MU_type)
+
+    def create_doc(self, name, content='', MU_type='md') :
+        self.doc_files.create_doc(name+'.'+MU_type, content)
+        self.r.add_file(self.doc_fullpath+'/'+name+'.'+MU_type)
+        self.doc_files.cache(name+'.'+MU_type)
 
 
 import markdown as md
@@ -272,3 +285,33 @@ class Doc:
         return(md.markdown(content, ['fenced_code', 'tables', 'codehilite']))
 
 
+class Tasklist:
+    """A tasklist handling Tasks from the DB
+    and setting values like: md5hash, position"""
+    def __init__(self, project='*'):
+        if project == '*':
+            self.tasks = Tasks.select()
+            self.project = Projects.get_or_create(name=DEFAULTPROJECT)
+        else:
+            self.project = Projects.get_or_create(name=project)
+            self.tasks = Tasks.select().where(Tasks.project==self.project)
+
+    def count(self):
+        return Tasks.select().count()
+
+    def get(self, name):
+        q = Tasks.get(Tasks.name==name, Tasks.project==self.project)
+        return q
+
+    def add_task(self, name, status=DEFAULTSTATUS):
+        _now = str(datetime.datetime.now())
+        _md5hash = md5(_now+name).hexdigest()
+        _pos = self.count()+1
+        Tasks.create(
+                name=name,
+                md5hash=_md5hash,
+                project=self.project,
+                position=_pos)
+
+    def move(self, source, dest):
+        pass

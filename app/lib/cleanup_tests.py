@@ -12,6 +12,7 @@ test_doc_path = '/tmp/mydoc'
 test_git_path = '/tmp/git_test'
 test_hg_path = '/tmp/hg_test'
 test_proj_path = '/tmp/myproject'
+_now = str(datetime.datetime.now())
 
 class TasksTests(unittest.TestCase):
 
@@ -20,7 +21,8 @@ class TasksTests(unittest.TestCase):
         _now = str(datetime.datetime.now())
         Tasks.create(
                 name='test',
-                md5hash=md5('test'+_now).hexdigest())
+                md5hash=md5('test'+_now).hexdigest(),
+                position=30)
         _t = Tasks.get(name='test')
         self.failUnless(_t.name == 'test')
         self.failUnless(_t.md5hash == md5('test'+_now).hexdigest())
@@ -30,24 +32,33 @@ class TasksTests(unittest.TestCase):
 
     def testRename(self):
         """ Rename 'test' to 'Test'"""
-        _t1 = Tasks.get(name='test')
-        _t1.rename('Test')
-        _t2 = Tasks.get(name='Test')
-        self.failUnless(_t2.name == 'Test')
-        self.failUnless(_t2.md5hash == _t1.md5hash)
-        self.failUnless(_t2.project.name == DEFAULTPROJECT)
-        self.failUnless(_t2.status.name == DEFAULTSTATUS)
+        _t = Tasks.get_or_create(
+                name='test',
+                md5hash=md5('test'+_now).hexdigest(),
+                position=30)
+        _md5 = _t.md5hash
+        _t.rename('Test')
+        self.failUnless(_t.name == 'Test')
+        self.failUnless(_t.md5hash == _md5)
+        self.failUnless(_t.project.name == DEFAULTPROJECT)
+        self.failUnless(_t.status.name == DEFAULTSTATUS)
 
     def testChangePos(self):
         """ Move 'Test' to pos 1"""
-        _t = Tasks.get(name='Test')
-        _t.position = 1
+        _t = Tasks.get_or_create(
+                name='test',
+                md5hash=md5('test'+_now).hexdigest(),
+                position=30)
+        _t.position = 20
         _t.save()
-        self.failUnless( _t.position == 1)
+        self.failUnless( _t.position == 20)
 
     def testDelete(self):
         """ Delete 'Test' from the list"""
-        _t = Tasks.get(name='Test')
+        _t = Tasks.get_or_create(
+                name='test',
+                md5hash=md5('test'+_now).hexdigest(),
+                position=30)
         _count = _t.delete_instance()
         self.failUnless(_count == 1)
 
@@ -108,7 +119,11 @@ class ProjectTest(unittest.TestCase):
             os.path.exists( test_proj_path+'/projectname/tasks/unittest.md'))
 
     def testCreateDoc(self):
-        pass
+        _p = Project('projectname', test_proj_path+'', 'hg')
+        _p.create_doc('blah', 'this is MY content')
+        with open(test_proj_path+'/projectname/doc/blah.md') as _f:
+            _c = _f.read()
+        self.failUnless( _c == 'this is MY content')
 
     def testRenameProject(self):
         pass
@@ -173,6 +188,24 @@ class DocTest(unittest.TestCase):
         shutil.rmtree(test_doc_path+'scache', ignore_errors=True)
         shutil.rmtree(test_hg_path+'', ignore_errors=True)
         shutil.rmtree(test_git_path+'', ignore_errors=True)
+
+class TasklistTest(unittest.TestCase):
+    def testAddTask(self):
+        """Add a task in the task list"""
+        # to add a task and check status relatively to project
+        _tl = Tasklist('myproject')
+        _tl.add_task('mytask')
+        _t = _tl.get('mytask')
+        self.failUnless(_t.position == _tl.count())
+
+    def testMoveTask(self):
+        """Move a task before another in project"""
+        pass
+
+    def testGloballyMoveTask(self):
+        """Move a task before another globally"""
+        pass
+
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)
