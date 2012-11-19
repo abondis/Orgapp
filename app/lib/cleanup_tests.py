@@ -6,6 +6,12 @@ import unittest
 from cleanup import *
 from hashlib import md5
 import os
+import shutil
+
+test_doc_path = '/tmp/mydoc'
+test_git_path = '/tmp/git_test'
+test_hg_path = '/tmp/hg_test'
+test_proj_path = '/tmp/myproject'
 
 class TasksTests(unittest.TestCase):
 
@@ -50,50 +56,56 @@ class RepoTest(unittest.TestCase):
     """ Test repo can be hg or git """
     def testOpenRepo(self):
         """ Test opening a repo"""
-        Repo('/tmp/hg_test', 'hg')
-        self.failUnless( os.path.exists('/tmp/hg_test'))
-        self.failUnless( os.path.exists('/tmp/hg_test/.hg'))
-        Repo('/tmp/git_test', 'git')
-        self.failUnless( os.path.exists('/tmp/git_test'))
-        self.failUnless( os.path.exists('/tmp/git_test/.git'))
+        Repo(test_hg_path+'', 'hg')
+        self.failUnless( os.path.exists(test_hg_path+''))
+        self.failUnless( os.path.exists(test_hg_path+'/.hg'))
+        Repo(test_git_path+'', 'git')
+        self.failUnless( os.path.exists(test_git_path+''))
+        self.failUnless( os.path.exists(test_git_path+'/.git'))
 
     def testAddFile(self):
         """ Test adding a file to the repo"""
-        _r = Repo('/tmp/hg_test', 'hg')
-        with open('/tmp/hg_test/TestFile', 'w') as f:
+        _r = Repo(test_hg_path+'', 'hg')
+        with open(test_hg_path+'/TestFile', 'w') as f:
             f.write("UNITTEST")
-        _r.add_file('/tmp/hg_test/TestFile')
-        self.failUnless( os.path.exists('/tmp/hg_test/TestFile'))
-        _r = Repo('/tmp/git_test', 'git')
-        with open('/tmp/git_test/TestFile', 'w') as f:
+        _r.add_file(test_hg_path+'/TestFile')
+        self.failUnless( os.path.exists(test_hg_path+'/TestFile'))
+        _r = Repo(test_git_path+'', 'git')
+        with open(test_git_path+'/TestFile', 'w') as f:
             f.write("UNITTEST")
-        _r.add_file('/tmp/git_test/TestFile')
-        self.failUnless( os.path.exists('/tmp/git_test/TestFile'))
+        _r.add_file(test_git_path+'/TestFile')
+        self.failUnless( os.path.exists(test_git_path+'/TestFile'))
 
     def testrmFile(self):
         """ Test removing a file from the repo"""
         pass
+    @classmethod
+    def tearDownClass(self):
+        shutil.rmtree(test_hg_path)
+        shutil.rmtree(test_git_path)
     
 class ProjectTest(unittest.TestCase):
     """ Test project with a wiki and task db and task files"""
 
     def testInit(self):
-        _p = Project('projectname', '/tmp/pathtomy/projects', 'hg')
+        _p = Project('projectname', test_proj_path+'', 'hg')
         self.failUnless(_p.name == 'projectname')
-        self.failUnless(_p.path == '/tmp/pathtomy/projects')
+        self.failUnless(_p.path == test_proj_path+'')
         self.failUnless(_p.vcs_type == 'hg')
-        self.failUnless(os.path.exists('/tmp/pathtomy/projects'))
-        self.failUnless(os.path.exists('/tmp/pathtomy/projects/projectname/.hg'))
-        self.failUnless(os.path.exists('/tmp/pathtomy/projects/projectname/doc'))
-        self.failUnless(os.path.exists('/tmp/pathtomy/projects/projectname/tasks'))
+        self.failUnless(os.path.exists(test_proj_path+''))
+        self.failUnless(os.path.exists(test_proj_path+'/projectname/.hg'))
+        self.failUnless(os.path.exists(test_proj_path+'/projectname/doc'))
+        self.failUnless(os.path.exists(test_proj_path+'/projectname/tasks'))
 
     def testCreateTask(self):
-        _p = Project('projectname', '/tmp/pathtomy/projects', 'hg')
+        _p = Project('projectname', test_proj_path+'', 'hg')
         _p.create_task('unittest')
         _t1 = Tasks.get(name='unittest')
         # FIXME: check that file is created too
         self.failUnless(_t1.name == 'unittest' )
         self.failUnless(_t1.project.name == 'unknown' )
+        self.failUnless(
+            os.path.exists( test_proj_path+'/projectname/tasks/unittest.md'))
 
     def testCreateDoc(self):
         pass
@@ -110,33 +122,57 @@ class ProjectTest(unittest.TestCase):
     def testAddDocuments(self):
         pass
 
+    @classmethod
+    def tearDownClass(self):
+        shutil.rmtree(test_proj_path)
+        # default project cache is in /tmp
+        shutil.rmtree('/tmp/projectname')
+
 class DocTest(unittest.TestCase):
     def testCreateDoc(self):
-        _doc = Doc('/tmp/mydoc', '/tmp/mydocscache')
+        _doc = Doc(test_doc_path+'', test_doc_path+'scache')
         _doc.create_doc('mydoc.something', 'this is my content')
-        self.failUnless(os.path.exists('/tmp/mydoc/mydoc.something'))
-        self.failUnless(os.path.exists('/tmp/mydocscache'))
-        with open('/tmp/mydoc/mydoc.something') as _f:
+        self.failUnless(os.path.exists(test_doc_path+'/mydoc.something'))
+        self.failUnless(os.path.exists(test_doc_path+'scache'))
+        with open(test_doc_path+'/mydoc.something') as _f:
             _c = _f.read()
         self.failUnless( _c == 'this is my content')
 
     def testCacheDoc(self):
-        _doc = Doc('/tmp/mydoc', '/tmp/mydocscache')
+        _doc = Doc(test_doc_path+'', test_doc_path+'scache')
         _doc.create_doc('mydoc.md', 'this is my content')
         _doc.cache('mydoc.md')
-        with open('/tmp/mydocscache/mydoc.md') as _f:
+        with open(test_doc_path+'scache/mydoc.md') as _f:
             _c = _f.read()
-        self.failUnless(os.path.exists('/tmp/mydocscache/mydoc.md'))
+        self.failUnless(os.path.exists(test_doc_path+'scache/mydoc.md'))
         self.failUnless( _c == '<p>this is my content</p>')
 
     def testRenderDoc(self):
-        _doc = Doc('/tmp/mydoc', '/tmp/mydocscache')
+        _doc = Doc(test_doc_path+'', test_doc_path+'scache')
         _doc.create_doc('mydoc.truc', 'this is my content')
         _r = _doc.render('mydoc.truc')
         self.failUnless( _r == 'this is my content')
         _doc.create_doc('mydoc.md', 'this is my content')
         _r = _doc.render('mydoc.md')
         self.failUnless( _r == '<p>this is my content</p>')
+
+    def testGetDoc(self):
+        _doc = Doc(test_doc_path+'', test_doc_path+'scache')
+        _doc.create_doc('mydoc.truc', 'this is my content')
+        _doc.cache('mydoc.truc')
+        _c = _doc.get_doc('mydoc.truc')
+        self.failUnless( _c == 'this is my content')
+        _doc.create_doc('mydoc.md', 'this is my content')
+        _doc.cache('mydoc.md')
+        _c = _doc.get_doc('mydoc.md')
+        self.failUnless( _c == '<p>this is my content</p>')
+
+    @classmethod
+    def tearDownClass(self):
+        shutil.rmtree(test_doc_path+'', ignore_errors=True)
+        shutil.rmtree(test_doc_path+'scache', ignore_errors=True)
+        shutil.rmtree(test_hg_path+'', ignore_errors=True)
+        shutil.rmtree(test_git_path+'', ignore_errors=True)
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)

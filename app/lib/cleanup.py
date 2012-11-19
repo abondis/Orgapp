@@ -207,12 +207,15 @@ class Project:
         # tasks's documents handler
         self.tasks_files = Doc(self.tasks_fullpath, self.tasks_cache)
 
-    def create_task(self, name):
+    def create_task(self, name, MU_type='md'):
+        """MarkUp type defaults to 'markdown'
+        """
         _t = Tasks()
         _d = str(datetime.datetime.now())
         _t.name = name
         _t.md5hash = md5(_d+name)
         _t.save()
+        self.tasks_files.create_doc(name+'.'+MU_type, '')
 
 
 import markdown as md
@@ -231,6 +234,10 @@ class Doc:
 
     def get_file_ext(self, path):
         return path.rsplit('.')[-1]
+
+    def get_doc(self, filename):
+        with open(self.cache_path+'/'+filename) as _f:
+            return _f.read()
 
     def create_doc(self, filename, content, mode='doc'):
         """ creates a document using some content
