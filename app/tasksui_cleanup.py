@@ -2,18 +2,12 @@
 import sys
 sys.path.extend(['lib'])
 from webui import is_logged
-from bottle import request
-from bottle import view, redirect, url
-from bottle import post, get
-#from tasks import Tasks
-from cleanup import Tasks
-from cleanup import Statuses
-from beaker.middleware import SessionMiddleware
-from cork import Cork
 
 
+from orgapp_globals import *
 t = Tasks()
-auth = Cork('config')
+# FIXME: use config
+#p = Orgapp('/tmp/projects', ['test', 'truc', 'unknown'])
 
 
 def make_tasks_menu():
@@ -30,9 +24,14 @@ def make_tasks_menu():
 @view('tasks/list_tasks')
 def list_tasks():
     menu = make_tasks_menu()
-    tasks_list = [x.name for x in t.select()]
+    statuses = Statuses.select()
+    tasks_list = {}
+    for s in statuses:
+        tasks_list[s.name] = t.select().where(Tasks.status == s)
     return(
-        dict(tasks_list=tasks_list,
+        dict(
+        tasks_list=tasks_list,
+        statuses=statuses,
         title="Task list",
         leftmenu=menu,
         project=None))
@@ -46,10 +45,12 @@ def add_task():
         role='edit',
         fail_redirect='/login?redirect=' + _redirect[0])
     menu = make_tasks_menu()
-    statuses = [x.name for x in Statuses.select()]
+    statuses = Statuses.select()
+    projects = Projects.select()
     return(dict(title="Add task",
         leftmenu=menu,
         project=None,
+        projects=projects,
         statuses=statuses))
 
 
@@ -57,10 +58,14 @@ def add_task():
 def create_task():
     auth.require(role='edit', fail_redirect='/login')
     name = request.forms.name
-    position = request.forms.position
+    #position = request.forms.position
     status = request.forms.status
+    project = request.forms.project
+    content = ''
     # do something with tasklists
     #t.create(name, position, status)
+    print p.projects
+    p[project].create_task(name, content, status=status)
     redirect('/tasks')
 
 

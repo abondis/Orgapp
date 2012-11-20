@@ -2,20 +2,13 @@
 import sys
 import os
 sys.path.extend(['lib'])
-from bottle import run, static_file, request
-from bottle import view, redirect, template, url
-from bottle import post, get
-from bottle import app
-from cleanup import *
+from orgapp_globals import *
 from beaker.middleware import SessionMiddleware
 #from mercurial.hgweb import hgweb
-from cork import Cork
 from bottle import SimpleTemplate
 
 
-p = Orgapp('/tmp/projects', ['test', 'truc'])
 # Use users.json and roles.json in the local example_conf directory
-aaa = Cork('config')
 #subproject = hgweb('/tmp/trucmuche')
 #mount('/hg/', subproject)
 
@@ -26,7 +19,7 @@ def login():
     password = request.POST.get('password', '')
     _redirect = request.POST.get('redirect', '/')
     print _redirect
-    aaa.login(
+    auth.login(
             username,
             password,
             success_redirect=_redirect,
@@ -43,7 +36,7 @@ def login_get():
 
 @get('/logout', name='logout')
 def logout():
-        aaa.logout(success_redirect='/login')
+        auth.logout(success_redirect='/login')
 
 
 @get('/static/<path:path>', name='static')
@@ -118,7 +111,7 @@ def list_wiki_pages(project):
 @view('wiki/edit_wiki_page')
 def edit_wiki_page(project, path):
     _redirect = '/' + project + '/doc/' + path + '/edit',
-    aaa.require(
+    auth.require(
         role='edit',
         fail_redirect='/login?redirect=' + _redirect[0])
     pagename = '/' + project + '/doc/' + path
@@ -137,7 +130,7 @@ def edit_wiki_page(project, path):
 @view('wiki/new_wiki_page')
 def new_wiki_page(project):
     _redirect='/' + project + '/doc/new',
-    aaa.require(
+    auth.require(
         role='edit',
         fail_redirect='/login?redirect=' + _redirect[0])
     menu = make_wiki_menu(project)
@@ -150,7 +143,7 @@ def new_wiki_page(project):
 
 @post('/<project>/doc/new')
 def save_new_wiki_page(project):
-    aaa.require(role='edit', fail_redirect='/login')
+    auth.require(role='edit', fail_redirect='/login')
     content = request.forms.content
     pagename = request.forms.pagename
     p[project].doc.save("{0}.md".format(pagename), content, project)
@@ -164,7 +157,7 @@ def save_new_wiki_page(project):
 @view('wiki/edit_wiki_page')
 def save_wiki_page(project, path):
     _redirect='/' + project + '/doc/' + path + '/edit',
-    aaa.require(
+    auth.require(
         role='edit',
         fail_redirect='/login?redirect=' + _redirect[0])
     menu = make_wiki_menu(project, path)
@@ -209,7 +202,7 @@ def projects_list():
 
 def is_logged():
     try:
-        aaa.current_user
+        auth.current_user
         return True
     except:
         return False

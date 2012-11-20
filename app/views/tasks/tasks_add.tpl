@@ -14,7 +14,17 @@
                 <select name="status">
                   %for o in statuses:
                   <option value="{{o.name}}">{{o.name}}</option>
-                  %end    
+                  %end
+                </select>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="project">Project:</label>
+            <div class="controls">
+                <select name="project">
+                  %for p in projects:
+                  <option value="{{p.name}}">{{p.name}}</option>
+                  %end
                 </select>
             </div>
         </div>

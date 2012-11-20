@@ -170,12 +170,18 @@ class Repo:
             self.r.do_commit(
                 message='commit {0}'.format(path))
         elif self.vcs_type == 'hg':
+            _lock = self.r.lock()
+            print '='*35
+            print self.r
+            print path
+            print '='*35
             hg.add(self.ui, self.r, path)
             hg.commit(
                 self.ui,
                 self.r,
                 path,
                 message='commit {0}'.format(path))
+            _lock.release()
 
 class Project:
     def __init__(
@@ -214,12 +220,13 @@ class Project:
         # tasks's documents handler
         self.tasks_files = Doc(self.tasks_fullpath, self.tasks_cache)
 
-    def create_task(self, name, content='', MU_type='md'):
+    def create_task(self, name,content='', MU_type='md', status=DEFAULTSTATUS ):
         """MarkUp type defaults to 'markdown'
         """
         _t = Tasks()
         _d = str(datetime.datetime.now())
         _t.name = name
+        _t.status = Statuses.get(name=status)
         _t.md5hash = md5(_d+name)
         _t.save()
         self.tasks_files.create_doc(name+'.'+MU_type, content)
