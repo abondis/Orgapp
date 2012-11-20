@@ -206,6 +206,13 @@ class TasklistTest(unittest.TestCase):
         """Move a task before another globally"""
         pass
 
+class TestOrgapp(unittest.TestCase):
+    def testInit(self):
+        """Test creating orgapp object 
+        """
+        O = Orgapp('/tmp/projects', ['unittest'])
+        self.failUnless(O.projects_list == ['unittest'])
+
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)

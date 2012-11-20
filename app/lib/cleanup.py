@@ -315,3 +315,18 @@ class Tasklist:
 
     def move(self, source, dest):
         pass
+
+class Orgapp:
+    """A bunch of projects and a global Tasklist
+    """
+    def __init__(self, root_path, projects_list):
+        self.root_path = root_path
+        self.projects_list = projects_list
+        self.projects = {}
+        for _p in projects_list:
+            self.projects[_p] = Project(_p, self.root_path, 'hg')
+
+    def __getitem__(self, item):
+        return self.projects[item]
+
+
