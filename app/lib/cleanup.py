@@ -336,7 +336,13 @@ class Tasklist:
 class Orgapp:
     """A bunch of projects and a global Tasklist
     """
-    def __init__(self, root_path, projects_list):
+    def __init__(
+            self,
+            root_path,
+            projects_list,
+            statuses=[DEFAULTSTATUS]):
+        for s in statuses:
+            Statuses.get_or_create(name=s)
         self.root_path = root_path
         self.projects_list = projects_list
         self.projects = {}
@@ -346,8 +352,10 @@ class Orgapp:
     def __getitem__(self, item):
         return self.projects[item]
 
-    def add_task(self, name, project):
+    def add_task(self, name, project, content=None, status=DEFAULTSTATUS):
+        if not content:
+            content = name
         p = self.projects[project]
-        p.create_task(name)
+        p.create_task(name, content, status=status)
 
 

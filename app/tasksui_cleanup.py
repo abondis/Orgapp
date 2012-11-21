@@ -63,13 +63,13 @@ def create_task():
     #position = request.forms.position
     status = request.forms.status
     project = request.forms.project
-    content = ''
+    content = request.forms.content
     # do something with tasklists
     #t.create(name, position, status)
     print "name: "+name
     print "projects :"+str(o[project])
     print "project path: "+o[project].r.path
-    o.add_task(name, project)
+    o.add_task(name, project, content, status)
     redirect('/tasks')
 
 

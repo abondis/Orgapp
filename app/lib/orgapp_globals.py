@@ -15,4 +15,7 @@ from bottle import app
 
 
 auth = Cork('config')
-o = Orgapp('/tmp/projects', ['test', 'truc', 'unknown'])
+o = Orgapp(
+    '/tmp/projects',
+    ['test', 'truc', 'unknown'],
+    statuses=['backlog', 'new', 'running', 'done'])
