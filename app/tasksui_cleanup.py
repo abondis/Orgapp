@@ -81,8 +81,10 @@ def edit_task(tid):
     new_status = request.query.new_status
     # move a task
     #t.move(tid, new_pos, new_status)
-    #if new_status != 'null':
+    o.set_position(tid, new_pos)
+    if new_status != 'null':
     #    t.status(tid, new_status)
+        o.set_status(tid, new_status)
 
 
 @post('/tasks/<tid>/update')
@@ -93,8 +95,9 @@ def update_task(tid):
     new_description = request.forms.description
     # move a task
     #t.move(tid, new_pos, new_status)
-    #if new_status != 'null':
-    #    t.status(tid, new_status)
+    o.set_position(tid, new_pos)
+    if new_status != 'null':
+        o.set_status(tid, new_status)
     #t.description(tid, new_description)
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         return 'something'

@@ -230,6 +230,7 @@ class Project:
         _t.name = name
         _t.status = Statuses.get(name=status)
         _t.md5hash = md5(_d+name)
+        _t.position = Tasks.select().count()
         _t.save()
         #if content == '':
             #content = name
@@ -357,5 +358,43 @@ class Orgapp:
             content = name
         p = self.projects[project]
         p.create_task(name, content, status=status)
+    def set_position(self, tid, new_pos, project='*'):
+        """Set new position and update their friends"""
+        if Tasks.select().count() == 1:
+            return
+        _t = Tasks.get(id=tid)
+        old_pos = _t.position
+        # query to select tasks to update
+        updq = Tasks.select()
+        # update all Tasks
+        # update tasks in the specific project
+        if not project == '*':
+            updq = updq.where(
+                    Tasks.project == Projects.get(name=project))
+        # update from top to bottom
+        if new_pos > old_pos:
+            updq = updq.where( Tasks.position <= new_pos, Tasks.position >= old_pos)
+        # update from bottom to top
+        else:
+            updq = updq.where( Tasks.position >= new_pos, Tasks.position <= old_pos)
+            updq = updq.order_by(Tasks.position.desc())
+        # FIXME: hackish, find if there is a better way
+        prev = [x for x in updq.limit(1)][0]
+        updq = updq.limit(-1).offset(1)
+        _first = prev
+        for upd_t in updq:
+            print "moving task: "+upd_t.name+" from: "+str(upd_t.position)+" to: "+str(prev.position)
+            upd_t.position = prev.position
+            upd_t.save()
+            prev = upd_t
+        _first.position = new_pos
+        _first.save()
+    def set_status(self, tid, new_status):
+        """ Set tasks #tid with new_status"""
+        _t = Tasks.get(id=tid)
+        _s = Statuses.get(name=new_status)
+        _t.status = _s
+        _t.save()
+
 
 
