@@ -372,10 +372,17 @@ class Orgapp:
             updq = updq.where(
                     Tasks.project == Projects.get(name=project))
         # update from top to bottom
-        if new_pos > old_pos:
+        print '*'*100
+        print "old pos: "+str(old_pos)
+        print "new pos: "+str(new_pos)
+        print '*'*100
+        if int(new_pos) > int(old_pos):
             updq = updq.where( Tasks.position <= new_pos, Tasks.position >= old_pos)
         # update from bottom to top
         else:
+            print '*'*100
+            print "from bottom to top!"
+            print '*'*100
             updq = updq.where( Tasks.position >= new_pos, Tasks.position <= old_pos)
             updq = updq.order_by(Tasks.position.desc())
         # FIXME: hackish, find if there is a better way
