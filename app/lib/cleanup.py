@@ -225,12 +225,13 @@ class Project:
     def create_task(self, name,content='', MU_type='md', status=DEFAULTSTATUS ):
         """MarkUp type defaults to 'markdown'
         """
+        _status = Statuses.get(name=status)
         _t = Tasks()
         _d = str(datetime.datetime.now())
         _t.name = name
-        _t.status = Statuses.get(name=status)
+        _t.status = _status
         _t.md5hash = md5(_d+name)
-        _t.position = Tasks.select().count()
+        _t.position = Tasks.select().where(Tasks.status == _status).count()
         _t.save()
         #if content == '':
             #content = name
@@ -350,6 +351,10 @@ class Orgapp:
         for _p in projects_list:
             self.projects[_p] = Project(_p, self.root_path, 'hg')
 
+    def count_tasks_by_status(self, tid):
+        _s = Tasks.get(id=tid).status
+        return Tasks.select(status=_s).count()
+
     def __getitem__(self, item):
         return self.projects[item]
 
@@ -365,7 +370,7 @@ class Orgapp:
         _t = Tasks.get(id=tid)
         old_pos = _t.position
         # query to select tasks to update
-        updq = Tasks.select()
+        updq = Tasks.select().where(Tasks.project == _t.project)
         # update all Tasks
         # update tasks in the specific project
         if not project == '*':
