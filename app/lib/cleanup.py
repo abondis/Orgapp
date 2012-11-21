@@ -170,7 +170,7 @@ class Repo:
             self.r.do_commit(
                 message='commit {0}'.format(path))
         elif self.vcs_type == 'hg':
-            _lock = self.r.lock()
+            #_lock = self.r.lock()
             print '='*35
             print self.r
             print path
@@ -181,7 +181,7 @@ class Repo:
                 self.r,
                 path,
                 message='commit {0}'.format(path))
-            _lock.release()
+            #_lock.release()
 
 class Project:
     def __init__(
@@ -219,6 +219,8 @@ class Project:
         self.doc_files = Doc(self.doc_fullpath, self.doc_cache)
         # tasks's documents handler
         self.tasks_files = Doc(self.tasks_fullpath, self.tasks_cache)
+        # create project in db if not exist
+        Projects.get_or_create(name=self.name)
 
     def create_task(self, name,content='', MU_type='md', status=DEFAULTSTATUS ):
         """MarkUp type defaults to 'markdown'
@@ -229,8 +231,16 @@ class Project:
         _t.status = Statuses.get(name=status)
         _t.md5hash = md5(_d+name)
         _t.save()
-        self.tasks_files.create_doc(name+'.'+MU_type, content)
-        self.r.add_file(self.tasks_fullpath+'/'+name+'.'+MU_type)
+        #if content == '':
+            #content = name
+        #self.tasks_files.create_doc(name+'.'+MU_type, content)
+        #self.tasks_files.create_doc(name, content)
+        #self.r.add_file(self.r.path+'/tasks/'+name)
+        print '*'*100
+        print self.tasks_files.root_path
+        print 'tasks fulpath: '+self.tasks_fullpath+'/'+name+'.'+MU_type
+        print '*'*100
+        #self.r.add_file(self.tasks_fullpath+'/'+name+'.'+MU_type)
 
     def create_doc(self, name, content='', MU_type='md') :
         self.doc_files.create_doc(name+'.'+MU_type, content)
@@ -335,5 +345,9 @@ class Orgapp:
 
     def __getitem__(self, item):
         return self.projects[item]
+
+    def add_task(self, name, project):
+        p = self.projects[project]
+        p.create_task(name)
 
 

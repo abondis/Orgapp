@@ -2,6 +2,7 @@
 import sys
 import os
 sys.path.extend(['lib'])
+import bottle
 from orgapp_globals import *
 from beaker.middleware import SessionMiddleware
 #from mercurial.hgweb import hgweb
@@ -12,6 +13,8 @@ from bottle import SimpleTemplate
 #subproject = hgweb('/tmp/trucmuche')
 #mount('/hg/', subproject)
 
+import bottle_werkzeug
+bottle.install(bottle_werkzeug.Plugin(evalex=True))
 
 @post('/login')
 def login():

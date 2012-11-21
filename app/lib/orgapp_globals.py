@@ -15,4 +15,4 @@ from bottle import app
 
 
 auth = Cork('config')
-p = Orgapp('/tmp/projects', ['test', 'truc', 'unknown'])
+o = Orgapp('/tmp/projects', ['test', 'truc', 'unknown'])

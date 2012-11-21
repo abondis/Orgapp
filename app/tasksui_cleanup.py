@@ -46,7 +46,9 @@ def add_task():
         fail_redirect='/login?redirect=' + _redirect[0])
     menu = make_tasks_menu()
     statuses = Statuses.select()
+    print [x.name for x in statuses]
     projects = Projects.select()
+    print [x.name for x in projects]
     return(dict(title="Add task",
         leftmenu=menu,
         project=None,
@@ -64,8 +66,10 @@ def create_task():
     content = ''
     # do something with tasklists
     #t.create(name, position, status)
-    print p.projects
-    p[project].create_task(name, content, status=status)
+    print "name: "+name
+    print "projects :"+str(o[project])
+    print "project path: "+o[project].r.path
+    o.add_task(name, project)
     redirect('/tasks')
 
 

@@ -213,6 +213,12 @@ class TestOrgapp(unittest.TestCase):
         O = Orgapp('/tmp/projects', ['unittest'])
         self.failUnless(O.projects_list == ['unittest'])
 
+    def testAddTask(self):
+        O = Orgapp('/tmp/projects', ['unittest'])
+        O.add_task('test', 'unittest')
+        self.failUnless(os.path.exists('/tmp/projects/unittest/tasks/test')
+
+
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)
