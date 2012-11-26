@@ -9,6 +9,7 @@
       %end
         %for t in tasks_list[s]:
         <li id={{t.id}} class="ui-state-default well" data-position="{{t.position}}" data-status="{{t.status.id}}">
+          <span class="tid">{{t.id}}</span>
           <span class="name">{{t.name}}</span>
           <span class="position">{{t.position}}</span>
           %if is_logged():

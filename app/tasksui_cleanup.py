@@ -88,25 +88,32 @@ def edit_task(tid):
 
 
 @post('/tasks/<tid>/update')
+@get('/tasks/<tid>/update')
 def update_task(tid):
     auth.require(role='edit', fail_redirect='/login')
-    new_pos = request.forms.pos
-    new_status = request.forms.status
-    new_description = request.forms.description
+    new_pos = request.query.new_pos
+    new_status = request.query.new_status
+    new_description = request.query.description
     # change status before position, moving position is relative to statuses
     # FIXME: reduce number of commits/writes
-    if new_status != 'null':
+    print 'new_status: '+new_status
+    print 'new_pos: '+new_pos
+    if new_status != '':
         # count tasks in the same status as tid
         _count = o.count_tasks_by_status(tid)
+        print 'count (l101): '+str(_count)
         # put task at the end of the list
-        o.set_position(tid, _count)
+        o.set_position(tid, _count-1)
         # change status
         o.set_status(tid, new_status)
     # count tasks in the same status as tid
     _count = o.count_tasks_by_status(tid)
+    print 'count (l110): '+str(_count)
     # put task at the end of the list
-    o.set_position(tid, _count)
+    o.set_position(tid, _count-1)
     # move a task
+    print "final move!"
+    print 'new_pos: '+new_pos
     o.set_position(tid, new_pos)
     #t.description(tid, new_description)
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':

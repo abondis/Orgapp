@@ -353,7 +353,7 @@ class Orgapp:
 
     def count_tasks_by_status(self, tid):
         _s = Tasks.get(id=tid).status
-        return Tasks.select(status=_s).count()
+        return Tasks.select().where(Tasks.status==_s).count()
 
     def __getitem__(self, item):
         return self.projects[item]
@@ -368,7 +368,8 @@ class Orgapp:
         if Tasks.select().count() == 1:
             return
         _t = Tasks.get(id=tid)
-        old_pos = _t.position
+        # FIXME: why a str?
+        old_pos = str(_t.position)
         # query to select tasks to update
         updq = Tasks.select().where(Tasks.project == _t.project)
         # update all Tasks
@@ -394,11 +395,12 @@ class Orgapp:
         prev = [x for x in updq.limit(1)][0]
         updq = updq.limit(-1).offset(1)
         _first = prev
-        for upd_t in updq:
-            print "moving task: "+upd_t.name+" from: "+str(upd_t.position)+" to: "+str(prev.position)
-            upd_t.position = prev.position
-            upd_t.save()
-            prev = upd_t
+        if updq.count():
+            for upd_t in updq:
+                print "moving task: "+str(upd_t.id)+" from: "+str(upd_t.position)+" to: "+str(prev.position)
+                upd_t.position = prev.position
+                upd_t.save()
+                prev = upd_t
         _first.position = new_pos
         _first.save()
     def set_status(self, tid, new_status):
@@ -407,6 +409,16 @@ class Orgapp:
         _s = Statuses.get(name=new_status)
         _t.status = _s
         _t.save()
+    def align_status(self, status):
+        """ Aligns tasks in specific status to position 0"""
+        _t = Tasks.select().where(Tasks.status.name == status)
+        _t = _t.order_by(Tasks.position.desc())
+        _count = _t.count()
+        for x in _t:
+            x.position = _count
+            x.save()
+            _count -= 1
+
 
 
 
