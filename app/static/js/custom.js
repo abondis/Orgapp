@@ -15,7 +15,7 @@ $(function() {
         var url = '/tasks/'+tid+'/update?new_pos='+new_pos+'&new_status='+new_status;
 
         ui.item.attr('data-position', new_pos);
-        ui.item.attr('data-status', new_status);
+        ui.item.attr('data-status', (new_status? new_status :old_status));
 
         ui.item.find('.position').html(new_pos);
         $.ajax(url);

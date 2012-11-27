@@ -96,24 +96,6 @@ def update_task(tid):
     new_description = request.query.description
     # change status before position, moving position is relative to statuses
     # FIXME: reduce number of commits/writes
-    print 'new_status: '+new_status
-    print 'new_pos: '+new_pos
-    if new_status != '':
-        # count tasks in the same status as tid
-        _count = o.count_tasks_by_status(tid)
-        print 'count (l101): '+str(_count)
-        # put task at the end of the list
-        o.set_position(tid, _count-1)
-        # change status
-        o.set_status(tid, new_status)
-    # count tasks in the same status as tid
-    _count = o.count_tasks_by_status(tid)
-    print 'count (l110): '+str(_count)
-    # put task at the end of the list
-    o.set_position(tid, _count-1)
-    # move a task
-    print "final move!"
-    print 'new_pos: '+new_pos
     o.set_position(tid, new_pos)
     #t.description(tid, new_description)
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':

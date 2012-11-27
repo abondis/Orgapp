@@ -371,38 +371,38 @@ class Orgapp:
         # FIXME: why a str?
         old_pos = str(_t.position)
         # query to select tasks to update
-        updq = Tasks.select().where(Tasks.project == _t.project)
+        updq = Tasks.select().where(Tasks.status == _t.status)
         # update all Tasks
         # update tasks in the specific project
         if not project == '*':
             updq = updq.where(
                     Tasks.project == Projects.get(name=project))
         # update from top to bottom
-        print '*'*100
-        print "old pos: "+str(old_pos)
-        print "new pos: "+str(new_pos)
-        print '*'*100
         if int(new_pos) > int(old_pos):
-            updq = updq.where( Tasks.position <= new_pos, Tasks.position >= old_pos)
+            updq = updq.where( Tasks.position <= str(new_pos), Tasks.position >= str(old_pos))
         # update from bottom to top
         else:
-            print '*'*100
-            print "from bottom to top!"
-            print '*'*100
-            updq = updq.where( Tasks.position >= new_pos, Tasks.position <= old_pos)
+            updq = updq.where( Tasks.position >= str(new_pos), Tasks.position <= str(old_pos))
             updq = updq.order_by(Tasks.position.desc())
         # FIXME: hackish, find if there is a better way
         prev = [x for x in updq.limit(1)][0]
         updq = updq.limit(-1).offset(1)
         _first = prev
-        if updq.count():
+        if updq.count() > 0:
+            print 'updq.count: '+str(updq.count())
+            print 'updq'+str([x.id for x in updq])
+            prev_pos = prev.position
             for upd_t in updq:
-                print "moving task: "+str(upd_t.id)+" from: "+str(upd_t.position)+" to: "+str(prev.position)
-                upd_t.position = prev.position
+                next_pos = upd_t.position
+                print "moving task: "+str(upd_t.id)+" from: "+str(next_pos)+" to: "+str(prev_pos)
+                upd_t.position = prev_pos
                 upd_t.save()
-                prev = upd_t
+                prev_pos = next_pos
         _first.position = new_pos
         _first.save()
+    def force_position(self, tid, new_pos):
+        _t = Tasks.get(id=tid)
+        _t.position = new_pos
     def set_status(self, tid, new_status):
         """ Set tasks #tid with new_status"""
         _t = Tasks.get(id=tid)
@@ -418,6 +418,8 @@ class Orgapp:
             x.position = _count
             x.save()
             _count -= 1
+    def count(self):
+        return Tasks.select().count()
 
 
 
