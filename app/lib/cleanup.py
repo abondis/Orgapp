@@ -403,6 +403,7 @@ class Orgapp:
     def force_position(self, tid, new_pos):
         _t = Tasks.get(id=tid)
         _t.position = new_pos
+        _t.save()
     def set_status(self, tid, new_status):
         """ Set tasks #tid with new_status"""
         _t = Tasks.get(id=tid)

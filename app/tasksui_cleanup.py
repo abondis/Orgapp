@@ -73,20 +73,6 @@ def create_task():
     redirect('/tasks')
 
 
-@get('/tasks/<tid>/update')
-def edit_task(tid):
-    """Update task position and status"""
-    auth.require(role='edit', fail_redirect='/login')
-    new_pos = request.query.new_pos
-    new_status = request.query.new_status
-    # move a task
-    #t.move(tid, new_pos, new_status)
-    o.set_position(tid, new_pos)
-    if new_status != 'null':
-    #    t.status(tid, new_status)
-        o.set_status(tid, new_status)
-
-
 @post('/tasks/<tid>/update')
 @get('/tasks/<tid>/update')
 def update_task(tid):
@@ -96,6 +82,12 @@ def update_task(tid):
     new_description = request.query.description
     # change status before position, moving position is relative to statuses
     # FIXME: reduce number of commits/writes
+    if new_status != 'null':
+        _count = o.count_tasks_by_status(tid)
+        o.set_position(tid, _count-1)
+        o.set_status(tid, new_status)
+        _count = o.count_tasks_by_status(tid)
+        o.force_position(tid, _count-1)
     o.set_position(tid, new_pos)
     #t.description(tid, new_description)
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
