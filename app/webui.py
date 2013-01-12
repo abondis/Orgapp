@@ -30,7 +30,7 @@ def login():
     username = request.POST.get('user', '')
     password = request.POST.get('password', '')
     _redirect = request.POST.get('redirect', '/')
-    print _redirect
+    print(_redirect)
     aaa.login(
             username,
             password,
