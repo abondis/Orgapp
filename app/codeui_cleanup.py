@@ -2,18 +2,15 @@
 #-=- encoding: utf-8 -=-
 import sys
 sys.path.extend(['lib'])
-from webui import is_logged
 from bottle import request
-from bottle import view, redirect, url
-from bottle import post, get
-from tasks import Tasks
-from beaker.middleware import SessionMiddleware
+from bottle import view, url
+from bottle import get
+from cleanup import Tasks
 from cork import Cork
 import mercurial.commands as hg
 from mercurial import ui, localrepo
 from dulwich import repo
 from doc import Doc
-from tasks import Tasks
 
 
 t = Tasks()
@@ -21,6 +18,7 @@ d = Doc()
 d.cache_all()
 hgui = ui.ui()
 auth = Cork('config')
+
 
 def make_code_menu(project, pagename=None):
     """gets a list a menus for the wiki pages"""
