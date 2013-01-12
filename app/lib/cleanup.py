@@ -4,7 +4,6 @@ from peewee import *
 import datetime
 from hashlib import md5
 """
-Maybe use peewee instead of macaron?
 Model
 -----
 - Tasks:
@@ -34,6 +33,7 @@ class CustomModel(Model):
     class Meta:
         database = tasks_db
 
+
 class Projects(CustomModel):
     name = CharField()
 
@@ -54,7 +54,7 @@ except:
 class Tasks(CustomModel):
     """Newly created task gets the highest
     position of all tasks (least important)
-    Moving tasks will be relative to project, using positions available in 
+    Moving tasks will be relative to project, using positions available in
     the project
     """
 # not null is forced by default
@@ -66,11 +66,11 @@ class Tasks(CustomModel):
     project = ForeignKeyField(
             Projects,
             related_name='tasks',
-            default = Projects.get_or_create(name=DEFAULTPROJECT))
+            default=Projects.get_or_create(name=DEFAULTPROJECT))
     status = ForeignKeyField(
             Statuses,
             related_name='tasks',
-            default = Statuses.get_or_create(name=DEFAULTSTATUS))
+            default=Statuses.get_or_create(name=DEFAULTSTATUS))
     # FIXME: how to use Tasks.count for this field ?
     position = IntegerField(default=0)
     time = FloatField(default=0)
@@ -81,7 +81,7 @@ class Tasks(CustomModel):
 
     def rename(self, new_name):
         """Rename a task"""
-        self.name=new_name
+        self.name = new_name
         self.save()
 
     def get_all(self):
@@ -136,6 +136,7 @@ from mercurial import ui as hgui, localrepo as hgrepo
 from dulwich import repo as gitrepo
 import os
 
+
 class Repo:
     def __init__(self, path, vcs_type):
         self.ui = hgui.ui()
@@ -160,10 +161,11 @@ class Repo:
                 self.r = hgrepo.localrepository(
                         self.ui,
                         self.path)
+
     def add_file(self, path):
         if self.vcs_type == 'git':
             # git wants a relative path
-            path = path[len(self.path)+1:]
+            path = path[len(self.path) + 1:]
             self.r.stage(path)
         # FIXME: does not work if there was an
             # issue with other uncommitted things
@@ -171,10 +173,10 @@ class Repo:
                 message='commit {0}'.format(path))
         elif self.vcs_type == 'hg':
             #_lock = self.r.lock()
-            print '='*35
+            print '=' * 35
             print self.r
             print path
-            print '='*35
+            print '=' * 35
             hg.add(self.ui, self.r, path)
             hg.commit(
                 self.ui,
@@ -183,13 +185,14 @@ class Repo:
                 message='commit {0}'.format(path))
             #_lock.release()
 
+
 class Project:
     def __init__(
             self,
             name,
             path,
             vcs_type,
-            cache_path = '/tmp',
+            cache_path='/tmp',
             doc_path='doc',
             tasks_path='tasks'):
         self.name = name
@@ -212,9 +215,9 @@ class Project:
         # open project's repo
         self.r = Repo(self.fullpath, self.vcs_type)
         # project's documents full path
-        self.doc_fullpath = self.fullpath+'/'+self.doc_path
+        self.doc_fullpath = self.fullpath + '/' + self.doc_path
         # tasks's documents full path
-        self.tasks_fullpath = self.fullpath+'/'+self.tasks_path
+        self.tasks_fullpath = self.fullpath + '/' + self.tasks_path
         # project's documents handler
         self.doc_files = Doc(self.doc_fullpath, self.doc_cache)
         # tasks's documents handler
@@ -222,7 +225,7 @@ class Project:
         # create project in db if not exist
         Projects.get_or_create(name=self.name)
 
-    def create_task(self, name,content='', MU_type='md', status=DEFAULTSTATUS ):
+    def create_task(self, name, content='', MU_type='md', status=DEFAULTSTATUS):
         """MarkUp type defaults to 'markdown'
         """
         _status = Statuses.get(name=status)
@@ -230,27 +233,32 @@ class Project:
         _d = str(datetime.datetime.now())
         _t.name = name
         _t.status = _status
-        _t.md5hash = md5(_d+name)
+        _t.md5hash = md5(_d + name)
         _t.position = Tasks.select().where(Tasks.status == _status).count()
         _t.save()
+
+        # TODO save task on disk, inside the repo
         #if content == '':
             #content = name
         #self.tasks_files.create_doc(name+'.'+MU_type, content)
         #self.tasks_files.create_doc(name, content)
         #self.r.add_file(self.r.path+'/tasks/'+name)
-        print '*'*100
+        print '*' * 100
         print self.tasks_files.root_path
-        print 'tasks fulpath: '+self.tasks_fullpath+'/'+name+'.'+MU_type
-        print '*'*100
+        print 'tasks fullpath: ' + self.tasks_fullpath + '/' + name + '.'\
+                + MU_type
+        print '*' * 100
         #self.r.add_file(self.tasks_fullpath+'/'+name+'.'+MU_type)
 
-    def create_doc(self, name, content='', MU_type='md') :
-        self.doc_files.create_doc(name+'.'+MU_type, content)
-        self.r.add_file(self.doc_fullpath+'/'+name+'.'+MU_type)
-        self.doc_files.cache(name+'.'+MU_type)
+    def create_doc(self, name, content='', MU_type='md'):
+        self.doc_files.create_doc(name + '.' + MU_type, content)
+        self.r.add_file(self.doc_fullpath + '/' + name + '.' + MU_type)
+        self.doc_files.cache(name + '.' + MU_type)
 
 
 import markdown as md
+
+
 class Doc:
     """Handle documents"""
     def __init__(self, root_path, cache_path):
@@ -268,7 +276,7 @@ class Doc:
         return path.rsplit('.')[-1]
 
     def get_doc(self, filename):
-        with open(self.cache_path+'/'+filename) as _f:
+        with open(self.cache_path + '/' + filename) as _f:
             return _f.read()
 
     def create_doc(self, filename, content, mode='doc'):
@@ -280,7 +288,7 @@ class Doc:
             path = self.root_path
         elif mode == 'cache':
             path = self.cache_path
-        with open(path+'/'+filename, 'w') as _f:
+        with open(path + '/' + filename, 'w') as _f:
             _f.write(content)
 
     def cache(self, filename):
@@ -293,7 +301,7 @@ class Doc:
         _ext = self.get_file_ext(filename)
         if _ext not in self.renderers.keys():
             _ext = 'copy'
-        with open(self.root_path+'/'+filename, 'r') as _f:
+        with open(self.root_path + '/' + filename, 'r') as _f:
             content = _f.read()
             return(self.renderers[_ext](content))
 
@@ -313,19 +321,19 @@ class Tasklist:
             self.project = Projects.get_or_create(name=DEFAULTPROJECT)
         else:
             self.project = Projects.get_or_create(name=project)
-            self.tasks = Tasks.select().where(Tasks.project==self.project)
+            self.tasks = Tasks.select().where(Tasks.project == self.project)
 
     def count(self):
         return Tasks.select().count()
 
     def get(self, name):
-        q = Tasks.get(Tasks.name==name, Tasks.project==self.project)
+        q = Tasks.get(Tasks.name == name, Tasks.project == self.project)
         return q
 
     def add_task(self, name, status=DEFAULTSTATUS):
         _now = str(datetime.datetime.now())
-        _md5hash = md5(_now+name).hexdigest()
-        _pos = self.count()+1
+        _md5hash = md5(_now + name).hexdigest()
+        _pos = self.count() + 1
         Tasks.create(
                 name=name,
                 md5hash=_md5hash,
@@ -334,6 +342,7 @@ class Tasklist:
 
     def move(self, source, dest):
         pass
+
 
 class Orgapp:
     """A bunch of projects and a global Tasklist
@@ -353,7 +362,7 @@ class Orgapp:
 
     def count_tasks_by_status(self, tid):
         _s = Tasks.get(id=tid).status
-        return Tasks.select().where(Tasks.status==_s).count()
+        return Tasks.select().where(Tasks.status == _s).count()
 
     def __getitem__(self, item):
         return self.projects[item]
@@ -363,6 +372,7 @@ class Orgapp:
             content = name
         p = self.projects[project]
         p.create_task(name, content, status=status)
+
     def set_position(self, tid, new_pos, project='*'):
         """Set new position and update their friends"""
         if Tasks.select().count() == 1:
@@ -379,37 +389,43 @@ class Orgapp:
                     Tasks.project == Projects.get(name=project))
         # update from top to bottom
         if int(new_pos) > int(old_pos):
-            updq = updq.where( Tasks.position <= str(new_pos), Tasks.position >= str(old_pos))
+            updq = updq.where(Tasks.position <= str(new_pos),
+                    Tasks.position >= str(old_pos))
         # update from bottom to top
         else:
-            updq = updq.where( Tasks.position >= str(new_pos), Tasks.position <= str(old_pos))
+            updq = updq.where(Tasks.position >= str(new_pos),
+                    Tasks.position <= str(old_pos))
             updq = updq.order_by(Tasks.position.desc())
         # FIXME: hackish, find if there is a better way
         prev = [x for x in updq.limit(1)][0]
         updq = updq.limit(-1).offset(1)
         _first = prev
         if updq.count() > 0:
-            print 'updq.count: '+str(updq.count())
-            print 'updq'+str([x.id for x in updq])
+            print 'updq.count: ' + str(updq.count())
+            print 'updq' + str([x.id for x in updq])
             prev_pos = prev.position
             for upd_t in updq:
                 next_pos = upd_t.position
-                print "moving task: "+str(upd_t.id)+" from: "+str(next_pos)+" to: "+str(prev_pos)
+                print "moving task: " + str(upd_t.id) + " from: " +\
+                    str(next_pos) + " to: " + str(prev_pos)
                 upd_t.position = prev_pos
                 upd_t.save()
                 prev_pos = next_pos
         _first.position = new_pos
         _first.save()
+
     def force_position(self, tid, new_pos):
         _t = Tasks.get(id=tid)
         _t.position = new_pos
         _t.save()
+
     def set_status(self, tid, new_status):
         """ Set tasks #tid with new_status"""
         _t = Tasks.get(id=tid)
         _s = Statuses.get(name=new_status)
         _t.status = _s
         _t.save()
+
     def align_status(self, status):
         """ Aligns tasks in specific status to position 0"""
         _t = Tasks.select().where(Tasks.status.name == status)
@@ -419,9 +435,6 @@ class Orgapp:
             x.position = _count
             x.save()
             _count -= 1
+
     def count(self):
         return Tasks.select().count()
-
-
-
-
