@@ -2,12 +2,14 @@
 import sys
 sys.path.extend(['lib'])
 from webui import is_logged
+from bottle import request
+from bottle import view, redirect, url
+from bottle import post, get
+from cleanup import Projects, Statuses, Tasks
+from orgapp_globals import o, auth
 
 
-from orgapp_globals import *
 t = Tasks()
-# FIXME: use config
-#p = Orgapp('/tmp/projects', ['test', 'truc', 'unknown'])
 
 
 def make_tasks_menu():
@@ -66,9 +68,9 @@ def create_task():
     content = request.forms.content
     # do something with tasklists
     #t.create(name, position, status)
-    print "name: "+name
-    print "projects :"+str(o[project])
-    print "project path: "+o[project].r.path
+    print "name: " + name
+    print "projects :" + str(o[project])
+    print "project path: " + o[project].r.path
     o.add_task(name, project, content, status)
     redirect('/tasks')
 
@@ -79,15 +81,15 @@ def update_task(tid):
     auth.require(role='edit', fail_redirect='/login')
     new_pos = request.query.new_pos
     new_status = request.query.new_status
-    new_description = request.query.description
+    #new_description = request.query.description
     # change status before position, moving position is relative to statuses
     # FIXME: reduce number of commits/writes
     if new_status != 'null':
         _count = o.count_tasks_by_status(tid)
-        o.set_position(tid, _count-1)
+        o.set_position(tid, _count - 1)
         o.set_status(tid, new_status)
         _count = o.count_tasks_by_status(tid)
-        o.force_position(tid, _count-1)
+        o.force_position(tid, _count - 1)
     o.set_position(tid, new_pos)
     #t.description(tid, new_description)
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
