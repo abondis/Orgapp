@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 #-=- encoding: utf-8 -=-
-from peewee import *
+from peewee import SqliteDatabase, Model, CharField, DateTimeField
+from peewee import ForeignKeyField, IntegerField, FloatField
 import datetime
 from hashlib import md5
+from config_parser import configure
 """
 Model
 -----
@@ -65,13 +67,13 @@ class Tasks(CustomModel):
     created_date = DateTimeField(default=datetime.datetime.now)
     last_modification = DateTimeField(default=datetime.datetime.now)
     project = ForeignKeyField(
-            Projects,
-            related_name='tasks',
-            default=Projects.get_or_create(name=DEFAULTPROJECT))
+        Projects,
+        related_name='tasks',
+        default=Projects.get_or_create(name=DEFAULTPROJECT))
     status = ForeignKeyField(
-            Statuses,
-            related_name='tasks',
-            default=Statuses.get_or_create(name=DEFAULTSTATUS))
+        Statuses,
+        related_name='tasks',
+        default=Statuses.get_or_create(name=DEFAULTSTATUS))
     # FIXME: how to use Tasks.count for this field ?
     position = IntegerField(default=0)
     time = FloatField(default=0)
@@ -105,7 +107,6 @@ Statuses.get_or_create(name='new')
 
 
 #http://peewee.readthedocs.org/en/latest/peewee/cookbook.html#creating-a-database-connection-and-tables
-
 
 
 """
@@ -155,13 +156,13 @@ class Repo:
                 os.makedirs(self.path)
             try:
                 self.r = hgrepo.localrepository(
-                                        self.ui,
-                                        self.path)
+                    self.ui,
+                    self.path)
             except:
                 hg.init(self.ui, self.path)
                 self.r = hgrepo.localrepository(
-                        self.ui,
-                        self.path)
+                    self.ui,
+                    self.path)
 
     def add_file(self, path):
         if self.vcs_type == 'git':
@@ -248,7 +249,7 @@ class Project:
         print '*' * 100
         print self.tasks_files.root_path
         print 'tasks fullpath: ' + self.tasks_fullpath + '/' + name + '.'\
-                + MU_type
+            + MU_type
         print '*' * 100
         #self.r.add_file(self.tasks_fullpath+'/'+name+'.'+MU_type)
 
@@ -337,30 +338,31 @@ class Tasklist:
         _md5hash = md5(_now + name).hexdigest()
         _pos = self.count() + 1
         Tasks.create(
-                name=name,
-                md5hash=_md5hash,
-                project=self.project,
-                position=_pos)
+            name=name,
+            md5hash=_md5hash,
+            project=self.project,
+            position=_pos)
 
     def move(self, source, dest):
         pass
 
 
+@configure
 class Orgapp:
     """A bunch of projects and a global Tasklist
     """
     def __init__(
             self,
-            root_path,
-            projects_list,
             statuses=[DEFAULTSTATUS]):
         for s in statuses:
             Statuses.get_or_create(name=s)
-        self.root_path = root_path
-        self.projects_list = projects_list
+        #self.root_path = root_path
+        #self.projects_list = projects_list
         self.projects = {}
-        for _p in projects_list:
-            self.projects[_p] = Project(_p, self.root_path, 'hg')
+        for _p in self.hg_repos:
+            self.projects[_p] = Project(_p, self.repo_root, 'hg')
+        for _p in self.git_repos:
+            self.projects[_p] = Project(_p, self.repo_root, 'git')
 
     def count_tasks_by_status(self, tid):
         _s = Tasks.get(id=tid).status
@@ -388,15 +390,15 @@ class Orgapp:
         # update tasks in the specific project
         if not project == '*':
             updq = updq.where(
-                    Tasks.project == Projects.get(name=project))
+                Tasks.project == Projects.get(name=project))
         # update from top to bottom
         if int(new_pos) > int(old_pos):
             updq = updq.where(Tasks.position <= str(new_pos),
-                    Tasks.position >= str(old_pos))
+                              Tasks.position >= str(old_pos))
         # update from bottom to top
         else:
             updq = updq.where(Tasks.position >= str(new_pos),
-                    Tasks.position <= str(old_pos))
+                              Tasks.position <= str(old_pos))
             updq = updq.order_by(Tasks.position.desc())
         # FIXME: hackish, find if there is a better way
         prev = [x for x in updq.limit(1)][0]
