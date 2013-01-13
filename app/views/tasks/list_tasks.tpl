@@ -36,7 +36,7 @@
           </div>
           <div class="control-group">
               <div class="controls">
-                <p class="btn-block aloha">blou</p>
+                <p class="btn-block aloha">{{t.description}}</p>
               </div>
           </div>
         </div>

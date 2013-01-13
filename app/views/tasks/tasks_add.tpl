@@ -7,7 +7,12 @@
                 <input name="name" type="text" placeholder="Title" id="title"/>
             </div>
         </div>
-
+        <div class="control-group">
+            <label class="control-label" for="status">Description:</label>
+            <div class="controls">
+              <textarea name="description" placeholder="Description"></textarea>
+            </div>
+        </div>
         <div class="control-group">
             <label class="control-label" for="status">Status:</label>
             <div class="controls">

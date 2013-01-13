@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #-=- encoding: utf-8 -=-
-from peewee import SqliteDatabase, Model, CharField, DateTimeField
+from peewee import SqliteDatabase, Model, CharField, TextField, DateTimeField
 from peewee import ForeignKeyField, IntegerField, FloatField
 import datetime
 from hashlib import md5

@@ -6,7 +6,7 @@ from bottle import request
 from bottle import view, redirect, url
 from bottle import post, get
 from cleanup import Projects, Statuses, Tasks
-from orgapp_globals import o, auth
+from orgapp_globals import o, auth, is_ajax
 
 
 t = Tasks()
@@ -62,16 +62,16 @@ def add_task():
 def create_task():
     auth.require(role='edit', fail_redirect='/login')
     name = request.forms.name
+    description = request.forms.description
     #position = request.forms.position
     status = request.forms.status
     project = request.forms.project
-    content = request.forms.content
     # do something with tasklists
     #t.create(name, position, status)
     print "name: " + name
     print "projects :" + str(o[project])
     print "project path: " + o[project].r.path
-    o.add_task(name, project, content, status)
+    o.add_task(name, description, project, status)
     redirect('/tasks')
 
 
