@@ -197,6 +197,10 @@ def is_logged():
     except:
         return False
 
+# import routes for tasks and codes
+import tasksui_cleanup
+import codeui_cleanup
+
 if __name__ == '__main__':
     SimpleTemplate.defaults["is_logged"] = is_logged
     session_opts = {
