@@ -59,6 +59,7 @@ class Tasks(CustomModel):
     """
 # not null is forced by default
     name = CharField()
+    description = TextField(null=True)
     # FIXME: how to generate the md5 automatically ?
     md5hash = CharField()
     created_date = DateTimeField(default=datetime.datetime.now)
@@ -225,23 +226,24 @@ class Project:
         # create project in db if not exist
         Projects.get_or_create(name=self.name)
 
-    def create_task(self, name, content='', MU_type='md', status=DEFAULTSTATUS):
+    def create_task(self, name, description='', MU_type='md', status=DEFAULTSTATUS):
         """MarkUp type defaults to 'markdown'
         """
         _status = Statuses.get(name=status)
         _t = Tasks()
         _d = str(datetime.datetime.now())
         _t.name = name
+        _t.description = description
         _t.status = _status
         _t.md5hash = md5(_d + name)
         _t.position = Tasks.select().where(Tasks.status == _status).count()
         _t.save()
 
         # TODO save task on disk, inside the repo
-        #if content == '':
-            #content = name
-        #self.tasks_files.create_doc(name+'.'+MU_type, content)
-        #self.tasks_files.create_doc(name, content)
+        #if description == '':
+            #description = name
+        #self.tasks_files.create_doc(name+'.'+MU_type, description)
+        #self.tasks_files.create_doc(name, description)
         #self.r.add_file(self.r.path+'/tasks/'+name)
         print '*' * 100
         print self.tasks_files.root_path
@@ -367,11 +369,11 @@ class Orgapp:
     def __getitem__(self, item):
         return self.projects[item]
 
-    def add_task(self, name, project, content=None, status=DEFAULTSTATUS):
+    def add_task(self, name, description, project, content=None, status=DEFAULTSTATUS):
         if not content:
             content = name
         p = self.projects[project]
-        p.create_task(name, content, status=status)
+        p.create_task(name, description, content, status=status)
 
     def set_position(self, tid, new_pos, project='*'):
         """Set new position and update their friends"""
