@@ -24,6 +24,4 @@ def l2w(_d, dico, idx=1):
 
 auth = Cork('config')
 o = Orgapp(
-    '/tmp/projects',
-    ['test', 'truc', 'unknown'],
     statuses=['backlog', 'new', 'running', 'done'])
