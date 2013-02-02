@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import sys
 sys.path.extend(['lib'])
-from webui import is_logged
+from webui_cleanup import is_logged
 from bottle import request
 from bottle import view, redirect, url
 from bottle import post, get
@@ -71,7 +71,7 @@ def create_task():
     print "name: " + name
     print "projects :" + str(o[project])
     print "project path: " + o[project].r.path
-    o.add_task(name, description, project, status)
+    o.add_task(name, status, description, project)
     redirect('/tasks')
 
 
