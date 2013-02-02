@@ -30,19 +30,19 @@
         </div>
         <div class="modal-body">
           <div class="control-group">
-              <div class="controls">
-                <p class="btn-block aloha">{{t.name}}</p>
+              <div class="controls" contenteditable="true" id="task-title-{{t.id}}">
+                {{t.name}}
               </div>
           </div>
           <div class="control-group">
-              <div class="controls">
-                <p class="btn-block aloha">{{t.description}}</p>
+              <div class="controls" contenteditable="true" id="task-description-{{t.id}}">
+                    {{t.description}}
               </div>
           </div>
         </div>
         <div class="modal-footer">
           <button class="btn btn-link" data-dismiss="modal" aria-hidden="true">Close without saving</button>
-          <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Save</button>
+          <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true" onclick="updateTask('{{t.id}}');">Save</button>
         </div>
       </div>
     %end

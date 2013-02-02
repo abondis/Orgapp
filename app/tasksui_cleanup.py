@@ -92,8 +92,17 @@ def update_task(tid):
         o.force_position(tid, _count - 1)
     o.set_position(tid, new_pos)
     #t.description(tid, new_description)
-    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-        return 'something'
+
+
+@post('/tasks/<tid>/update/ajax')
+@is_ajax
+def update_task_ajax(tid):
+    auth.require(role='edit', fail_redirect='/login')
+    o.set_title(tid, request.query.title)
+    o.set_description(tid, request.query.description)
+    print request.query.title
+    print request.query.description
+    # TODO add possibility to change project too
 
 
 @get('/sync/tasks')
