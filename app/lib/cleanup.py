@@ -26,8 +26,8 @@ Model
 """
 
 tasks_db = SqliteDatabase('tasks.db')
-DEFAULTSTATUS = 'new'
-DEFAULTPROJECT = 'unknown'
+#DEFAULTSTATUS = 'new'
+#DEFAULTPROJECT = 'unknown'
 tasks_db.connect()
 
 
@@ -68,12 +68,10 @@ class Tasks(CustomModel):
     last_modification = DateTimeField(default=datetime.datetime.now)
     project = ForeignKeyField(
         Projects,
-        related_name='tasks',
-        default=Projects.get_or_create(name=DEFAULTPROJECT))
+        related_name='tasks')
     status = ForeignKeyField(
         Statuses,
-        related_name='tasks',
-        default=Statuses.get_or_create(name=DEFAULTSTATUS))
+        related_name='tasks')
     # FIXME: how to use Tasks.count for this field ?
     position = IntegerField(default=0)
     time = FloatField(default=0)
@@ -102,8 +100,8 @@ try:
 except:
     pass
 
-Projects.get_or_create(name='unknown')
-Statuses.get_or_create(name='new')
+#Projects.get_or_create(name='unknown')
+#Statuses.get_or_create(name='new')
 
 
 #http://peewee.readthedocs.org/en/latest/peewee/cookbook.html#creating-a-database-connection-and-tables
@@ -176,14 +174,14 @@ class Repo:
         elif self.vcs_type == 'hg':
             #_lock = self.r.lock()
             print '=' * 35
-            print self.r
+            print self.r.root
             print path
             print '=' * 35
-            hg.add(self.ui, self.r, path)
+            hg.add(self.ui, self.r, path.encode('utf-8'))
             hg.commit(
                 self.ui,
                 self.r,
-                path,
+                path.encode('utf-8'),
                 message='commit {0}'.format(path))
             #_lock.release()
 
@@ -227,7 +225,7 @@ class Project:
         # create project in db if not exist
         Projects.get_or_create(name=self.name)
 
-    def create_task(self, name, description='', MU_type='md', status=DEFAULTSTATUS):
+    def create_task(self, name, status, description='', MU_type='md'):
         """MarkUp type defaults to 'markdown'
         """
         _status = Statuses.get(name=status)
@@ -238,6 +236,7 @@ class Project:
         _t.status = _status
         _t.md5hash = md5(_d + name)
         _t.position = Tasks.select().where(Tasks.status == _status).count()
+        _t.project = Projects.get_or_create(name=self.name)
         _t.save()
 
         # TODO save task on disk, inside the repo
@@ -265,7 +264,7 @@ import markdown as md
 class Doc:
     """Handle documents"""
     def __init__(self, root_path, cache_path):
-        self.renderers = {'copy': self.render_copy, 'md': self.render_md}
+        self.renderers = {'copy': self.render_copy, '.md': self.render_md}
         self.root_path = root_path
         self.cache_path = cache_path
         ## create doc dir
@@ -274,12 +273,31 @@ class Doc:
         # create doc cache dir
         if not os.path.exists(self.cache_path):
             os.makedirs(self.cache_path)
+        for _f in self.files_list(self.root_path):
+            self.cache(_f)
+
+    def is_static(self, path):
+        """Verifies if the file is just a copy or a render"""
+        return os.path.exists(self.cache_path + path)
+
+    def cache_list(self):
+        return self.files_list(self.cache_path)
+
+    def files_list(self, path):
+        """List files contained in a Doc instance"""
+        print path
+        print os.listdir(path)
+        return sorted(os.listdir(path))
 
     def get_file_ext(self, path):
-        return path.rsplit('.')[-1]
+        return os.path.splitext(path)[1]
 
-    def get_doc(self, filename):
-        with open(self.cache_path + '/' + filename) as _f:
+    def get_doc(self, filename, cache=True):
+        if cache:
+            path = self.cache_path
+        else:
+            path = self.root_path
+        with open(path + '/' + filename) as _f:
             return _f.read()
 
     def create_doc(self, filename, content, mode='doc'):
@@ -295,18 +313,21 @@ class Doc:
             _f.write(content)
 
     def cache(self, filename):
+        """cache creates files with no extension"""
         content = self.render(filename)
-        self.create_doc(filename, content, mode='cache')
+        cached_filename = os.path.splitext(filename)[0]
+        self.create_doc(cached_filename, content, mode='cache')
 
     def render(self, filename):
         """renders a doc into cache_path.
         Let project handle path construction"""
         _ext = self.get_file_ext(filename)
+        print 'our ext' + _ext
         if _ext not in self.renderers.keys():
             _ext = 'copy'
         with open(self.root_path + '/' + filename, 'r') as _f:
             content = _f.read()
-            return(self.renderers[_ext](content))
+        return(self.renderers[_ext](content))
 
     def render_copy(self, content):
         return content
@@ -321,7 +342,7 @@ class Tasklist:
     def __init__(self, project='*'):
         if project == '*':
             self.tasks = Tasks.select()
-            self.project = Projects.get_or_create(name=DEFAULTPROJECT)
+            self.project = Projects.get_or_create(name)
         else:
             self.project = Projects.get_or_create(name=project)
             self.tasks = Tasks.select().where(Tasks.project == self.project)
@@ -333,7 +354,7 @@ class Tasklist:
         q = Tasks.get(Tasks.name == name, Tasks.project == self.project)
         return q
 
-    def add_task(self, name, status=DEFAULTSTATUS):
+    def add_task(self, name, status):
         _now = str(datetime.datetime.now())
         _md5hash = md5(_now + name).hexdigest()
         _pos = self.count() + 1
@@ -353,7 +374,7 @@ class Orgapp:
     """
     def __init__(
             self,
-            statuses=[DEFAULTSTATUS]):
+            statuses=[]):
         for s in statuses:
             Statuses.get_or_create(name=s)
         #self.root_path = root_path
@@ -371,11 +392,11 @@ class Orgapp:
     def __getitem__(self, item):
         return self.projects[item]
 
-    def add_task(self, name, description, project, content=None, status=DEFAULTSTATUS):
+    def add_task(self, name, status, description, project, content=None):
         if not content:
             content = name
         p = self.projects[project]
-        p.create_task(name, description, content, status=status)
+        p.create_task(name, status, description, content)
 
     def set_position(self, tid, new_pos, project='*'):
         """Set new position and update their friends"""

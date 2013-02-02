@@ -5,6 +5,7 @@ macaron.py
 *.db-journal
 *.t2t
 *.html
+.*.un~
 cache
 /app/config/config-dev.ini
 env

@@ -84,7 +84,7 @@ def doc_index(project):
 @get('/<project>/doc/List', name="list_wiki_pages")
 @view('wiki/list_wiki_pages')
 def list_wiki_pages(project):
-    pages_list = o[project].doc.list_pages(project)
+    pages_list = o[project].doc_files.cache_list()
     pages_dict = [
         {'url': url("show_wiki_page", project=project, path=x),
          'title':x} for x in pages_list]
@@ -106,7 +106,14 @@ def edit_wiki_page(project, path):
         fail_redirect='/login?redirect=' + _redirect[0])
     pagename = '/' + project + '/doc/' + path
     menu = make_wiki_menu(project, path)
-    content = o[project].doc.render("{0}.md".format(path), project)
+    # get raw content
+    # FIXME: how to not force .md?
+    # find a way to identify rendered cache and map it to their original
+    # - cache only render-able content
+    # - put render somewhere different
+    # - keep the extension for cached file
+    # - use db :(
+    content = o[project].doc_files.get_doc(path + '.md', False)
     return(
         dict(
             pagename=pagename,
@@ -136,9 +143,7 @@ def save_new_wiki_page(project):
     auth.require(role='edit', fail_redirect='/login')
     content = request.forms.content
     pagename = request.forms.pagename
-    o[project].doc.save("{0}.md".format(pagename), content, project)
-    o[project].doc.commit("{0}.md".format(pagename), project)
-    o[project].doc.cache("{0}.md".format(pagename), project)
+    o[project].create_doc(pagename, content, 'md')
     pagename = '/' + project + '/doc/' + pagename
     redirect(pagename + "/edit")
 
@@ -152,9 +157,7 @@ def save_wiki_page(project, path):
         fail_redirect='/login?redirect=' + _redirect[0])
     menu = make_wiki_menu(project, path)
     content = request.forms.content
-    o[project].doc.save("{0}.md".format(path), content, project)
-    o[project].doc.commit("{0}.md".format(path), project)
-    o[project].doc.cache("{0}.md".format(path), project)
+    o[project].create_doc(path, content, 'md')
     pagename = '/' + project + '/doc/' + path
     return(
         dict(
@@ -168,12 +171,13 @@ def save_wiki_page(project, path):
 @get('/<project>/doc/<path>', name="show_wiki_page")
 def show_wiki_page(path, project):
     # if the file exists in doc and cache, serve it raw
-    if os.path.exists('{0}/{1}'.format(o[project].doc.root_path, path)):
-        return(static_file(path, root=o[project].doc.root_path))
+    # ie: they both have an extension
+    if o[project].doc_files.is_static(path):
+        return(static_file(path, root=o[project].doc_files.root_path))
     #else this is a rendered document
+    # .md -> no ext
     else:
-        with open(o[project].doc.cache_path + '/' + path) as _f:
-            content = _f.read()
+        content = o[project].doc_files.get_doc(path)
         menu = make_wiki_menu(project, path)
         return(
             template(
@@ -187,7 +191,7 @@ def show_wiki_page(path, project):
 @get('/projects list', name='projects_list')
 @view('list_projects')
 def projects_list():
-    return dict(title='Projects list', listing=o.projects_list)
+    return dict(title='Projects list', listing=o.projects.keys())
 
 
 def is_logged():
