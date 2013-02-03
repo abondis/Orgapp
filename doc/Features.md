@@ -7,12 +7,12 @@ Features
     * Tasks: short tasks linked to a Project
     * Code: browse code and commits
     * Doc: edit it as part of the project
+* one app is able to handle multiple projects
+* display tasks between projects as a whole instead of separated
 
 Future
 ------
 
-* one app should be able to handle multiple projects
-* display tasks between projects as a whole instead of separated
 * doc will handle multiple types and hierarchy
 * code will be editable 'online'
 
