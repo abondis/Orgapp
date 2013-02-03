@@ -1,6 +1,7 @@
 $(function() {
     $( "body.logged-in .tasks" ).sortable({
       connectWith: ".connectedSortable",
+      distance:20,
       stop: function(event, ui) {
         var tid = ui.item.attr('id');
         var new_pos = ui.item.index();
