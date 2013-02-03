@@ -53,3 +53,9 @@ More to come
 * push/pull
 * permit different markups
 * fixes :)
+
+Authors
+-------
+
+* Aurélien Bondis
+* Pierre Paul Lefebvre
