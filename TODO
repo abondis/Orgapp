@@ -1,8 +1,6 @@
 running
 -------
-* posting a new document fails, maybe when trying to commit to empty repo - ko in git
-* viewing repo when it's new and has not commit fails with hg
-* tasks: when moving between statuses, ensure source status is updated
+* tasks: moving around messes position
 * pyunit
 * add option to rename/edit a task
 
@@ -11,7 +9,6 @@ next
 * pull when creating repos folders, use config
 * tasks: details as a wiki page
 * wiki: rollback (or diff and keep/commit prefered version)
-* keep tasks as part of the project
 * archive tasks
 * rights and role to edit/see projects
 * rights to create tasks/move tasks
@@ -65,3 +62,7 @@ done
 * authentication - done
 * multi-projects - done, cf config-multiprojects.ini
 * style menus
+* posting a new document fails, maybe when trying to commit to empty repo - ko in git
+* viewing repo when it's new and has not commit fails with hg
+* keep tasks as part of the project
+* tasks: when moving between statuses, ensure source status is updated

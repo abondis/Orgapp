@@ -146,16 +146,18 @@ def show_tree(project, path=''):
             s.get('branch', 'default')
         branches = d.r[project].branchmap().keys()
         print branches
-        #try:
-        if s['branch'] not in branches:
-            s['branch'] = d.r[project].branchmap().keys()[0]
-        hgui.pushbuffer()
-        l = hg.locate(hgui, d.r[project], branch=s['branch'])
-        l = hgui.popbuffer().split('\n')
+        try:
+            if s['branch'] not in branches:
+                s['branch'] = d.r[project].branchmap().keys()[0]
+            hgui.pushbuffer()
+            l = hg.locate(hgui, d.r[project], branch=s['branch'])
+            l = hgui.popbuffer().split('\n')
+        except IndexError:
+            s['branch'] = None
+            l = ["Nothing has yet been done on your repo..."]
         print l
         #except:
             #s['branch'] = 'default'
-            #l = ["Nothing has yet been done on your repo..."]
     dico = {}
     for x in l:
         l2w(x, dico)
