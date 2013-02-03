@@ -59,7 +59,7 @@ def login_get():
 
 @get('/logout', name='logout')
 def logout():
-        auth.logout(success_redirect='/login')
+    auth.logout(success_redirect='/login')
 
 
 @get('/static/<path:path>', name='static')

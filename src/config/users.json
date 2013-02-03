@@ -1,1 +1,1 @@
-{"admin": {"role": "edit", "creation_date": "2012-10-04 21:09:45.461469", "email_addr": "admin@localhost.local", "hash": "cFp+spRoFtHOhyptk0LC8gcSzCEYSRTmWdEwmID1KXdHt3fjYSQfmysvspE64VPlfZJMyG680Bb/8FpAw7sIy6Y=", "desc": "admin/test"}}
+{"admin": {"hash": "cNn7UGX6ABYj0VK4js/IZwta4151JLW/jbCsm22qtNBjTRAZjzQcipRXVOyUuEtylMZkGrOhlZogxA0UUjaqcNY=", "email_addr": "admin@localhost.local", "role": "admin", "creation_date": "2013-02-03 22:45:23.852988", "desc": "admin test user"}}
