@@ -1,13 +1,30 @@
 #!/usr/bin/env python
-import sys
-sys.path.extend(['lib'])
+#
+#This file is part of Orgapp.
+#
+#Orgapp is free software: you can redistribute it and/or modify
+#it under the terms of the GNU General Public License as published by
+#the Free Software Foundation, either version 3 of the License, or
+#(at your option) any later version.
+#
+#Orgapp is distributed in the hope that it will be useful,
+#but WITHOUT ANY WARRANTY; without even the implied warranty of
+#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#GNU General Public License for more details.
+#
+#You should have received a copy of the GNU General Public License
+#along with Orgapp.  If not, see <http://www.gnu.org/licenses/>.
+
 from webui import is_logged
 from bottle import request
 from bottle import view, redirect, url
 from bottle import post, get
-from orgapp import Projects, Statuses, Tasks
-from orgapp_globals import o, auth, is_ajax
-
+from orgapp import o
+#FIXME: should use o
+from orgapp.model import Statuses
+from orgapp.model import Projects
+from orgapp.model import Tasks
+from ui_common import auth, is_ajax
 
 t = Tasks()
 
@@ -32,11 +49,11 @@ def list_tasks():
         tasks_list[s.name] = t.select().where(Tasks.status == s)
     return(
         dict(
-        tasks_list=tasks_list,
-        statuses=statuses,
-        title="Task list",
-        leftmenu=menu,
-        project=None))
+            tasks_list=tasks_list,
+            statuses=statuses,
+            title="Task list",
+            leftmenu=menu,
+            project=None))
 
 
 @get('/tasks/add', name='add_task')

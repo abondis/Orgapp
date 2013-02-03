@@ -1,24 +1,26 @@
 #!/usr/bin/env python
 #-=- encoding: utf-8 -=-
-import sys
-sys.path.extend(['lib'])
+#
+#This file is part of Orgapp.
+#
+#Orgapp is free software: you can redistribute it and/or modify
+#it under the terms of the GNU General Public License as published by
+#the Free Software Foundation, either version 3 of the License, or
+#(at your option) any later version.
+#
+#Orgapp is distributed in the hope that it will be useful,
+#but WITHOUT ANY WARRANTY; without even the implied warranty of
+#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#GNU General Public License for more details.
+#
+#You should have received a copy of the GNU General Public License
+#along with Orgapp.  If not, see <http://www.gnu.org/licenses/>.
+
 from bottle import request
 from bottle import view, url
 from bottle import get
-from orgapp import Tasks
-from cork import Cork
-from orgapp_globals import l2w
-import mercurial.commands as hg
-from mercurial import ui, localrepo
-from dulwich import repo
-from doc import Doc
-
-
-t = Tasks()
-d = Doc()
-d.cache_all()
-hgui = ui.ui()
-auth = Cork('config')
+from orgapp import o
+from ui_common import auth
 
 
 def make_code_menu(project, pagename=None):
@@ -39,29 +41,9 @@ def make_code_menu(project, pagename=None):
 def show_commits(project):
     """Show repo's commits"""
     s = request.environ.get('beaker.session')
-    if type(d.r[project]) == repo.Repo:
-        s['branch'] = request.query.branch or \
-            s.get('branch', 'HEAD')
-        # using walker and a ref (branch)
-        branches = d.r[project].get_refs()
-        if s['branch'] in branches:
-            w = d.r[project].get_walker([d.r[project].refs[s['branch']]])
-            #w = r.get_walker([r.refs['refs/heads/sqlite']])
-            l = [x.commit for x in w]
-        else:
-            l = ["Nothing has yet been done on your repo..."]
-    elif type(d.r[project]) == localrepo.localrepository:
-        s['branch'] = request.query.branch or \
-            s.get('branch', 'default')
-        branches = d.r[project].branchmap().keys()
-        #if s['branch'] not in branches:
-        try:
-            hgui.pushbuffer()
-            hg.log(hgui, d.r[project], branch=[s['branch']])
-            l = hgui.popbuffer().split('\n\n')
-        except:
-            s['branch'] = 'default'
-            l = ["Nothing has yet been done on your repo..."]
+    branch = s['branch']
+    s['branch'], l = o[project].r.list_commits(branch)
+    branches = o[project].r.get_branches()
     menu = make_code_menu(project)
     return(
         dict(
@@ -77,34 +59,10 @@ def show_commits(project):
 @view('display_file')
 def display_file(path, project):
     s = request.environ.get('beaker.session')
-    if type(d.r[project]) == repo.Repo:
-        s['branch'] = request.query.branch or \
-            s.get('branch', 'HEAD')
-        # get the tree for the branch
-        branches = d.r[project].get_refs()
-        tree_id = d.r[project][s['branch']].tree
-        # get the objects in this tree
-        objects = d.r[project].object_store.iter_tree_contents(tree_id)
-        path_sha = [x.sha for x in objects if x.path == path]
-        if len(path_sha) == 1:
-            content = d.r[project].get_object(path_sha[0])
-            content = content.as_raw_string().split('\n')
-        else:
-            content = ["sorry, could not find this file!"]
-    elif type(d.r[project]) == localrepo.localrepository:
-        s['branch'] = request.query.branch or \
-            s.get('branch', 'default')
-        branches = d.r[project].branchmap().keys()
-        if s['branch'] not in branches:
-            s['branch'] = d.r[project].branchmap().keys()[0]
-        _br = d.r[project][s['branch']]
-        hgui.pushbuffer()
-        hg.locate(hgui, d.r[project], branch=s['branch'])
-        _file = hgui.popbuffer().split('\n')
-        if path in _file:
-            content = _br.filectx(path).data().split('\n')
-        else:
-            content = ["sorry, could not find this file!"]
+    branch = s['branch']
+    print 'branch = ' + branch
+    s['branch'], content = o[project].r.get_content(path, branch)
+    branches = o[project].r.get_branches()
     menu = make_code_menu(project)
     return(
         dict(
@@ -127,42 +85,10 @@ def show_tree(project, path=''):
     else:
         current_path = '/' + project + '/code/browse/' + path
     s = request.environ.get('beaker.session')
-    l = []
-    if type(d.r[project]) == repo.Repo:
-        s['branch'] = request.query.branch or \
-            s.get('branch', 'HEAD')
-        # get the tree for the branch
-        branches = d.r[project].get_refs().keys()
-        if s['branch'] in branches:
-            tree_id = d.r[project][s['branch']].tree
-            # get the objects in this tree
-            objects = d.r[project].object_store.iter_tree_contents(tree_id)
-            #get the paths of the objects
-            l = [x.path for x in objects]
-        else:
-            l = ["Nothing has yet been done on your repo..."]
-    elif type(d.r[project]) == localrepo.localrepository:
-        s['branch'] = request.query.branch or \
-            s.get('branch', 'default')
-        branches = d.r[project].branchmap().keys()
-        print branches
-        try:
-            if s['branch'] not in branches:
-                s['branch'] = d.r[project].branchmap().keys()[0]
-            hgui.pushbuffer()
-            l = hg.locate(hgui, d.r[project], branch=s['branch'])
-            l = hgui.popbuffer().split('\n')
-        except IndexError:
-            s['branch'] = None
-            l = ["Nothing has yet been done on your repo..."]
-        print l
-        #except:
-            #s['branch'] = 'default'
-    dico = {}
-    for x in l:
-        l2w(x, dico)
-    hierarchy = dico[path]
-    menu = make_code_menu(project)
+    branch = request.query.branch or s.get('branch', None)
+    branches = o[project].r.get_branches()
+    s['branch'], hierarchy = o[project].r.get_tree(branch, path)
+    menu = make_code_menu(project, path)
     return(
         dict(
             current_path=current_path,

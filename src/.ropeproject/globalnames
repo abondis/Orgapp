@@ -1,6 +1,7 @@
-€}q(Ulib.cleanup_tests]q(Utest_git_pathqUtest_hg_pathqU
-TasksTestsqUtest_proj_pathqU
-TestOrgappqUProjectTestqUTasklistTestq	URepoTestq
-UDocTestqUtest_doc_pathqeUcodeui]q(UhguiqUmake_code_menuqUdU	show_treeqUauthqUdisplay_fileqUtUshow_commitsqeU
-lib.orgapp]q(UCustomModelqUOrgappqUTasklistqURepoqUProjectsqUDocqUTasksqUProjectqUtasks_dbqUStatusesqeUlib.orgapp_globals]q(Uis_ajaxq hUoUl2wq!eUtasksui]q"(Usync_conflictsq#Uupdate_task_ajaxq$Uupdate_taskq%Upost_tasks_to_syncq&Uget_tasks_to_syncq'Umake_tasks_menuq(U
-list_tasksq)Uget_faketasks_to_syncq*Uget_task_from_guidq+Uadd_taskq,Ucreate_taskq-Ushow_to_syncq.UteUwebui]q/(Uprojects_listq0Usession_optsq1Ustaticq2Uwebappq3U	doc_indexq4Ulist_wiki_pagesq5Ushow_wiki_pageq6Usave_wiki_pageq7U	login_getq8Usave_new_wiki_pageq9Ulogoutq:Uedit_wiki_pageq;Uloginq<Unew_wiki_pageq=U	is_loggedq>Umake_wiki_menuq?eu.
+€}q(Uorgapp.project]qUProjectqaUorgapp]q(UOrgappqUoUl2wqeUlib.cleanup_tests]q(Utest_git_pathqUtest_hg_pathq	U
+TasksTestsq
+Utest_proj_pathqU
+TestOrgappqUProjectTestqUTasklistTestqURepoTestqUDocTestqUtest_doc_pathqeUlib.orgapp_globals]q(Uis_ajaxqUauthqUoUl2wqeUorgapp.modelq]q(Utasks_dbqUCustomModelqUStatusesqUTasksqUProjectsqeUcodeui]q(Ushow_commitsqUmake_code_menuqUdisplay_fileq U	show_treeq!eU
+lib.orgappq"]q#(UCustomModelq$UOrgappq%UTasklistq&URepoq'UProjectsq(UDocq)UTasksq*UProjectq+Utasks_dbq,UStatusesq-eUwebui]q.(Uprojects_listq/Usession_optsq0Ustaticq1Uwebappq2U	doc_indexq3Ulist_wiki_pagesq4Ushow_wiki_pageq5Usave_wiki_pageq6U	login_getq7Usave_new_wiki_pageq8Ulogoutq9Uedit_wiki_pageq:Uloginq;Unew_wiki_pageq<U	is_loggedq=Umake_wiki_menuq>eUorgapp.repo]q?URepoq@aU
+orgapp.doc]qAUDocqBaUtasksui]qC(Udelete_taskqDUsync_conflictsqEUupdate_task_ajaxqFUupdate_taskqGUpost_tasks_to_syncqHUget_tasks_to_syncqIUmake_tasks_menuqJU
+list_tasksqKUget_faketasks_to_syncqLUget_task_from_guidqMUadd_taskqNUcreate_taskqOUshow_to_syncqPUteUorgapp.tasks]qQUTasklistqRau.

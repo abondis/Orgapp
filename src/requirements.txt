@@ -1,9 +1,9 @@
 Beaker
 Markdown
 dulwich
-mercurial
+Mercurial
 bottle
 bottle-werkzeug
 bottle-cork
-werkzeug
+Werkzeug
 peewee
