@@ -18,10 +18,13 @@ Getting started
 ---------------
 
 .. WARNING::
+
   Orgapp is still beeing in development. Basic tests have been done, but not yet
   in production. Use at your own risks and after having done a lot of tests :)
 
 * prepare
+
+::
 
   git submodule update --init
   cd src
@@ -31,13 +34,19 @@ Getting started
 
 * configure
 
+::
+
   cp config/config-multiprojects-example.ini config/config-dev.ini
 
 * configure users, used by bottle-cork, needs pycrypto
 
+::
+
   python config/create_cork_users.py
 
 * run
+
+::
 
   python webui.py
 
