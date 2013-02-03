@@ -2,7 +2,6 @@ running
 -------
 * tasks: moving around messes position
 * pyunit
-* add option to rename/edit a task
 
 next
 ----
@@ -66,3 +65,4 @@ done
 * viewing repo when it's new and has not commit fails with hg
 * keep tasks as part of the project
 * tasks: when moving between statuses, ensure source status is updated
+* add option to rename/edit a task

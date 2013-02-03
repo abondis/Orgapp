@@ -1,0 +1,9 @@
+Beaker
+Markdown
+dulwich
+mercurial
+bottle
+bottle-werkzeug
+bottle-cork
+werkzeug
+peewee
