@@ -202,8 +202,8 @@ def is_logged():
         return False
 
 # import routes for tasks and codes
-import tasksui_cleanup
-import codeui_cleanup
+import tasksui
+import codeui
 
 if __name__ == '__main__':
     SimpleTemplate.defaults["is_logged"] = is_logged

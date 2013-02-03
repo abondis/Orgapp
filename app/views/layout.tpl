@@ -17,6 +17,7 @@
 %jq_ui          = url('static', path='js/jquery-ui-1.9.2.custom.min.js')
 %jq_ui_touch    = url('static', path='js/jquery.ui.touch-punch.min.js')
 %custom_js      = url('static', path='js/custom.js')
+%tasks_js      = url('static', path='js/tasks.js')
 %jq_theme       = url('static', path='jquery.ui.theme.css')
 %responsive     = url('static', path='scss/responsive.css')
 %assets         = url('static', path='bootstrap/docs/assets/')
@@ -124,5 +125,6 @@
     <script src="{{ckeditor_js}}"></script>
     <script src="{{ckeditor_css_js}}"></script>
     <script src="{{custom_js}}"></script>
+    <script src="{{tasks_js}}"></script>
   </body>
 </html>

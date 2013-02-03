@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 import sys
 sys.path.extend(['lib'])
-from webui_cleanup import is_logged
+from webui import is_logged
 from bottle import request
 from bottle import view, redirect, url
 from bottle import post, get
-from cleanup import Projects, Statuses, Tasks
+from orgapp import Projects, Statuses, Tasks
 from orgapp_globals import o, auth, is_ajax
 
 

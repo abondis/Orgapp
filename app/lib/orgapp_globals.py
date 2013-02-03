@@ -3,7 +3,7 @@
 import sys
 sys.path.extend(['lib'])
 from cork import Cork
-from cleanup import Orgapp
+from orgapp import Orgapp
 import os
 from bottle import request, abort
 
