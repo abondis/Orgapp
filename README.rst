@@ -33,7 +33,7 @@ Getting started
 
   cp config/config-multiprojects-example.ini config/config-dev.ini
 
-* configure users, used by bottle-cork
+* configure users, used by bottle-cork, needs pycrypto
 
   python config/create_cork_users.py
 
