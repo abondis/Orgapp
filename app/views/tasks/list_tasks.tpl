@@ -9,14 +9,12 @@
       %end
         %for t in tasks_list[s]:
         <li id={{t.id}} class="ui-state-default well" data-position="{{t.position}}" data-status="{{t.status.name}}">
-          <span class="tid">{{t.id}}</span>
           <span class="name">{{t.name}}</span>
-          <span class="position">{{t.position}}</span>
           %if is_logged():
-          <div class="btn-group pull-right">
-              <a href="#view-{{t.id}}"  class="btn btn-mini" role="button" data-toggle="modal"><span class="icon icon-pencil">&nbsp;</span></a>
-              <a href="#" class="btn btn-mini"><span class="icon icon-trash">&nbsp;</span></a>
-          </div>
+              <div class="btn-group pull-right">
+                  <a href="#view-{{t.id}}"  class="btn btn-mini" role="button" data-toggle="modal"><span class="icon icon-pencil">&nbsp;</span></a>
+                  <a href="#" class="btn btn-mini" onclick="deleteTask('{{t.id}}');"><span class="icon icon-trash">&nbsp;</span></a>
+              </div>
           %end 
         </li>
         %end

@@ -82,7 +82,18 @@ class Tasks(CustomModel):
 
     def rename(self, new_name):
         """Rename a task"""
+        if new_name == '':
+            new_name = 'No name'
+
         self.name = new_name
+        self.save()
+
+    def set_description(self, new_description):
+        """ Change the description of the task"""
+        if new_description == '':
+            new_description = 'No description'
+
+        self.description = new_description
         self.save()
 
     def get_all(self):
@@ -449,6 +460,24 @@ class Orgapp:
         _t = Tasks.get(id=tid)
         _s = Statuses.get(name=new_status)
         _t.status = _s
+        _t.save()
+
+    def set_title(self, tid, new_title):
+        """ Set tasks #tid with new_status"""
+        _t = Tasks.get(id=tid)
+        _t.rename(new_title)
+        _t.save()
+
+    def delete(self, tid):
+        """ Deletes a task """
+        _t = Tasks.get(id=tid)
+        _t.delete_instance()
+        #TODO recalculate the order of all the tasks
+
+    def set_description(self, tid, new_description):
+        """ Set tasks #tid with new_status"""
+        _t = Tasks.get(id=tid)
+        _t.set_description(new_description)
         _t.save()
 
     def align_status(self, status):

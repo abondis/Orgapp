@@ -52,10 +52,10 @@ def add_task():
     projects = Projects.select()
     print [x.name for x in projects]
     return(dict(title="Add task",
-        leftmenu=menu,
-        project=None,
-        projects=projects,
-        statuses=statuses))
+                leftmenu=menu,
+                project=None,
+                projects=projects,
+                statuses=statuses))
 
 
 @post('/tasks/add')
@@ -94,15 +94,21 @@ def update_task(tid):
     #t.description(tid, new_description)
 
 
-@post('/tasks/<tid>/update/ajax')
 @is_ajax
+@post('/tasks/<tid>/update/ajax')
 def update_task_ajax(tid):
     auth.require(role='edit', fail_redirect='/login')
-    o.set_title(tid, request.query.title)
-    o.set_description(tid, request.query.description)
-    print request.query.title
-    print request.query.description
+    # TODO clear html from title
+    o.set_title(tid, request.params.title)
+    o.set_description(tid, request.params.description)
     # TODO add possibility to change project too
+
+
+@is_ajax
+@post('/tasks/<tid>/delete/ajax')
+def delete_task(tid):
+    auth.require(role='edit', fail_redirect='/login')
+    return o.delete(tid)
 
 
 @get('/sync/tasks')
