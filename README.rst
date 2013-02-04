@@ -17,34 +17,95 @@ running the webui, they will be initialized.
 Getting started
 ---------------
 
-.. WARNING::
+.. warning:: **Orgapp is still beeing in development. Basic tests have been done, but not yet**
+  **in production. Use at your own risks and after having done a lot of tests :)**
 
-  Orgapp is still beeing in development. Basic tests have been done, but not yet
-  in production. Use at your own risks and after having done a lot of tests :)
+Get Orgapp
+^^^^^^^^^^
 
-* prepare
+* clone the repository to your desired path
+
+::
+
+  git clone git@github.com:abondis/Orgapp.git
+
+* and enter it
+
+::
+
+  cd Orgapp
+
+Prepare the environment
+^^^^^^^^^^^^^^^^^^^^^^^
+
+* initialize the required submodules (only twitter-bootstrap)
 
 ::
 
   git submodule update --init
-  cd src
-  virtualenv env
-  . env/bin/activate
-  pip install -r requirements.txt
 
-* configure
+* enter the src folder
 
 ::
 
-  cp config/config-multiprojects-example.ini config/config-dev.ini
+  cd src
 
-* configure users, used by bottle-cork, needs pycrypto
+* and initialize a python virtualenv (http://pypi.python.org/pypi/virtualenv)
+
+::
+
+  virtualenv env
+  . env/bin/activate
+
+* install the python dependencies
+
+::
+
+  pip install -r requirements.txt
+
+
+Configuration
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+* configuration is done in two times
+
+  1. configure the app by itself (where to find the repositories, where to cache
+     the rendering, where to store the database)
+
+  2. setup authorized users with bottle-cork
+
+Configure the app
+~~~~~~~~~~~~~~~~~
+
+* orgapp will read the file config-\*.ini in the config/ folder
+* it will use the first file it finds in the following
+
+  1. config-dev.ini
+  2. config-stage.ini
+  3. config-prod.ini
+
+* they have 3 sections:
+
+  * doc: specify where is the repository's documentation (path relative to the
+    repository's root)
+  * tasks: full path to the tasks database
+  * repos: full paths to the git and hg repositories
+
+
+configure users
+~~~~~~~~~~~~~~~
+
+* needed to grant access to the edit functions of Orgapp
 
 ::
 
   python config/create_cork_users.py
 
-* run
+Start Orgapp UI
+~~~~~~~~~~~~~~~
+
+* Orgapp gives an interface to handle tasks and view projects. For that you
+  need to start its web interface, still from the src/ folder
 
 ::
 
@@ -62,6 +123,9 @@ More to come
 * push/pull
 * permit different markups
 * fixes :)
+* doc :)
+* unittest
+* cli
 
 Authors
 -------
