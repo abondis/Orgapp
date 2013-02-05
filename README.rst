@@ -35,6 +35,12 @@ Get Orgapp
 
   cd Orgapp
 
+* quickstart
+
+::
+
+  make start
+
 Prepare the environment
 ^^^^^^^^^^^^^^^^^^^^^^^
 

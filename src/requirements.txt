@@ -7,3 +7,4 @@ bottle-werkzeug
 bottle-cork
 Werkzeug
 peewee
+pycrypto
