@@ -22,10 +22,6 @@
 %responsive     = url('static', path='scss/responsive.css')
 %assets         = url('static', path='bootstrap/docs/assets/')
 
-%ckeditor_js       = url('static', path='ckeditor/ckeditor.js')
-%ckeditor_css      = url('static', path='ckeditor/skins/kama/editor.css')
-%ckeditor_css_js = url('static', path='ckeditor/skins/kama/skin.js')
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -45,7 +41,6 @@
     <link href="{{assets}}css/bootstrap-responsive.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{{jq_theme}}"/>
     <link rel="stylesheet" type="text/css" href="{{responsive}}"/>
-    <link rel="stylesheet" type="text/css" href="{{ckeditor_css}}"/>
 
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
@@ -122,8 +117,6 @@
     <script src="{{bs_typeahead}}"></script>  
     <script src="{{jq_ui}}"></script>
     <script src="{{jq_ui_touch}}"></script>
-    <script src="{{ckeditor_js}}"></script>
-    <script src="{{ckeditor_css_js}}"></script>
     <script src="{{custom_js}}"></script>
     <script src="{{tasks_js}}"></script>
   </body>
