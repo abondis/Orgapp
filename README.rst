@@ -17,8 +17,8 @@ running the webui, they will be initialized.
 Getting started
 ---------------
 
-.. warning:: **Orgapp is still beeing in development. Basic tests have been done, but not yet**
-  **in production. Use at your own risks and after having done a lot of tests :)**
+.. warning:: **Orgapp is still fresh and in development. Basic tests have been done, but not yet**
+  **in production-like environment. Use at your own risks and after having done a lot of tests :)**
 
 Get Orgapp
 ^^^^^^^^^^
