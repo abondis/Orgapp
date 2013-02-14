@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=640" />
+
+    <link rel="stylesheet" href="stylesheets/core.css" media="screen"/>
+    <link rel="stylesheet" href="stylesheets/mobile.css" media="handheld, only screen and (max-device-width:640px)"/>
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css"/>
+
+    <script type="text/javascript" src="javascripts/modernizr.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script type="text/javascript" src="javascripts/headsmart.min.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function () {
+        $('#main_content').headsmart()
+      })
+    </script>
+    <title>Orgapp by abondis</title>
+  </head>
+
+  <body>
+    <a id="forkme_banner" href="https://github.com/abondis/Orgapp">View on GitHub</a>
+    <div class="shell">
+
+      <header>
+        <span class="ribbon-outer">
+          <span class="ribbon-inner">
+            <h1>Orgapp</h1>
+            <h2>small project manager with relative tasks priorities</h2>
+          </span>
+          <span class="left-tail"></span>
+          <span class="right-tail"></span>
+        </span>
+      </header>
+
+      <section id="downloads">
+        <span class="inner">
+          <a href="https://github.com/abondis/Orgapp/zipball/master" class="zip"><em>download</em> .ZIP</a><a href="https://github.com/abondis/Orgapp/tarball/master" class="tgz"><em>download</em> .TGZ</a>
+        </span>
+      </section>
+
+
+      <span class="banner-fix"></span>
+
+
+      <section id="main_content">
+        <h1>Orgapp</h1>
+
+<p>Orgapp is a simple portable project management.
+The goal is to have an app that can be used offline as well as online.</p>
+
+<p>Tasks are created for projects, but they are prioritized relatively to each
+other.</p>
+
+<p>A project documentation is (for now, only) md files, tracked inside the repo.</p>
+
+<p>Content of the projects tasks will (soon) be stored as part of the project to.</p>
+
+<p>Repos can be git or mercurial repos, if they are not created previous to
+running the webui, they will be initialized.</p>
+
+<h2>Getting started</h2>
+
+<blockquote>
+<p>warning:: <strong>Orgapp is still fresh and in development. Basic tests have been done, but not yet</strong>
+  <strong>in production-like environment. Use at your own risks and after having done a lot of tests :)</strong></p>
+</blockquote>
+
+<h2>Get Orgapp</h2>
+
+<ul>
+<li>
+<p>clone the repository to your desired path</p>
+
+<pre><code>git clone git@github.com:abondis/Orgapp.git
+</code></pre>
+</li>
+<li>
+<p>and enter it</p>
+
+<pre><code>cd Orgapp
+</code></pre>
+</li>
+<li>
+<p>quickstart</p>
+
+<pre><code>make start
+</code></pre>
+</li>
+</ul><h2>Prepare the environment</h2>
+
+<ul>
+<li>
+<p>initialize the required submodules (only twitter-bootstrap)</p>
+
+<pre><code>git submodule update --init
+</code></pre>
+</li>
+<li>
+<p>enter the src folder</p>
+
+<pre><code>cd src
+</code></pre>
+</li>
+<li>
+<p>and initialize a python virtualenv (<a href="http://pypi.python.org/pypi/virtualenv">http://pypi.python.org/pypi/virtualenv</a>)</p>
+
+<pre><code>virtualenv env
+. env/bin/activate
+</code></pre>
+</li>
+<li>
+<p>install the python dependencies</p>
+
+<pre><code>pip install -r requirements.txt
+</code></pre>
+</li>
+</ul><h2>Configuration</h2>
+
+<ul>
+<li>configuration is done in two times
+
+<ol>
+<li>configure the app by itself (where to find the repositories, where to cache
+the rendering, where to store the database)</li>
+<li>setup authorized users with bottle-cork</li>
+</ol>
+</li>
+</ul><h3>Configure the app</h3>
+
+<ul>
+<li>orgapp will read the file config-*.ini in the config/ folder</li>
+<li>
+<p>it will use the first file it finds in the following</p>
+
+<ol>
+<li>config-dev.ini</li>
+<li>config-stage.ini</li>
+<li>config-prod.ini</li>
+</ol>
+</li>
+<li>
+<p>they have 3 sections:</p>
+
+<ul>
+<li>doc: specify where is the repository's documentation (path relative to the
+repository's root)</li>
+<li>tasks: full path to the tasks database</li>
+<li>repos: full paths to the git and hg repositories</li>
+</ul>
+</li>
+</ul><h3>Configure users</h3>
+
+<ul>
+<li>needed to grant access to the edit functions of Orgapp
+<code>python config/create_cork_users.py</code>
+</li>
+</ul><h3>Start Orgapp UI</h3>
+
+<ul>
+<li><p>Orgapp gives an interface to handle tasks and view projects. For that you
+need to start its web interface, still from the src/ folder
+<code>python webui.py</code></p></li>
+<li><p>access to http://localhost:8080 , user: admin, password: test (cf
+create_cork_users)</p></li>
+</ul><h2>More to come</h2>
+
+<ul>
+<li>sync</li>
+<li>how to install on android</li>
+<li>tasks in files</li>
+<li>push/pull</li>
+<li>permit different markups</li>
+<li>fixes :)</li>
+<li>doc :)</li>
+<li>unittest</li>
+<li>cli</li>
+</ul><h2>Authors</h2>
+
+<ul>
+<li>Aurélien Bondis</li>
+<li>Pierre Paul Lefebvre</li>
+</ul>
+      </section>
+
+      <footer>
+        <span class="ribbon-outer">
+          <span class="ribbon-inner">
+            <p>this project by <a href="https://github.com/abondis">abondis</a> can be found on <a href="https://github.com/abondis/Orgapp">GitHub</a></p>
+          </span>
+          <span class="left-tail"></span>
+          <span class="right-tail"></span>
+        </span>
+        <p>Generated with <a href="http://pages.github.com">GitHub Pages</a> using Merlot</p>
+        <span class="octocat"></span>
+      </footer>
+
+    </div>
+
+    
+  </body>
+</html>
