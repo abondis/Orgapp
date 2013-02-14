@@ -48,11 +48,9 @@ class Orgapp:
     def __getitem__(self, item):
         return self.projects[item]
 
-    def add_task(self, name, status, description, project, content=None):
-        if not content:
-            content = name
+    def add_task(self, name, status, description, project, filetype='md'):
         p = self.projects[project]
-        p.create_task(name, status, description, content)
+        p.create_task(name, status, description, filetype)
 
     def set_position(self, tid, new_pos, project='*'):
         """Set new position and update their friends"""
@@ -110,6 +108,13 @@ class Orgapp:
     def set_title(self, tid, new_title):
         """ Set tasks #tid with new_status"""
         _t = Tasks.get(id=tid)
+        # get old title
+        _old_title = _t.name
+        # move/rename file
+        _p = self.projects[_t.project.name]
+        #TODO: define in project.py
+        _p.rename_file(old_name=_old_title, new_name=new_title,
+                       in_path='tasks')
         _t.rename(new_title)
         _t.save()
 
@@ -122,6 +127,9 @@ class Orgapp:
     def set_description(self, tid, new_description):
         """ Set tasks #tid with new_status"""
         _t = Tasks.get(id=tid)
+        # get task title
+        # and project ?
+        # save file's content/description
         _t.set_description(new_description)
         _t.save()
 

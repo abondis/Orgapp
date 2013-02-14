@@ -47,6 +47,24 @@ class Repo:
                     self.ui,
                     self.path)
 
+    def rename_file(self, source, dest):
+        if self.vcs_type == 'git':
+            #http://code.google.com/p/dulwich-mirror/source/browse/docs/tutorial/5-rename-file.txt?name=rc-walker-ack-v5
+            pass
+        elif self.vcs_type == 'hg':
+            hg.rename(
+                self.ui,
+                self.r,
+                source.encode('utf-8'),
+                dest.encode('utf-8'),
+                force=False)
+            hg.commit(
+                self.ui,
+                self.r,
+                #path.encode('utf-8'),
+                message='rename {0} => {1}'.format(source, dest))
+            #_lock.release()
+
     def add_file(self, path):
         if self.vcs_type == 'git':
             # git wants a relative path

@@ -28,14 +28,10 @@
         </div>
         <div class="modal-body">
           <div class="control-group">
-              <div class="controls" contenteditable="true" id="task-title-{{t.id}}">
-                {{t.name}}
-              </div>
+              <div class="controls" contenteditable="true" id="task-title-{{t.id}}">{{t.name}}</div>
           </div>
           <div class="control-group">
-              <div class="controls" contenteditable="true" id="task-description-{{t.id}}">
-                    {{t.description}}
-              </div>
+              <div class="controls" contenteditable="true" id="task-description-{{t.id}}">{{t.description}}</div>
           </div>
         </div>
         <div class="modal-footer">

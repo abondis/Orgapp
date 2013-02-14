@@ -21,6 +21,27 @@ from orgapp.doc import Doc
 from orgapp.model import Tasks
 from hashlib import md5
 import datetime
+import os
+
+from HTMLParser import HTMLParser
+
+
+class MLStripper(HTMLParser):
+    def __init__(self):
+        self.reset()
+        self.fed = []
+
+    def handle_data(self, d):
+        self.fed.append(d)
+
+    def get_data(self):
+        return ''.join(self.fed)
+
+
+def remove_tags(html):
+    s = MLStripper()
+    s.feed(html)
+    return s.get_data()
 
 
 class Project:
@@ -76,20 +97,23 @@ class Project:
         _t.project = Projects.get_or_create(name=self.name)
         _t.save()
 
-        # TODO save task on disk, inside the repo
-        #if description == '':
-            #description = name
-        #self.tasks_files.create_doc(name+'.'+MU_type, description)
-        #self.tasks_files.create_doc(name, description)
-        #self.r.add_file(self.r.path+'/tasks/'+name)
-        print '*' * 100
-        print self.tasks_files.root_path
-        print 'tasks fullpath: ' + self.tasks_fullpath + '/' + name + '.'\
-            + MU_type
-        print '*' * 100
-        #self.r.add_file(self.tasks_fullpath+'/'+name+'.'+MU_type)
+        self.tasks_files.create_doc(name + '.' + MU_type, description)
+        self.r.add_file(self.tasks_fullpath + '/' + name + '.' + MU_type)
+        self.tasks_files.cache(name + '.' + MU_type)
 
     def create_doc(self, name, content='', MU_type='md'):
         self.doc_files.create_doc(name + '.' + MU_type, content)
         self.r.add_file(self.doc_fullpath + '/' + name + '.' + MU_type)
         self.doc_files.cache(name + '.' + MU_type)
+
+    def rename_file(self, old_name, new_name, in_path, MU_type='md'):
+        """ Rename a file inside a folder of the project's repo:
+            - old_name: old file name
+            - new_name: new file name
+            - in_path: 'tasks' or 'doc' will use the project's settings to get
+              the corresponding path
+        """
+        _path = getattr(self, "{0}_fullpath".format(in_path))
+        _old_path = remove_tags(_path + '/' + old_name) + '.' + MU_type
+        _new_path = remove_tags(_path + '/' + new_name) + '.' + MU_type
+        self.r.rename_file(_old_path, _new_path)
