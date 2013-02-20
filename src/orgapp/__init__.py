@@ -67,22 +67,26 @@ class Orgapp:
             updq = updq.where(
                 Tasks.project == Projects.get(name=project))
         # update from top to bottom
+        # A from 1 to 2:
+        # 1 | A -> 2
+        # 2 | B -> 1
+        # 3 | C -> 3
         if int(new_pos) > int(old_pos):
-            updq = updq.where(Tasks.position <= str(new_pos),
-                              Tasks.position >= str(old_pos))
+            tasks_to_update = updq.where(Tasks.position <= str(new_pos),
+                              Tasks.position > str(old_pos))
+            tasks_to_update = tasks_to_update.order_by(Tasks.position.asc())
         # update from bottom to top
         else:
-            updq = updq.where(Tasks.position >= str(new_pos),
-                              Tasks.position <= str(old_pos))
-            updq = updq.order_by(Tasks.position.desc())
+            tasks_to_update = updq.where(Tasks.position >= str(new_pos),
+                              Tasks.position < str(old_pos))
+            tasks_to_update = tasks_to_update.order_by(Tasks.position.desc())
         # FIXME: hackish, find if there is a better way
-        prev = [x for x in updq.limit(1)][0]
-        updq = updq.limit(-1).offset(1)
-        _first = prev
+        _first = updq.where(Tasks.position==old_pos).get()
         if updq.count() > 0:
             print 'updq.count: ' + str(updq.count())
             print 'updq' + str([x.id for x in updq])
-            prev_pos = prev.position
+            #prev_pos = prev.position
+            prev_pos = old_pos
             for upd_t in updq:
                 next_pos = upd_t.position
                 print "moving task: " + str(upd_t.id) + " from: " +\
