@@ -8,10 +8,10 @@
           <ul class="tasks well">
       %end
         %for t in tasks_list[s]:
-        <li id="{{t.id}}" class="ui-state-default well" data-position="{{t.position}}" data-status="{{t.status.name}}">
+        <li id="{{t.id}}" class="well" data-position="{{t.position}}" data-status="{{t.status.name}}">
           <div class="name pull-left">{{t.name}}</div>
           %if is_logged():
-              <div class="btn-group pull-right">
+              <div class="btn-group pull-right hidden-desktop">
                   <a href="#view-{{t.id}}"  class="btn btn-mini" role="button" data-toggle="modal"><span class="icon icon-pencil">&nbsp;</span></a>
                   <a href="#" class="btn btn-mini" onclick="deleteTask('{{t.id}}');"><span class="icon icon-trash">&nbsp;</span></a>
               </div>

@@ -103,12 +103,11 @@ body .container-fluid ul.tasks li div.name {
 }
 /* line 38, ../sass/screen.scss */
 body .container-fluid ul.tasks li div.btn-group {
-  display: none;
   position: absolute;
   top: 0;
   right: 0;
 }
-/* line 45, ../sass/screen.scss */
+/* line 44, ../sass/screen.scss */
 body .container-fluid ul.tasks li:hover div.btn-group {
-  display: block;
+  display: block !important;
 }

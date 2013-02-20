@@ -36,14 +36,13 @@ body {
         }
 
         div.btn-group {
-          display:none;
           position:absolute;
           top:0;
           right:0;
         }
         &:hover{
           div.btn-group {
-            display:block;
+            display:block !important;
           }
         }
       }
