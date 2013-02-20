@@ -3,7 +3,7 @@
     <div id="task-list-{{s}}" class="span3" data-status-id="{{s}}">
       <h1>{{s}}</h1>
       %if is_logged():
-          <ul class="connectedSortable tasks ui-sortable well">
+          <ul class="connectedSortable tasks ui-sortable well logged-in">
       %else:
           <ul class="tasks well">
       %end
