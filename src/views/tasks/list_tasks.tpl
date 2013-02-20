@@ -1,6 +1,6 @@
 %def rightblock():
   %for s in tasks_list.keys():
-    <div id="task-list-{{s}}" class="span3">
+    <div id="task-list-{{s}}" class="span3" data-status-id="{{s}}">
       <h1>{{s}}</h1>
       %if is_logged():
           <ul class="connectedSortable tasks ui-sortable well">

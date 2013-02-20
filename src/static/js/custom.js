@@ -5,7 +5,7 @@ $(function() {
       stop: function(event, ui) {
         var tid = ui.item.attr('id');
         var new_pos = ui.item.index();
-        var new_status = ui.item.parent().parent().attr('id');
+        var new_status = ui.item.parent().parent().attr('data-status-id');
 
         var old_pos = ui.item.attr('data-position')
         var old_status = ui.item.attr('data-status')

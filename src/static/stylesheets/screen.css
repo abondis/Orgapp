@@ -93,21 +93,22 @@ body .container-fluid .col-secondary div.well {
 }
 /* line 29, ../sass/screen.scss */
 body .container-fluid ul.tasks li {
+  cursor: pointer;
   overflow: hidden;
   position: relative;
 }
-/* line 33, ../sass/screen.scss */
+/* line 34, ../sass/screen.scss */
 body .container-fluid ul.tasks li div.name {
   overflow: hidden;
 }
-/* line 37, ../sass/screen.scss */
+/* line 38, ../sass/screen.scss */
 body .container-fluid ul.tasks li div.btn-group {
   display: none;
   position: absolute;
   top: 0;
   right: 0;
 }
-/* line 44, ../sass/screen.scss */
+/* line 45, ../sass/screen.scss */
 body .container-fluid ul.tasks li:hover div.btn-group {
   display: block;
 }
