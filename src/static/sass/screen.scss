@@ -1,0 +1,53 @@
+/* Welcome to Compass.
+ * In this file you should write your main styles. (or centralize your imports)
+ * Import this file using the following HTML or equivalent:
+ * <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css" /> */
+
+@import "compass/reset";
+
+body {
+  font-family: 'Helvetica', 'Ubuntu', sans-serif;
+  .container-fluid {
+    padding-top:60px;
+    padding-left:20px;
+    padding-right:20px;
+
+    h1 {
+      font-weight:bold;
+      font-size:1.75em;
+      margin:0 0 0.5em 0;
+    }
+
+    .col-secondary {
+      max-width:250px;
+      div.well {
+        padding:0.5em 0;
+      }
+    }
+
+    ul.tasks {
+      li {
+        overflow:hidden;
+        position:relative;
+
+        div.name {
+          overflow:hidden;
+        }
+
+        div.btn-group {
+          display:none;
+          position:absolute;
+          top:0;
+          right:0;
+        }
+        &:hover{
+          div.btn-group {
+            display:block;
+          }
+        }
+      }
+    }
+
+    
+  }
+}

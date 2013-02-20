@@ -1,19 +1,25 @@
 %try:
-%rebase layout title=title, project=project
+  %rebase layout title=title, project=project
 %except:
-%rebase layout title=title
+  %rebase layout title=title
 %end
 
-<leftblock>
-  %def leftblock():
-    <ul class="nav nav-pills">
-    %for m in leftmenu:
-      <li><a class="" href='{{m["url"]}}'>{{m['title']}}</a></li>
+<div class="row-fluid">
+    %def leftblock():
+      %if leftmenu:
+        <div class="col-secondary span3">
+          <div class="well" >
+            <ul class="nav nav-list">
+              %for m in leftmenu:
+                <li><a href='{{m["url"]}}'>{{m['title']}}</a></li>
+              %end
+          </ul>
+        </div>
+      </div>
+      %end
     %end
-    </ul>
-  %end
-  %leftblock()
-</leftblock>
-<rightblock>
-  %rightblock()
-</rightblock>
+    %leftblock()
+  <div class="col-primary span9">
+    %rightblock()
+  </rightblock>
+</div>

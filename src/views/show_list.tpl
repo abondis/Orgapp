@@ -10,13 +10,13 @@
     %end
     </select>
   </form>
-  <ul id="listing">
+  <ul>
   %def walk_list_of_list(_list):
     %for l in _list:
       %if type(l) == type([]):
       %  walk_list_of_list(l)
       %else:
-      <li class="ui-state-default">
+      <li class="well">
         %for x in str(l).split('\n'):
           {{x}}<br>
         %end

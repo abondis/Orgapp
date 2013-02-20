@@ -11,32 +11,32 @@
     %end
     </select>
   </form>
-  <ul id="listing">
+  <ul class="nav nav-tabs nav-stacked">
       %if not current_path.endswith('/code/browse'):
       %  stripped_path = os.path.split(current_path)[0]
-      <a href='{{stripped_path}}'>
-      <li class="ui-state-default">
-          ..
+      <li>
+        <a href='{{stripped_path}}'>
+            ..
+        </a>
       </li>
-      </a>
       %end
       %if current_branch is not None:
         %for x in listing[0]:
-        <a href='{{current_path}}/{{x}}'>
-        <li class="ui-state-default">
-            {{x}}
+        <li>
+          <a href='{{current_path}}/{{x}}'>
+              {{x}}
+          </a>
         </li>
-        </a>
         %end
         %for x in listing[1]:
-        <a href='{{current_path}}/{{x}}/show'>
-        <li class="ui-state-default">
-            {{x}}
+        <li>
+          <a href='{{current_path}}/{{x}}/show'>
+              {{x}}
+          </a>
         </li>
-        </a>
         %end
       %else:
-        <li class="ui-state-default">
+        <li>
             Nothing has yet been done on this repo
         </li>
       %end

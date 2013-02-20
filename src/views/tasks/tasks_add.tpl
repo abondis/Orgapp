@@ -1,16 +1,16 @@
 %def rightblock():
-  <form action='/tasks/add' method='POST' class="form-horizontal">
+  <form action='/tasks/add' method='POST' class="form-horizontal span9">
     <div class="well">
         <div class="control-group">
             <label for="title" class="control-label">Title</label>
             <div class="controls">
-                <input name="name" type="text" placeholder="Title" id="title"/>
+                <input name="name" type="text" placeholder="Title" id="title" class="span6"/>
             </div>
         </div>
         <div class="control-group">
             <label class="control-label" for="status">Description:</label>
             <div class="controls">
-              <textarea name="description" placeholder="Description"></textarea>
+              <textarea name="description" placeholder="Description" class="span6" rows="10"></textarea>
             </div>
         </div>
         <div class="control-group">

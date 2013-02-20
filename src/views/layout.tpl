@@ -19,7 +19,9 @@
 %custom_js      = url('static', path='js/custom.js')
 %tasks_js       = url('static', path='js/tasks.js')
 %jq_theme       = url('static', path='jquery.ui.theme.css')
-%responsive     = url('static', path='scss/responsive.css')
+%style          = url('static', path='stylesheets/screen.css')
+%style_ie       = url('static', path='stylesheets/ie.css')
+%style_print    = url('static', path='stylesheets/print.css')
 %assets         = url('static', path='bootstrap/docs/assets/')
 
 <!DOCTYPE html>
@@ -32,15 +34,16 @@
     <meta name="author" content="">
 
     <!-- Le styles -->
+    <link href='http://fonts.googleapis.com/css?family=Ubuntu' rel='stylesheet' type='text/css'>
     <link href="{{bootstrap}}" rel="stylesheet">
-    <style>
-      body {
-        padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
-      }
-    </style>
     <link href="{{assets}}css/bootstrap-responsive.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{{jq_theme}}"/>
-    <link rel="stylesheet" type="text/css" href="{{responsive}}"/>
+    <link media="screen, projection" rel="stylesheet" type="text/css" href="{{style}}" />
+    <link media="print" rel="stylesheet" type="text/css" href="{{style_print}}" />
+    <!--[if IE]>
+        <link href="{{style_ie}}" media="screen, projection" rel="stylesheet" type="text/css" />
+    <![endif]-->
+
 
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
@@ -98,7 +101,7 @@
       </div>
     </div>
 
-    <div class="container">
+    <div class="container-fluid">
         %include
     </div> <!-- /container -->
 

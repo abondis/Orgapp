@@ -1,6 +1,6 @@
 %def rightblock():
   %for s in tasks_list.keys():
-    <tasklist id={{s}}>
+    <div id="task-list-{{s}}" class="span3">
       <h1>{{s}}</h1>
       %if is_logged():
           <ul class="connectedSortable tasks ui-sortable well">
@@ -8,8 +8,8 @@
           <ul class="tasks well">
       %end
         %for t in tasks_list[s]:
-        <li id={{t.id}} class="ui-state-default well" data-position="{{t.position}}" data-status="{{t.status.name}}">
-          <span class="name">{{t.name}}</span>
+        <li id="{{t.id}}" class="ui-state-default well" data-position="{{t.position}}" data-status="{{t.status.name}}">
+          <div class="name pull-left">{{t.name}}</div>
           %if is_logged():
               <div class="btn-group pull-right">
                   <a href="#view-{{t.id}}"  class="btn btn-mini" role="button" data-toggle="modal"><span class="icon icon-pencil">&nbsp;</span></a>
@@ -19,7 +19,8 @@
         </li>
         %end
       </ul>
-    </tasklist>
+    </div>
+
     %for t in tasks_list[s]:
       <div id="view-{{t.id}}" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="Task details" aria-hidden="true">
         <div class="modal-header">
